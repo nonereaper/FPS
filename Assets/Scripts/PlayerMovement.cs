@@ -19,31 +19,33 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         angle = 0.0;
     }
-
+    public void rotatePlayer(float an) {
+        angle += an;
+        angle += fixAngle(angle);
+        rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0,an,0)));
+    }
+    private double fixAngle(double an) {
+        if (an > 180.0)
+            return -360.0;
+        else if (an < -180.0)
+            return 360.0;
+        else 
+            return 0.0;
+    }
     // Update is called once per frame
     void Update()
     {
-       float x = rb.velocity.x, y = rb.velocity.y, z = rb.velocity.z;
-       double increaseZ = Math.Cos(Math.PI*angle/180)*movementSpeed, increaseX = Math.Sin(Math.PI*angle/180)*movementSpeed;
-            /*
-        //if (Math.Abs(z) <= 5) {
-            rb.AddForce(0,0,),ForceMode.VelocityChange);
-        //}
-        //if (Math.Abs(x) <= 5) {
-            rb.AddForce(,0,0,ForceMode.VelocityChange);
-        //}*/
-            rb.velocity = new Vector3((float)(Input.GetAxis("Vertical")*increaseX),y,(float)(Input.GetAxis("Vertical") * increaseZ));
+        float x = rb.velocity.x, y = rb.velocity.y, z = rb.velocity.z;
+        double tempAngle = Math.PI*angle/180, tempAngleP = tempAngle+(Math.PI/2);
+        double increaseZ = Math.Cos(tempAngle)*movementSpeed, increaseX = Math.Sin(tempAngle)*movementSpeed;
+        rb.velocity = new Vector3((float)(Input.GetAxis("Vertical")*increaseX),y,(float)(Input.GetAxis("Vertical") * increaseZ));
+
       //  if (Math.Abs(rb.velocity.x) <= 5)
        // rb.AddForce(Input.GetAxis("Horizontal") * movementSpeed,0,0,ForceMode.VelocityChange);
        
-       rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0,Input.GetAxis("Horizontal"),0)));
-       angle+=Input.GetAxis("Horizontal");
-        if (angle > 180.0) {
-            angle -= 360.0;
-        }
-        if (angle < -180.0) {
-            angle +=360.0;
-        }
+       
+       //rotatePlayer(Input.GetAxis("Horizontal")*Time.deltaTime);
+        
         if (Input.GetButtonDown("Jump")) {
             //rb.velocity = new Vector3(x,jump,z);
             rb.velocity = new Vector3(x,jump,z);

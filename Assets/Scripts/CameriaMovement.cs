@@ -22,8 +22,10 @@ public class CameriaMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float difX = Input.GetAxis("Mouse X") * Time.deltaTime * 100, difY = Input.GetAxis("Mouse Y") * Time.deltaTime * 100;
         
-        tf.Rotate(tf.rotation * Quaternion.Euler(new Vector3(difX,difY,0)),Space.Self);
+        float difX = Input.GetAxis("Mouse X") * Time.deltaTime * 100f, difY = Input.GetAxis("Mouse Y") * Time.deltaTime * 100f;
+        //Debug.Log(Input.GetAxis("Mouse X") + ",  " +Input.GetAxis("Mouse Y") + "), (" + difX + ", " + difY);
+        GetComponentInParent<PlayerMovement>().rotatePlayer(difX);
+       // tf.RotateAround(tf.position,Vector3.right,difY);
     }
 }
