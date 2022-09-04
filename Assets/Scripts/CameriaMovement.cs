@@ -5,17 +5,15 @@ using UnityEngine;
 public class CameriaMovement : MonoBehaviour
 {
     private float angleV;
-    private float oriX, oriY;
+    private bool firstPerson;
     private Transform tf;
     // Start is called before the first frame update
     void Start()
     {
         tf = GetComponent<Transform>();
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = true;
         angleV = 0;
-        oriX = Screen.width/2;
-        oriY = Screen.height/2;
+        firstPerson = true;
     }
 
     // Update is called once per frame
@@ -32,5 +30,13 @@ public class CameriaMovement : MonoBehaviour
             angleV = -90.0f;
         }
         tf.localRotation = Quaternion.Euler(angleV,0,0);
+        if (Input.GetButtonDown("ChangeMouseView")) {
+            if (firstPerson) {
+                tf.localPosition = new Vector3(0,2f,-5f);
+            } else {
+                tf.localPosition = new Vector3(0,0.9f,0);
+            }
+            firstPerson = !firstPerson;
+        }
     }
 }

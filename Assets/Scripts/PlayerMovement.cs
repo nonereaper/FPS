@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody rb;
     [SerializeField] float movementSpeed;
+    [SerializeField] float sprintSpeedMult;
     [SerializeField] float jump;
     private double angle;
     // Start is called before the first frame update
@@ -37,8 +38,15 @@ public class PlayerMovement : MonoBehaviour
     {
         float x = rb.velocity.x, y = rb.velocity.y, z = rb.velocity.z;
         double tempAngle = Math.PI*angle/180, tempAngleP = tempAngle+(Math.PI/2);
-        double increaseZ = Math.Cos(tempAngle)*movementSpeed, increaseX = Math.Sin(tempAngle)*movementSpeed;
-        rb.velocity = new Vector3((float)(Input.GetAxis("Vertical")*increaseX),y,(float)(Input.GetAxis("Vertical") * increaseZ));
+        if (tempAngleP > Math.PI) {
+            tempAngleP -= Math.PI*2;
+        }
+       /* if () {
+            
+        } */
+        double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*movementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*movementSpeed,
+        increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*movementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*movementSpeed;
+        rb.velocity = new Vector3((float)(increaseX),y,(float)(increaseZ));
 
       //  if (Math.Abs(rb.velocity.x) <= 5)
        // rb.AddForce(Input.GetAxis("Horizontal") * movementSpeed,0,0,ForceMode.VelocityChange);
