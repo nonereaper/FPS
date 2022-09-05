@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameriaMovement : MonoBehaviour
 {
-    private float angleV;
+    private PlayerMovement parentClass;
     private bool firstPerson;
     private Transform tf;
     // Start is called before the first frame update
@@ -12,8 +12,8 @@ public class CameriaMovement : MonoBehaviour
     {
         tf = GetComponent<Transform>();
         Cursor.lockState = CursorLockMode.Locked;
-        angleV = 0;
         firstPerson = true;
+        parentClass = GetComponentInParent<PlayerMovement>();
     }
 
     // Update is called once per frame
@@ -21,15 +21,16 @@ public class CameriaMovement : MonoBehaviour
     {
         
         float difX = Input.GetAxis("Mouse X") * Time.deltaTime * 100f, difY = Input.GetAxis("Mouse Y") * Time.deltaTime * 100f;
-        GetComponentInParent<PlayerMovement>().rotatePlayer(difX);
-        angleV -= difY;
+        parentClass.rotatePlayer(difX);
+        float angleV = parentClass.getCameriaAngle()-difY;
         if (angleV >= 90.0) {
             angleV = 90.0f;
         }
         if (angleV <= -90.0) {
             angleV = -90.0f;
         }
-        tf.localRotation = Quaternion.Euler(angleV,0,0);
+        parentClass.setCameriaAngle(angleV);
+        tf.localRotation = Quaternion.Euler(parentClass.getCameriaAngle(),0,0);
         if (Input.GetButtonDown("ChangeMouseView")) {
             if (firstPerson) {
                 tf.localPosition = new Vector3(0,2f,-5f);
