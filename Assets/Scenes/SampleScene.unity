@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 564883234}
   - component: {fileID: 564883233}
   - component: {fileID: 564883232}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: EditorOnly
   m_Icon: {fileID: 0}
@@ -509,7 +509,7 @@ GameObject:
   - component: {fileID: 815355640}
   - component: {fileID: 815355642}
   - component: {fileID: 815355641}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: CrossHair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -777,6 +777,7 @@ GameObject:
   - component: {fileID: 1005054670}
   - component: {fileID: 1005054669}
   - component: {fileID: 1005054668}
+  - component: {fileID: 1005054671}
   m_Layer: 0
   m_Name: Left Leg
   m_TagString: Untagged
@@ -862,6 +863,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1005054665}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1005054671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1005054665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 478e676feccec44459d50fb2dc24423c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1126364580
 GameObject:
   m_ObjectHideFlags: 0
@@ -972,6 +988,7 @@ GameObject:
   - component: {fileID: 1362849493}
   - component: {fileID: 1362849492}
   - component: {fileID: 1362849491}
+  - component: {fileID: 1362849494}
   m_Layer: 0
   m_Name: Right Leg
   m_TagString: Untagged
@@ -1057,6 +1074,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1362849488}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1362849494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1362849488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 478e676feccec44459d50fb2dc24423c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &2016077856
 GameObject:
   m_ObjectHideFlags: 0
@@ -1135,6 +1167,10 @@ PrefabInstance:
     - target: {fileID: 2002009295183388456, guid: 4c7cf665cd4e52f4f9613670beb02434, type: 3}
       propertyPath: m_Name
       value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 2002009295183388456, guid: 4c7cf665cd4e52f4f9613670beb02434, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2002009295183388460, guid: 4c7cf665cd4e52f4f9613670beb02434, type: 3}
       propertyPath: m_RootOrder

@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float movementSpeed;
     [SerializeField] float sprintSpeedMult;
     [SerializeField] float jump;
+    private bool isGrounded;
     private float cameriaAngle;
     private float angle;
     // Start is called before the first frame update
@@ -21,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
+        isGrounded = false;
     }
     public void rotatePlayer(float an) {
         angle += an;
@@ -35,6 +37,9 @@ public class PlayerMovement : MonoBehaviour
     }
     public void addCameriaAngle(float ca) {
         cameriaAngle += ca;
+    }
+    public void setGrounded(bool b) {
+        isGrounded = b;
     }
     private float fixAngle(float an) {
         if (an > 180.0f)
@@ -68,8 +73,9 @@ public class PlayerMovement : MonoBehaviour
        
        //rotatePlayer(Input.GetAxis("Horizontal")*Time.deltaTime);
         
-        if (Input.GetButtonDown("Jump")) {
+        if (Input.GetButtonDown("Jump") && isGrounded) {
             //rb.velocity = new Vector3(x,jump,z);
+            Debug.Log(isGrounded);
             rb.velocity = new Vector3(x,jump,z);
         }
     }
