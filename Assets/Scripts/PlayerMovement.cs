@@ -24,10 +24,12 @@ public class PlayerMovement : MonoBehaviour
         cameriaAngle = 0.0f;
         isGrounded = false;
     }
-    public void rotatePlayer(float an) {
-        angle += an;
-        angle += fixAngle(angle);
+    public float getAngle() {
+        return angle;
+    }
+    public void rotatePlayer(float an) {        
         rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0,an,0)));
+        angle = rb.rotation.eulerAngles.y-360.0f;
     }
     public void setCameriaAngle(float ca) {
         cameriaAngle = ca;
@@ -40,14 +42,6 @@ public class PlayerMovement : MonoBehaviour
     }
     public void setGrounded(bool b) {
         isGrounded = b;
-    }
-    private float fixAngle(float an) {
-        if (an > 180.0f)
-            return -360.0f;
-        else if (an < -180.0f)
-            return 360.0f;
-        else 
-            return 0.0f;
     }
     // Update is called once per frame
     void Update()
@@ -75,7 +69,6 @@ public class PlayerMovement : MonoBehaviour
         
         if (Input.GetButtonDown("Jump") && isGrounded) {
             //rb.velocity = new Vector3(x,jump,z);
-            Debug.Log(isGrounded);
             rb.velocity = new Vector3(x,jump,z);
         }
     }
