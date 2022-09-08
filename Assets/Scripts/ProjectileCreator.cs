@@ -10,7 +10,9 @@ public class ProjectileCreator : MonoBehaviour
     [SerializeField] float angleSpread;
     [SerializeField] int numberOfProjectiles;
     [SerializeField] int damageOfProjectiles;
-    private float projVelocity;
+    [SerializeField] float timeBeforeShootAgain;
+    
+    private float projVelocity, time;
     private PlayerMovement parentClass;
     private Transform tf;
     private float startY, startZ;
@@ -22,23 +24,25 @@ public class ProjectileCreator : MonoBehaviour
         projVelocity = 5000f;
         startY = tf.localPosition.y;
         startZ = tf.localPosition.z;
+        time = UnityEngine.Time.time;
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        if (Input.GetButtonDown("Fire1")) {
+        if (Input.GetButton("Fire1") && UnityEngine.Time.time >= time+timeBeforeShootAgain) {
+            time = UnityEngine.Time.time;
             double tempAngle = Math.PI*parentClass.getAngle()/180;
-         //   for (int i = 0; i < numberOfProjectiles; i++) {
-                double tempAngle2 = tempAngle*UnityEngine.Random.Range(-angleSpread,angleSpread);
-
+            for (int i = 0; i < numberOfProjectiles; i++) {
+                double tempAngle2 = tempAngle + Math.PI*UnityEngine.Random.Range(-angleSpread,angleSpread);
+                Debug.Log(tempAngle + " " + tempAngle2);
                 double changeZ = Math.Cos(tempAngle2)*projVelocity, changeX = Math.Sin(tempAngle2)*projVelocity;
 
                 GameObject o = Instantiate(proj,tf.position,tf.rotation);
                 o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,-projVelocity));
                 o.GetComponent<Projectile>().setup(damageOfProjectiles,tf.parent.gameObject.transform.parent.gameObject,10);
-          //  }
+            }
         }
     }
 }
