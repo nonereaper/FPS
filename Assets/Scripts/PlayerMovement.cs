@@ -16,10 +16,14 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded;
     private float cameriaAngle;
     private float angle;
+    [SerializeField] GameObject weaponControllerObject;
+    private WeaponController weaponController;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        weaponController = weaponControllerObject.GetComponent<WeaponController>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;

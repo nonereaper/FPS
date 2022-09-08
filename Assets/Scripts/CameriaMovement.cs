@@ -20,9 +20,9 @@ public class CameriaMovement : MonoBehaviour
     void Update()
     {
         
-        float difX = Input.GetAxis("Mouse X") * Time.deltaTime * 100f, difY = Input.GetAxis("Mouse Y") * Time.deltaTime * 100f;
-        parentClass.rotatePlayer(difX);
-        float angleV = parentClass.getCameriaAngle()-difY;
+        float rotateY = Input.GetAxis("Mouse Y") * Time.deltaTime * 100f;
+        parentClass.rotatePlayer(Input.GetAxis("Mouse X") * Time.deltaTime * 100f);
+        float angleV = parentClass.getCameriaAngle()-rotateY;
         if (angleV >= 90.0) {
             angleV = 90.0f;
         }

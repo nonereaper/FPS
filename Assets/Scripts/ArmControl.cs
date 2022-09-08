@@ -21,6 +21,6 @@ public class ArmControl : MonoBehaviour
         double tempAngle = -(parentClass.getCameriaAngle())/180*Math.PI;
         double changeX = Math.Cos(tempAngle)*0.25, changeY = Math.Sin(tempAngle)*0.25;
         tf.localPosition = new Vector3(tf.localPosition.x,(float)(changeY+0.25f),(float)changeX);
-        tf.localRotation = Quaternion.Euler(parentClass.getCameriaAngle()-90,tf.localRotation.eulerAngles.y,tf.localRotation.eulerAngles.z);
+        tf.localRotation = Quaternion.Euler(parentClass.getCameriaAngle()-90,0,0);
     }
 }

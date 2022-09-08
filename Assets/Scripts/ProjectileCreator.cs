@@ -5,7 +5,11 @@ using UnityEngine;
 
 public class ProjectileCreator : MonoBehaviour
 {
-        [SerializeField] GameObject proj;
+    [SerializeField] GameObject proj;
+    // the spread of the projectile that will based off a radian
+    [SerializeField] float angleSpread;
+    [SerializeField] int numberOfProjectiles;
+    [SerializeField] int damageOfProjectiles;
     private float projVelocity;
     private PlayerMovement parentClass;
     private Transform tf;
@@ -26,13 +30,17 @@ public class ProjectileCreator : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1")) {
             double tempAngle = Math.PI*parentClass.getAngle()/180;
-            double changeZ = Math.Cos(tempAngle)*projVelocity, changeX = Math.Sin(tempAngle)*projVelocity;
+            for (int i = 0; i < numberOfProjectiles; i++) {
+                double tempAngle2 = tempAngle*UnityEngine.Random.Range(-angleSpread,angleSpread);
 
-            //float changeCZ = (float)(Math.Cos(tempCameriaAngle)*distance), changeCY = (float)(Math.Sin(tempCameriaAngle)*distance);
-            GameObject o = Instantiate(proj,tf.position,tf.rotation);
-            //(float)changeX,0,(float)changeZ)
-            o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,-projVelocity));
-            o.GetComponent<Projectile>().setup(0,tf.parent.gameObject.transform.parent.gameObject);
+                double changeZ = Math.Cos(tempAngle2)*projVelocity, changeX = Math.Sin(tempAngle2)*projVelocity;
+
+                //float changeCZ = (float)(Math.Cos(tempCameriaAngle)*distance), changeCY = (float)(Math.Sin(tempCameriaAngle)*distance);
+                GameObject o = Instantiate(proj,tf.position,tf.rotation);
+                //(float)changeX,0,(float)changeZ)
+                o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,-projVelocity));
+                o.GetComponent<Projectile>().setup(damageOfProjectiles,tf.parent.gameObject.transform.parent.gameObject);
+            }
         }
     }
 }
