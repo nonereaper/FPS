@@ -15,7 +15,7 @@ public class HitArea : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (secondsBeforeRemoved+Time.time >= time) {
+        if (Time.time >= secondsBeforeRemoved+time) {
             Destroy(gameObject);
         }
     }

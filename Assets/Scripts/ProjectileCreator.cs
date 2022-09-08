@@ -30,17 +30,15 @@ public class ProjectileCreator : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1")) {
             double tempAngle = Math.PI*parentClass.getAngle()/180;
-            for (int i = 0; i < numberOfProjectiles; i++) {
+         //   for (int i = 0; i < numberOfProjectiles; i++) {
                 double tempAngle2 = tempAngle*UnityEngine.Random.Range(-angleSpread,angleSpread);
 
                 double changeZ = Math.Cos(tempAngle2)*projVelocity, changeX = Math.Sin(tempAngle2)*projVelocity;
 
-                //float changeCZ = (float)(Math.Cos(tempCameriaAngle)*distance), changeCY = (float)(Math.Sin(tempCameriaAngle)*distance);
                 GameObject o = Instantiate(proj,tf.position,tf.rotation);
-                //(float)changeX,0,(float)changeZ)
                 o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,-projVelocity));
-                o.GetComponent<Projectile>().setup(damageOfProjectiles,tf.parent.gameObject.transform.parent.gameObject);
-            }
+                o.GetComponent<Projectile>().setup(damageOfProjectiles,tf.parent.gameObject.transform.parent.gameObject,10);
+          //  }
         }
     }
 }
