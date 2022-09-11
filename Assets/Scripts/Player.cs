@@ -7,13 +7,15 @@ using UnityEngine;
 /* https://www.youtube.com/watch?v=n0GQL5JgJcY&list=PLrnPJCHvNZuB5ATsJZLKX3AW4V9XaIV9b&index=1
     Video series used to write help write movement code
 */
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
     private Rigidbody rb;
+    private Transform tf;
     [SerializeField] float movementSpeed;
     [SerializeField] float sprintSpeedMult;
+    [SerializeField] float crouchSpeedMult;
     [SerializeField] float jump;
-    private bool isGrounded;
+    private bool isGrounded, isCrouching;
     private float cameriaAngle;
     private float angle;
    // [SerializeField] GameObject weaponControllerObject;
@@ -23,10 +25,12 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        tf = GetComponent<Transform>();
        // weaponController = weaponControllerObject.GetComponent<WeaponController>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
+        isCrouching = false;
     }
     public float getAngle() {
         return angle;
@@ -41,8 +45,8 @@ public class PlayerMovement : MonoBehaviour
     public float getCameriaAngle() {
         return cameriaAngle;
     }
-    public void addCameriaAngle(float ca) {
-        cameriaAngle += ca;
+    public bool getCrouching() {
+        return isCrouching;
     }
     public void setGrounded(bool b) {
         isGrounded = b;
@@ -56,10 +60,17 @@ public class PlayerMovement : MonoBehaviour
             tempAngleP -= Math.PI*2;
         }
         float tempMovementSpeed = movementSpeed;
-        if (Input.GetButton("Crotch")) {
-            tempMovementSpeed *= 0.7f;
+        if (Input.GetButton("Crouch")) {
+            tempMovementSpeed *= crouchSpeedMult;
+            isCrouching = true;
         } else if (Input.GetButton("Sprint")) {
             tempMovementSpeed *= sprintSpeedMult;
+        }
+        if (Input.GetButtonUp("Crouch")) {
+            isCrouching = false;
+            if (isGrounded) {
+                tf.position = new Vector3(tf.position.x,tf.position.y+0.4f,tf.position.z);
+            }
         }
         double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*tempMovementSpeed,
         increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*tempMovementSpeed;
