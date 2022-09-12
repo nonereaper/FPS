@@ -7,6 +7,9 @@ public class ProjectileCreator : MonoBehaviour
 {
     // actual proj object
     [SerializeField] GameObject proj;
+    // projectile Controller
+    [SerializeField] GameObject projectileController;
+
     // radius of spread of proj, using radians
     [SerializeField] float spread;
     // number of projs
@@ -55,10 +58,11 @@ public class ProjectileCreator : MonoBehaviour
                 rotationTempX += 180*Math.PI*UnityEngine.Random.Range(-spread,spread);
                 rotationTempY += 180*Math.PI*UnityEngine.Random.Range(-spread,spread);
                 Quaternion q = Quaternion.Euler((float)rotationTempX, (float)rotationTempY, tf.rotation.eulerAngles.z);
-                GameObject o = Instantiate(proj,tf.position,q);
+                GameObject o = Instantiate(proj,tf.position,q,projectileController.GetComponent<Transform>());
                 o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,-velocity));
-                o.GetComponent<Projectile>().setup(damage,tf.parent.gameObject.transform.parent.gameObject,10);
+                o.GetComponent<Projectile>().setup(damage,tf.parent.gameObject.transform.parent.gameObject,10,projectileController);
                 o.GetComponent<Transform>().localScale = new Vector3(radius,radius,radius);
+                projectileController.GetComponent<ProjectileController>().addNewProjectile(o);
             }
         }
     }

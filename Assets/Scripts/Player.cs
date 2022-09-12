@@ -18,15 +18,15 @@ public class Player : MonoBehaviour
     private bool isGrounded, isCrouching;
     private float cameriaAngle;
     private float angle;
-   // [SerializeField] GameObject weaponControllerObject;
-    //private WeaponController weaponController;
+    [SerializeField] GameObject weaponControllerObject;
+    private WeaponController weaponController;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         tf = GetComponent<Transform>();
-       // weaponController = weaponControllerObject.GetComponent<WeaponController>();
+        weaponController = weaponControllerObject.GetComponent<WeaponController>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
