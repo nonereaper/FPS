@@ -60,18 +60,21 @@ public class Player : MonoBehaviour
             tempAngleP -= Math.PI*2;
         }
         float tempMovementSpeed = movementSpeed;
-        if (Input.GetButton("Crouch")) {
-            tempMovementSpeed *= crouchSpeedMult;
+        if (Input.GetButtonDown("Crouch")) {
+            tf.position = new Vector3(tf.position.x,tf.position.y-0.4f,tf.position.z);
             isCrouching = true;
-        } else if (Input.GetButton("Sprint")) {
-            tempMovementSpeed *= sprintSpeedMult;
-        }
-        if (Input.GetButtonUp("Crouch")) {
+        } else if (Input.GetButtonUp("Crouch")) {
             isCrouching = false;
             if (isGrounded) {
                 tf.position = new Vector3(tf.position.x,tf.position.y+0.4f,tf.position.z);
             }
         }
+        if (isCrouching) {
+            tempMovementSpeed *= crouchSpeedMult;
+        } else if (Input.GetButton("Sprint")) {
+            tempMovementSpeed *= sprintSpeedMult;
+        }
+        
         double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*tempMovementSpeed,
         increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*tempMovementSpeed;
         rb.velocity = new Vector3((float)(increaseX),y,(float)(increaseZ));
