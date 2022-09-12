@@ -4,32 +4,170 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {   
-    // projectile object
     [SerializeField] GameObject proj;
-    // radius of spread of proj, using radians
+    [SerializeField] int magazine;
+    [SerializeField] int totalAmmo;
+    [SerializeField] int currentMagazine;
+    [SerializeField] int currentTotalAmmo;
+    // spread of weapon's projectile from center point by degree
     [SerializeField] float spread;
-    // number of projs
+    // number of projectiles
     [SerializeField] int number;
-    // damage of projs
     [SerializeField] int damage;
-    // seconds before shooting again
+    // seconds before each attack
     [SerializeField] float attackSpeed;
-    // time for single shot
-    [SerializeField] float singleShotAttackSpeed;
-    // force in which the projectile shoots
+    // seconds for reload
+    [SerializeField] float reloadTime;
+    // force added to projectile
     [SerializeField] float velocity;
-    // radius of projectile's size
+    // projectile radius
     [SerializeField] float radius;
-    // can change fire type 
-    [SerializeField] bool singleShot, semiAuto, auto;
-    // fire type (0 - single shot, 1 - semi auto, 2 - auto)
+    [SerializeField] bool semiAuto, auto;
+    // 0 - semiAuto, 1 - auto
     [SerializeField] int fireType;
-    // crouch's spread reduction (0.0(no spread) -> 1.0(same spread))
+    // reduced spread of weapon's projectiles (0.0 -> 1.0)
     [SerializeField] double crouchSpread;
-    // recoil after shooting a round, using degree
+    // recoil of firing weapon by degree amount upward
     [SerializeField] float recoil;
-    // how much pushed back from firing
+    // force backward from firing weapon
     [SerializeField] float backBlast;
+
+	public GameObject getProj() {
+		return this.proj;
+	}
+
+	public void setProj(GameObject proj) {
+		this.proj = proj;
+	}
+
+	public int getMagazine() {
+		return this.magazine;
+	}
+
+	public void setMagazine(int magazine) {
+		this.magazine = magazine;
+	}
+
+	public int getTotalAmmo() {
+		return this.totalAmmo;
+	}
+
+	public void setTotalAmmo(int totalAmmo) {
+		this.totalAmmo = totalAmmo;
+	}
+
+	public int getCurrentMagazine() {
+		return this.currentMagazine;
+	}
+
+	public void setCurrentMagazine(int currentMagazine) {
+		this.currentMagazine = currentMagazine;
+	}
+
+	public int getCurrentTotalAmmo() {
+		return this.currentTotalAmmo;
+	}
+
+	public void setCurrentTotalAmmo(int currentTotalAmmo) {
+		this.currentTotalAmmo = currentTotalAmmo;
+	}
+
+	public float getSpread() {
+		return this.spread;
+	}
+
+	public void setSpread(float spread) {
+		this.spread = spread;
+	}
+
+	public int getNumber() {
+		return this.number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public int getDamage() {
+		return this.damage;
+	}
+
+	public void setDamage(int damage) {
+		this.damage = damage;
+	}
+
+	public float getAttackSpeed() {
+		return this.attackSpeed;
+	}
+
+	public void setAttackSpeed(float attackSpeed) {
+		this.attackSpeed = attackSpeed;
+	}
+
+	public float getVelocity() {
+		return this.velocity;
+	}
+
+	public void setVelocity(float velocity) {
+		this.velocity = velocity;
+	}
+
+	public float getRadius() {
+		return this.radius;
+	}
+
+	public void setRadius(float radius) {
+		this.radius = radius;
+	}
+
+	public bool isSemiAuto() {
+		return this.semiAuto;
+	}
+
+	public bool isAuto() {
+		return this.auto;
+	}
+
+	public int getFireType() {
+		return this.fireType;
+	}
+
+	public void setFireType(int fireType) {
+		this.fireType = fireType;
+	}
+
+	public double getCrouchSpread() {
+		return this.crouchSpread;
+	}
+
+	public void setCrouchSpread(double crouchSpread) {
+		this.crouchSpread = crouchSpread;
+	}
+
+	public float getRecoil() {
+		return this.recoil;
+	}
+
+	public void setRecoil(float recoil) {
+		this.recoil = recoil;
+	}
+
+	public float getBackBlast() {
+		return this.backBlast;
+	}
+
+	public void setBackBlast(float backBlast) {
+		this.backBlast = backBlast;
+	}
+
+	public float getReloadTime() {
+		return this.reloadTime;
+	}
+
+	public void setReloadTime(float reloadTime) {
+		this.reloadTime = reloadTime;
+	}
+
     void Start()
     {
         

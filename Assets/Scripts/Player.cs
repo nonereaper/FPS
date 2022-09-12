@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     private float angle;
     [SerializeField] GameObject weaponControllerObject;
     private WeaponController weaponController;
+    private ProjectileCreator projectileCreator;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         tf = GetComponent<Transform>();
         weaponController = weaponControllerObject.GetComponent<WeaponController>();
+        projectileCreator = tf.GetChild(0).GetChild(0).GetComponent<ProjectileCreator>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
