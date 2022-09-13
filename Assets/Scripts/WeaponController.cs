@@ -4,21 +4,39 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {   
-    GameObject[] weaponsList;
+    List<GameObject> weaponsList;
     Transform tf;
+
     // Start is called before the first frame update
     void Start()
     {
         tf = GetComponent<Transform>();
-        weaponsList = new GameObject[tf.childCount];
+        weaponsList = new List<GameObject>();
+        for (int i = 0; i < tf.childCount; i++) {
+            weaponsList.Add(tf.GetChild(i).gameObject);
+        }
     }
-
+    public Weapon changeWeapon(Vector3 p, float rad) {
+        Weapon tempWeapon = null;
+        float distance = float.MaxValue;
+        for (int i = 0; i < weaponsList.Count; i++) {
+            float tempDistance = Vector3.Distance(weaponsList[i].GetComponent<Transform>().position,p);
+            if (tempDistance <= rad && tempDistance < distance) {
+                tempWeapon = weaponsList[i].GetComponent<Weapon>();
+                distance = tempDistance;
+            }
+        }
+        return tempWeapon;
+    }
+    public void removeWeapon(Weapon w) {
+        weaponsList.Remove(w.GetComponent<Transform>().gameObject);
+    }
+    public void addWeapon(Weapon w) {
+        weaponsList.Add(w.GetComponent<Transform>().gameObject);
+    }
     // Update is called once per frame
     void Update()
     {
         
-    }
-    public GameObject getWeapon(int index) {
-        return weaponsList[index];
     }
 }

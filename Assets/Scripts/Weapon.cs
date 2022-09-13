@@ -32,6 +32,17 @@ public class Weapon : MonoBehaviour
     // force backward from firing weapon
     [SerializeField] float backBlast;
 
+	private float reloadTimeLeft;
+
+	public float getReloadTimeLeft() {
+		return this.reloadTimeLeft;
+	}
+
+	public void setReloadTimeLeft(float reloadTimeLeft) {
+		this.reloadTimeLeft = reloadTimeLeft;
+	}
+
+
 	public GameObject getProj() {
 		return this.proj;
 	}
@@ -170,7 +181,7 @@ public class Weapon : MonoBehaviour
 
     void Start()
     {
-        
+       reloadTimeLeft = 0f; 
     }
 
     // Update is called once per frame

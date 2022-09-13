@@ -5,20 +5,17 @@ using UnityEngine;
 
 public class ProjectileCreator : MonoBehaviour
 {
-    // actual proj object
-    private GameObject proj;
     // projectile Controller
     [SerializeField] GameObject projectileController;
 
     private Weapon[] weaponSlot;
-    // 0=weaponSlot1, 1= weaponSlot2, 3 = melee
+    // -1= melee, 0=weaponSlot1, 1= weaponSlot2,
     private int currentWeaponSlot; 
 
     private float time, time2;
     private Player parentClass;
     private CameriaMovement cameriaMovement;
     private Transform tf;
-    private float reloadTimeLeft;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,42 +24,112 @@ public class ProjectileCreator : MonoBehaviour
         cameriaMovement = tf.parent.GetComponentInChildren<CameriaMovement>();
         time = UnityEngine.Time.time;
         time2 = UnityEngine.Time.time;
-        weaponSlot = new Weapon[2];
-        currentWeaponSlot = 0;
+        weaponSlot = new Weapon[9];
+        currentWeaponSlot = -1;
+    }
+    public String getWeaponInfo() {
+        String temp = "";
+        for (int i = 0; i < weaponSlot.Length; i++) {
+            temp+="Weapon Slot " +(i+1) + " is: ";
+            if (weaponSlot[i] == null) {
+            temp+= "empty.\n" ;
+            } else {
+            temp+= weaponSlot[i].GetComponent<Transform>().gameObject.name + "\n";
+            }
+        }
+        temp += "Melee Weapon is: " + "\n";
+        if (currentWeaponSlot != -1) {
+            Weapon currentWeapon = weaponSlot[currentWeaponSlot];
+            if (currentWeapon != null) {
+                temp += "Magazine: (" + currentWeapon.getCurrentMagazine() + "/" + currentWeapon.getMagazine() + ")\n";
+                temp += "Stored ammo Left: (" + currentWeapon.getCurrentTotalAmmo() + "/" + currentWeapon.getTotalAmmo() + ")";
+            }
+        }
+        return temp;
+    }
+    public void setCurrentWeaponSlot(int i) {
+        if (currentWeaponSlot != -1  && weaponSlot[currentWeaponSlot] != null)
+        weaponSlot[currentWeaponSlot].GetComponent<Transform>().gameObject.SetActive(false);
+        if (i == -1)
+            currentWeaponSlot = -1;
+        else {
+            currentWeaponSlot = i;
+            if (weaponSlot[i] != null) {
+                weaponSlot[i].GetComponent<Transform>().gameObject.SetActive(true);
+            }
+        }
+    }
+    public int getWeaponSlotLength() {
+        return weaponSlot.Length + 1;   
     }
     public void reload() {
-        if (currentWeaponSlot != 2) {
+        if (currentWeaponSlot != -1) {
             Weapon currentWeapon = weaponSlot[currentWeaponSlot];
             if (currentWeapon == null) {
                 return;
             }
-            if (reloadTimeLeft != 0f) {
+            if (currentWeapon.getReloadTimeLeft() != 0f) {
                 return;
             }
             if (currentWeapon.getCurrentTotalAmmo() == 0) {
                 return;
             }
-            int amountToAdd = currentWeapon.getCurrentTotalAmmo()%currentWeapon.getMagazine();
-            currentWeapon.setCurrentMagazine(amountToAdd);
+            int amountToAdd = currentWeapon.getMagazine()-currentWeapon.getCurrentMagazine();
+            if (currentWeapon.getCurrentTotalAmmo() < amountToAdd) {
+                amountToAdd = currentWeapon.getCurrentTotalAmmo();
+            }
+            currentWeapon.setCurrentMagazine(currentWeapon.getCurrentMagazine()+amountToAdd);
             currentWeapon.setCurrentTotalAmmo(currentWeapon.getCurrentTotalAmmo()-amountToAdd);
-            reloadTimeLeft = currentWeapon.getReloadTime();
+            currentWeapon.setReloadTimeLeft(currentWeapon.getReloadTime());
         }
     }
+    public int indexToSwapWith(Weapon w) {
+        if (currentWeaponSlot != -1 && weaponSlot[currentWeaponSlot] == null)
+        return currentWeaponSlot;
+        for (int i = 0; i < weaponSlot.Length; i++) {
+            if (weaponSlot[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    public int getCurrentWeaponSlot() {
+        return currentWeaponSlot;
+    }
+    public Weapon swapWeapon(int index, Weapon w) {
+        if (index != -1) {
+            weaponSlot[index] = w;
+            return null;
+        } else {
+            Weapon temp = weaponSlot[currentWeaponSlot];
+            weaponSlot[currentWeaponSlot] = w;
+            return temp;
+        }
+    }
+    public Weapon removeCurrentWeapon() {
+        if (currentWeaponSlot != -1) {
+            Weapon temp = weaponSlot[currentWeaponSlot];
+            weaponSlot[currentWeaponSlot] = null;
+            return temp;
+        }
+        return null;
+    }
     public void useWeapon(bool buttonDown) {
-        if (currentWeaponSlot == 2) {
+        if (currentWeaponSlot == -1) {
 
         } else { // do weapon
             Weapon currentWeapon = weaponSlot[currentWeaponSlot];
             if (currentWeapon == null) { // no weapon: stop
                 return;
             }
+            if (currentWeapon.getReloadTimeLeft() != 0f) { // in the middle of reload
+                return;
+            }
             if (UnityEngine.Time.time < time+currentWeapon.getAttackSpeed()) { // cannot attack let: stop
                 return;
             }
             if (currentWeapon.getCurrentMagazine() == 0) { // no ammo to shoot
-                return;
-            }
-            if (reloadTimeLeft != 0f) { // in the middle of reload
+                reload();
                 return;
             }
             bool canFire = false;
@@ -77,30 +144,33 @@ public class ProjectileCreator : MonoBehaviour
                     crouchSpreadReduction = currentWeapon.getCrouchSpread();
                 }
                 cameriaMovement.updateCameria(currentWeapon.getRecoil());
-                float spread = currentWeapon.getSpread()/180;
+                float spread = (float)(currentWeapon.getSpread()*crouchSpreadReduction);
                 for (int i = 0; i < currentWeapon.getNumber(); i++) {
                     float rotationTempX = tf.rotation.eulerAngles.x + UnityEngine.Random.Range(-spread,spread),
                     rotationTempY = tf.rotation.eulerAngles.y + UnityEngine.Random.Range(-spread,spread);
-                    
                     Quaternion q = Quaternion.Euler(rotationTempX, rotationTempY, tf.rotation.eulerAngles.z);
-                    GameObject o = Instantiate(proj,tf.position,q,projectileController.GetComponent<Transform>());
-                    o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,-currentWeapon.getVelocity()));
+                    GameObject o = Instantiate(currentWeapon.getProj(),tf.position,q,projectileController.GetComponent<Transform>());
+                    o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,currentWeapon.getVelocity()));
                     o.GetComponent<Projectile>().setup(currentWeapon.getDamage(),tf.parent.gameObject.transform.parent.gameObject,10,projectileController);
                     o.GetComponent<Transform>().localScale = new Vector3(currentWeapon.getRadius(),currentWeapon.getRadius(),currentWeapon.getRadius());
                     projectileController.GetComponent<ProjectileController>().addNewProjectile(o);
                 }
+                parentClass.movePlayer(-currentWeapon.getBackBlast());
             }
         }
     }
     // Update is called once per frame
     void Update()
     {
-        if (reloadTimeLeft != 0f) {
-            reloadTimeLeft -= (UnityEngine.Time.time-time2);
-            time2 = UnityEngine.Time.time;
-            if (reloadTimeLeft < 0f){
-                reloadTimeLeft =0f;
+        if (currentWeaponSlot != -1) {
+            Weapon currentWeapon = weaponSlot[currentWeaponSlot];
+            if (currentWeapon != null &&  currentWeapon.getReloadTimeLeft() != 0f) {
+                currentWeapon.setReloadTimeLeft(currentWeapon.getReloadTimeLeft()-(UnityEngine.Time.time-time2));
+                if (currentWeapon.getReloadTimeLeft() < 0f){
+                    currentWeapon.setReloadTimeLeft(0f);
+                }
             }
         }
+        time2 = UnityEngine.Time.time;
     }
 }

@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject weaponControllerObject;
     private WeaponController weaponController;
     private ProjectileCreator projectileCreator;
+    private Transform useTf;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
         tf = GetComponent<Transform>();
         weaponController = weaponControllerObject.GetComponent<WeaponController>();
         projectileCreator = tf.GetChild(0).GetChild(0).GetComponent<ProjectileCreator>();
+        useTf = tf.GetChild(0).GetChild(1).GetComponent<Transform>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
@@ -53,6 +55,44 @@ public class Player : MonoBehaviour
     public void setGrounded(bool b) {
         isGrounded = b;
     }
+    public String getAllWeaponText() {
+        return projectileCreator.getWeaponInfo();
+    }
+    private void changeWeapon(Weapon w) {
+        int index = projectileCreator.indexToSwapWith(w);
+        if (projectileCreator.getCurerntWeaponSlot()!=-1 || index != -1) {  
+            Weapon tempWeapon2 = projectileCreator.swapWeapon(index, w);
+            if (tempWeapon2 != null) {
+                removeWeapon(tempWeapon2);
+            }
+            Transform tempTransform = w.GetComponent<Transform>();
+            tempTransform.SetParent(tf.GetChild(5));
+            tempTransform.localPosition = new Vector3(-0.27f,0.22f,0.47f);
+            tempTransform.localRotation = Quaternion.Euler(0f,0f,0f);
+            w.GetComponent<Rigidbody>().isKinematic = true;
+            weaponController.removeWeapon(w);
+            if (index != -1 && projectileCreator.getCurrentWeaponSlot() != index) {
+                tempTransform.gameObject.SetActive(false);
+            }
+        }
+    }
+    private void removeWeapon(Weapon w) {
+        Transform tempTransform = w.GetComponent<Transform>();
+        tempTransform.SetParent(weaponControllerObject.GetComponent<Transform>());
+        tempTransform.position = useTf.position;
+        tempTransform.localRotation = useTf.rotation;
+        Rigidbody tempRigidbody = w.GetComponent<Rigidbody>();
+        tempRigidbody.GetComponent<Rigidbody>().isKinematic = false;
+        tempRigidbody.AddRelativeForce(new Vector3(0,0,500f));
+        weaponController.addWeapon(w);
+    }
+    public void movePlayer(float z) {
+        double tempAngle = Math.PI*angle/180;
+        double increaseZ = Math.Cos(tempAngle)*z,
+        increaseX = Math.Sin(tempAngle)*z;
+        Debug.Log(increaseX + " " + increaseZ);
+        rb.velocity = new Vector3((float)(increaseX)+rb.velocity.x,rb.velocity.y,(float)(increaseZ)+rb.velocity.z);
+    }
     // Update is called once per frame
     void Update()
     {
@@ -76,7 +116,27 @@ public class Player : MonoBehaviour
         } else if (Input.GetButton("Sprint")) {
             tempMovementSpeed *= sprintSpeedMult;
         }
-        
+        bool canFire = Input.GetButton("Fire1") || Input.GetButtonDown("Fire1");
+        if (canFire) {
+            projectileCreator.useWeapon(Input.GetButtonDown("Fire1"));
+        }
+        if (Input.GetButtonDown("Use")) {
+            Weapon tempWeapon = weaponController.changeWeapon(useTf.position, 2.5f);
+            if (tempWeapon != null) {
+                changeWeapon(tempWeapon);
+            }
+        }
+        if (Input.GetButtonDown("Fire2")) {
+            removeWeapon(projectileCreator.removeCurrentWeapon());
+        }
+        if (Input.GetButtonDown("Reload")) {
+            projectileCreator.reload();
+        }
+        for (int i = 0; i < projectileCreator.getWeaponSlotLength(); i++) {
+            if (Input.GetKeyDown(""+i)) {
+                projectileCreator.setCurrentWeaponSlot(i-1);
+            }
+        }
         double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*tempMovementSpeed,
         increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*tempMovementSpeed;
         rb.velocity = new Vector3((float)(increaseX),y,(float)(increaseZ));
