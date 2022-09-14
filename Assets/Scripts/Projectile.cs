@@ -36,7 +36,7 @@ public class Projectile : MonoBehaviour
             //Debug.DrawRay(point.point, point.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
             Quaternion rotation = Quaternion.FromToRotation(Vector3.up, point.normal);
             Vector3 position = point.point;
-            controller.addDecay(Instantiate(hitPoint, position, rotation,controller.getDecayTransformation()));
+            controller.addDecay(Instantiate(hitPoint, position, rotation,collision.gameObject.GetComponent<Transform>()));
             Destroy(gameObject);
         }
     } 

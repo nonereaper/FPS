@@ -145,7 +145,11 @@ public class Player : MonoBehaviour
                     changeWeapon(tempObject);
                 } else if (typeOfHighlight == 1) {
                     holdingObstacle = tempObject;
-                    holdingObstacle.GetComponent<Rigidbody>().isKinematic = true;
+                    holdingObstacle.GetComponent<Rigidbody>().useGravity = false;
+                    Collider[] cs = GetComponentsInChildren<Collider>();
+                    for (int i = 0; i < cs.Length; i++) {
+                        Physics.IgnoreCollision(cs[i],holdingObstacle.GetComponent<Collider>());
+                    }
                 }
             }
         }
@@ -153,7 +157,11 @@ public class Player : MonoBehaviour
             if (holdingObstacle == null)
             removeWeapon(projectileCreator.removeCurrentWeapon());
             else {
-                holdingObstacle.GetComponent<Rigidbody>().isKinematic = false;
+                holdingObstacle.GetComponent<Rigidbody>().useGravity = true;
+                Collider[] cs = GetComponentsInChildren<Collider>();
+                for (int i = 0; i < cs.Length; i++) {
+                    Physics.IgnoreCollision(cs[i],holdingObstacle.GetComponent<Collider>(),false);
+                }
                 holdingObstacle = null;
             }
         }
