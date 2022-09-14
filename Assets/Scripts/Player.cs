@@ -15,26 +15,28 @@ public class Player : MonoBehaviour
     [SerializeField] float sprintSpeedMult;
     [SerializeField] float crouchSpeedMult;
     [SerializeField] float jump;
-    private bool isGrounded, isCrouching;
+    private bool isGrounded, isCrouching, isHoldingObstacle;
     private float cameriaAngle;
     private float angle;
-    [SerializeField] GameObject weaponControllerObject;
-    private WeaponController weaponController;
+    [SerializeField] GameObject controllerObject;
+    private Controller controller;
     private ProjectileCreator projectileCreator;
     private Transform useTf;
-
+    private String highlightedUse;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         tf = GetComponent<Transform>();
-        weaponController = weaponControllerObject.GetComponent<WeaponController>();
+        controller = controllerObject.GetComponent<Controller>();
+
         projectileCreator = tf.GetChild(0).GetChild(0).GetComponent<ProjectileCreator>();
         useTf = tf.GetChild(0).GetChild(1).GetComponent<Transform>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
         isCrouching = false;
+        isHoldingObstacle = false;
     }
     public float getAngle() {
         return angle;
@@ -42,6 +44,7 @@ public class Player : MonoBehaviour
     public void rotatePlayer(float an) {        
         rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0,an,0)));
         angle = rb.rotation.eulerAngles.y-360.0f;
+        rb.rotation = Quaternion.Euler(0,rb.rotation.eulerAngles.y,0);
     }
     public void setCameriaAngle(float ca) {
         cameriaAngle = ca;
@@ -58,10 +61,14 @@ public class Player : MonoBehaviour
     public String getAllWeaponText() {
         return projectileCreator.getWeaponInfo();
     }
-    private void changeWeapon(Weapon w) {
-        int index = projectileCreator.indexToSwapWith(w);
-        if (projectileCreator.getCurerntWeaponSlot()!=-1 || index != -1) {  
-            Weapon tempWeapon2 = projectileCreator.swapWeapon(index, w);
+    public String getHighlightedUse() {
+        return highlightedUse;
+    }
+    private void changeWeapon(GameObject w) {
+        Weapon tempWeapon = w.GetComponent<Weapon>();
+        int index = projectileCreator.indexToSwapWith(tempWeapon);
+        if (projectileCreator.getCurrentWeaponSlot()!=-1 || index != -1) {  
+            Weapon tempWeapon2 = projectileCreator.swapWeapon(index, tempWeapon);
             if (tempWeapon2 != null) {
                 removeWeapon(tempWeapon2);
             }
@@ -70,7 +77,7 @@ public class Player : MonoBehaviour
             tempTransform.localPosition = new Vector3(-0.27f,0.22f,0.47f);
             tempTransform.localRotation = Quaternion.Euler(0f,0f,0f);
             w.GetComponent<Rigidbody>().isKinematic = true;
-            weaponController.removeWeapon(w);
+            controller.removeWeapon(w);
             if (index != -1 && projectileCreator.getCurrentWeaponSlot() != index) {
                 tempTransform.gameObject.SetActive(false);
             }
@@ -78,20 +85,16 @@ public class Player : MonoBehaviour
     }
     private void removeWeapon(Weapon w) {
         Transform tempTransform = w.GetComponent<Transform>();
-        tempTransform.SetParent(weaponControllerObject.GetComponent<Transform>());
+        tempTransform.SetParent(controller.GetComponent<Transform>());
         tempTransform.position = useTf.position;
         tempTransform.localRotation = useTf.rotation;
         Rigidbody tempRigidbody = w.GetComponent<Rigidbody>();
         tempRigidbody.GetComponent<Rigidbody>().isKinematic = false;
         tempRigidbody.AddRelativeForce(new Vector3(0,0,500f));
-        weaponController.addWeapon(w);
+        controller.addWeapon(tempTransform.gameObject);
     }
-    public void movePlayer(float z) {
-        double tempAngle = Math.PI*angle/180;
-        double increaseZ = Math.Cos(tempAngle)*z,
-        increaseX = Math.Sin(tempAngle)*z;
-        Debug.Log(increaseX + " " + increaseZ);
-        rb.velocity = new Vector3((float)(increaseX)+rb.velocity.x,rb.velocity.y,(float)(increaseZ)+rb.velocity.z);
+    public void movePlayer(float x, float y, float z) {
+        rb.AddRelativeForce(x,y,z);
     }
     // Update is called once per frame
     void Update()
@@ -120,14 +123,37 @@ public class Player : MonoBehaviour
         if (canFire) {
             projectileCreator.useWeapon(Input.GetButtonDown("Fire1"));
         }
-        if (Input.GetButtonDown("Use")) {
-            Weapon tempWeapon = weaponController.changeWeapon(useTf.position, 2.5f);
-            if (tempWeapon != null) {
-                changeWeapon(tempWeapon);
+        // use highlight code
+        
+        if (!isHoldingObstacle) {
+            float radiusOfUseTool = 2.5f;
+            GameObject tempObject = controller.getClosestObject(useTf.position, radiusOfUseTool);
+            float closestDistance = controller.getSavedDistance();
+            int typeOfHighlight = controller.getSavedtype();
+            //Debug.Log(typeOfHighlight);
+
+            if (typeOfHighlight == 0) {
+                highlightedUse = "Press E to swap weapons with " + tempObject.name;
+            } else if (typeOfHighlight == 1) {
+                highlightedUse = "Press E to move " + tempObject.name;
+            } else {
+                highlightedUse = "";
+            }
+
+            if (Input.GetButtonDown("Use")) {
+                if (typeOfHighlight == 0) {
+                    changeWeapon(tempObject);
+                } else if (typeOfHighlight == 1) {
+                    isHoldingObstacle = true;
+                }
             }
         }
-        if (Input.GetButtonDown("Fire2")) {
+        if (Input.GetButtonDown("Drop")) {
+            if (!isHoldingObstacle)
             removeWeapon(projectileCreator.removeCurrentWeapon());
+            else {
+                isHoldingObstacle = false;  
+            }
         }
         if (Input.GetButtonDown("Reload")) {
             projectileCreator.reload();

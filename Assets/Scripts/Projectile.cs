@@ -5,7 +5,8 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] GameObject hitPoint;
-    private GameObject projectileController;
+    private GameObject controllerObject;
+    private Controller controller;
     private int damage;
     private GameObject parent;
     private float timeToDespawn, timeSpawned;
@@ -14,7 +15,8 @@ public class Projectile : MonoBehaviour
         damage = d;
         parent = p;
         timeToDespawn = ttD;
-        projectileController = pc;
+        controllerObject = pc;
+        controller = controllerObject.GetComponent<Controller>();
         timeSpawned = UnityEngine.Time.time;
         Collider[] cs = parent.GetComponentsInChildren<Collider>();
         for (int i = 0; i < cs.Length; i++) {
@@ -27,14 +29,14 @@ public class Projectile : MonoBehaviour
     {
         
     }
-    // https://learn.unity.com/tutorial/using-c-to-launch-projectiles
+    // https://docs.unity3d.com/ScriptReference/Collider.OnCollisionEnter.html
     void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.tag == "Structure") {
             ContactPoint point = collision.contacts[0];
             //Debug.DrawRay(point.point, point.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
             Quaternion rotation = Quaternion.FromToRotation(Vector3.up, point.normal);
             Vector3 position = point.point;
-            projectileController.GetComponent<ProjectileController>().addNewDecay(Instantiate(hitPoint, position, rotation,projectileController.GetComponent<Transform>()));
+            controller.addDecay(Instantiate(hitPoint, position, rotation,controller.getDecayTransformation()));
             Destroy(gameObject);
         }
     } 

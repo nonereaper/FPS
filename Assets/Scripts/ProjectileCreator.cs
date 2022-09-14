@@ -6,7 +6,8 @@ using UnityEngine;
 public class ProjectileCreator : MonoBehaviour
 {
     // projectile Controller
-    [SerializeField] GameObject projectileController;
+    [SerializeField] GameObject controllerObject;
+    private Controller controller;
 
     private Weapon[] weaponSlot;
     // -1= melee, 0=weaponSlot1, 1= weaponSlot2,
@@ -20,6 +21,7 @@ public class ProjectileCreator : MonoBehaviour
     void Start()
     {
         tf = GetComponent<Transform>();
+        controller = controllerObject.GetComponent<Controller>();
         parentClass = GetComponentInParent<Player>();
         cameriaMovement = tf.parent.GetComponentInChildren<CameriaMovement>();
         time = UnityEngine.Time.time;
@@ -149,13 +151,15 @@ public class ProjectileCreator : MonoBehaviour
                     float rotationTempX = tf.rotation.eulerAngles.x + UnityEngine.Random.Range(-spread,spread),
                     rotationTempY = tf.rotation.eulerAngles.y + UnityEngine.Random.Range(-spread,spread);
                     Quaternion q = Quaternion.Euler(rotationTempX, rotationTempY, tf.rotation.eulerAngles.z);
-                    GameObject o = Instantiate(currentWeapon.getProj(),tf.position,q,projectileController.GetComponent<Transform>());
+                    GameObject o = Instantiate(currentWeapon.getProj(),tf.position,q,controller.getWeaponTransformation());
                     o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,currentWeapon.getVelocity()));
-                    o.GetComponent<Projectile>().setup(currentWeapon.getDamage(),tf.parent.gameObject.transform.parent.gameObject,10,projectileController);
+                    o.GetComponent<Projectile>().setup(currentWeapon.getDamage(),tf.parent.gameObject.transform.parent.gameObject,10,controllerObject);
                     o.GetComponent<Transform>().localScale = new Vector3(currentWeapon.getRadius(),currentWeapon.getRadius(),currentWeapon.getRadius());
-                    projectileController.GetComponent<ProjectileController>().addNewProjectile(o);
+                    controller.addProjectile(o);
                 }
-                parentClass.movePlayer(-currentWeapon.getBackBlast());
+                double angleOfCamera = parentClass.getCameriaAngle()/180*Math.PI;
+                double increaseY = Math.Sin(angleOfCamera)*currentWeapon.getBackBlast(), increaseZ = Math.Cos(angleOfCamera)*currentWeapon.getBackBlast();
+                parentClass.movePlayer(0,(float)increaseY,-(float)increaseZ);
             }
         }
     }

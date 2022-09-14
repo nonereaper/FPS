@@ -6,6 +6,15 @@ public class WeaponController : MonoBehaviour
 {   
     List<GameObject> weaponsList;
     Transform tf;
+    private float savedDistance;
+
+	public float getSavedDistance() {
+		return this.savedDistance;
+	}
+
+	public void setSavedDistance(float savedDistance) {
+		this.savedDistance = savedDistance;
+	}
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +35,7 @@ public class WeaponController : MonoBehaviour
                 distance = tempDistance;
             }
         }
+        savedDistance = distance;
         return tempWeapon;
     }
     public void removeWeapon(Weapon w) {
