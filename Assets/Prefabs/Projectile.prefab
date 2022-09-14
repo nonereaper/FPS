@@ -128,3 +128,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitPoint: {fileID: 9139887449773798935, guid: bcd789d840d0906418bf5b393a7fe282, type: 3}
+  projectileController: {fileID: 8512961155252580645, guid: 693533ffaebc2ce4096bff0729a61e7b, type: 3}
