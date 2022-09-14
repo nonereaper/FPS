@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField] float sprintSpeedMult;
     [SerializeField] float crouchSpeedMult;
     [SerializeField] float jump;
-    private bool isGrounded, isCrouching, isHoldingObstacle;
+    private bool isGrounded, isCrouching;
     private float cameriaAngle;
     private float angle;
     [SerializeField] GameObject controllerObject;
@@ -23,20 +23,20 @@ public class Player : MonoBehaviour
     private ProjectileCreator projectileCreator;
     private Transform useTf;
     private String highlightedUse;
+    private GameObject holdingObstacle;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         tf = GetComponent<Transform>();
         controller = controllerObject.GetComponent<Controller>();
-
         projectileCreator = tf.GetChild(0).GetChild(0).GetComponent<ProjectileCreator>();
         useTf = tf.GetChild(0).GetChild(1).GetComponent<Transform>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
         isCrouching = false;
-        isHoldingObstacle = false;
+        holdingObstacle = null;
     }
     public float getAngle() {
         return angle;
@@ -125,7 +125,7 @@ public class Player : MonoBehaviour
         }
         // use highlight code
         
-        if (!isHoldingObstacle) {
+        if (holdingObstacle == null) {
             float radiusOfUseTool = 2.5f;
             GameObject tempObject = controller.getClosestObject(useTf.position, radiusOfUseTool);
             float closestDistance = controller.getSavedDistance();
@@ -144,15 +144,17 @@ public class Player : MonoBehaviour
                 if (typeOfHighlight == 0) {
                     changeWeapon(tempObject);
                 } else if (typeOfHighlight == 1) {
-                    isHoldingObstacle = true;
+                    holdingObstacle = tempObject;
+                    holdingObstacle.GetComponent<Rigidbody>().isKinematic = true;
                 }
             }
         }
         if (Input.GetButtonDown("Drop")) {
-            if (!isHoldingObstacle)
+            if (holdingObstacle == null)
             removeWeapon(projectileCreator.removeCurrentWeapon());
             else {
-                isHoldingObstacle = false;  
+                holdingObstacle.GetComponent<Rigidbody>().isKinematic = false;
+                holdingObstacle = null;
             }
         }
         if (Input.GetButtonDown("Reload")) {
@@ -162,6 +164,13 @@ public class Player : MonoBehaviour
             if (Input.GetKeyDown(""+i)) {
                 projectileCreator.setCurrentWeaponSlot(i-1);
             }
+        }
+        if (holdingObstacle != null) {
+            Rigidbody tempRb = holdingObstacle.GetComponent<Rigidbody>();
+            Transform tempTf = holdingObstacle.GetComponent<Transform>();
+            Vector3 tempV = useTf.position - tempTf.position;
+            tempV /= 10;
+            tempRb.MovePosition(tempTf.position + tempV);
         }
         double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*tempMovementSpeed,
         increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*tempMovementSpeed;
