@@ -151,7 +151,7 @@ public class ProjectileCreator : MonoBehaviour
                     float rotationTempX = tf.rotation.eulerAngles.x + UnityEngine.Random.Range(-spread,spread),
                     rotationTempY = tf.rotation.eulerAngles.y + UnityEngine.Random.Range(-spread,spread);
                     Quaternion q = Quaternion.Euler(rotationTempX, rotationTempY, tf.rotation.eulerAngles.z);
-                    GameObject o = Instantiate(currentWeapon.getProj(),tf.position,q,controller.getWeaponTransformation());
+                    GameObject o = Instantiate(currentWeapon.getProj(),tf.position,q,controller.getProjectileTransformation());
                     o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,currentWeapon.getVelocity()));
                     o.GetComponent<Projectile>().setup(currentWeapon.getDamage(),tf.parent.gameObject.transform.parent.gameObject,10,controllerObject);
                     o.GetComponent<Transform>().localScale = new Vector3(currentWeapon.getRadius(),currentWeapon.getRadius(),currentWeapon.getRadius());

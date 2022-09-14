@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
         tf = GetComponent<Transform>();
         controller = controllerObject.GetComponent<Controller>();
         projectileCreator = tf.GetChild(0).GetChild(0).GetComponent<ProjectileCreator>();
-        useTf = tf.GetChild(0).GetChild(1).GetComponent<Transform>();
+        useTf = tf.GetChild(0).GetChild(0).GetChild(0).GetComponent<Transform>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
         controller.addWeapon(tempTransform.gameObject);
     }
     public void movePlayer(float x, float y, float z) {
-        rb.AddRelativeForce(x,y,z);
+        rb.AddForce(new Vector3(x,y,z));
     }
     // Update is called once per frame
     void Update()
@@ -150,6 +150,7 @@ public class Player : MonoBehaviour
                     for (int i = 0; i < cs.Length; i++) {
                         Physics.IgnoreCollision(cs[i],holdingObstacle.GetComponent<Collider>());
                     }
+                    highlightedUse = "";
                 }
             }
         }
