@@ -154,9 +154,12 @@ public class Player : MonoBehaviour
             }
         }
         if (Input.GetButtonDown("Drop")) {
-            if (holdingObstacle == null)
-            removeWeapon(projectileCreator.removeCurrentWeapon());
-            else {
+            if (holdingObstacle == null) {
+            Weapon droppingWeapon = projectileCreator.removeCurrentWeapon();
+            if (droppingWeapon != null) {
+                removeWeapon(droppingWeapon);
+            }
+            } else {
                 holdingObstacle.GetComponent<Rigidbody>().useGravity = true;
                 Collider[] cs = GetComponentsInChildren<Collider>();
                 for (int i = 0; i < cs.Length; i++) {
