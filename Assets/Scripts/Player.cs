@@ -64,6 +64,7 @@ public class Player : MonoBehaviour
     public String getHighlightedUse() {
         return highlightedUse;
     }
+    
     private void changeWeapon(GameObject w) {
         Weapon tempWeapon = w.GetComponent<Weapon>();
         int index = projectileCreator.indexToSwapWith(tempWeapon);
@@ -96,10 +97,7 @@ public class Player : MonoBehaviour
     public void movePlayer(float x, float y, float z) {
         rb.AddForce(new Vector3(x,y,z),ForceMode.VelocityChange);
     }
-    // Update is called once per frame
-    void Update()
-    {
-        float x = rb.velocity.x, y = rb.velocity.y, z = rb.velocity.z;
+    void FixedUpdate() {
         double tempAngle = Math.PI*angle/180, tempAngleP = tempAngle+(Math.PI/2);
         if (tempAngleP > Math.PI) {
             tempAngleP -= Math.PI*2;
@@ -119,10 +117,32 @@ public class Player : MonoBehaviour
         } else if (Input.GetButton("Sprint")) {
             tempMovementSpeed *= sprintSpeedMult;
         }
+        if (holdingObstacle != null) {
+            Rigidbody tempRb = holdingObstacle.GetComponent<Rigidbody>();
+            Transform tempTf = holdingObstacle.GetComponent<Transform>();
+            if (!tempRb.isKinematic) {
+                Vector3 tempV = useTf.position - tempTf.position;
+                tempV /= 10;
+                tempRb.MovePosition(tempTf.position + tempV);
+            }
+        }
+        double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*tempMovementSpeed,
+        increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*tempMovementSpeed;
+        rb.AddForce(new Vector3((float)(increaseX),rb.velocity.y,(float)(increaseZ)) - rb.velocity, ForceMode.VelocityChange);
+
+        if (Input.GetButtonDown("Jump") && isGrounded) {
+            //rb.velocity = new Vector3(x,jump,z);
+            rb.AddForce(new Vector3(0,jump,0),ForceMode.VelocityChange);
+        }
+    }
+    // Update is called once per frame
+    void Update()
+    {
         bool canFire = Input.GetButton("Fire1") || Input.GetButtonDown("Fire1");
         if (canFire) {
             projectileCreator.useWeapon(Input.GetButtonDown("Fire1"));
         }
+        
         // use highlight code
         
         if (holdingObstacle == null) {
@@ -169,6 +189,11 @@ public class Player : MonoBehaviour
                 holdingObstacle = null;
             }
         }
+        if (Input.GetButtonDown("Fire2")) {
+            if (holdingObstacle != null) {
+                holdingObstacle.GetComponent<Rigidbody>().isKinematic = !holdingObstacle.GetComponent<Rigidbody>().isKinematic;
+            }
+        }
         if (Input.GetButtonDown("Reload")) {
             projectileCreator.reload();
         }
@@ -177,26 +202,7 @@ public class Player : MonoBehaviour
                 projectileCreator.setCurrentWeaponSlot(i-1);
             }
         }
-        if (holdingObstacle != null) {
-            Rigidbody tempRb = holdingObstacle.GetComponent<Rigidbody>();
-            Transform tempTf = holdingObstacle.GetComponent<Transform>();
-            Vector3 tempV = useTf.position - tempTf.position;
-            tempV /= 10;
-            tempRb.MovePosition(tempTf.position + tempV);
-        }
-        double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*tempMovementSpeed,
-        increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*tempMovementSpeed;
-        rb.AddForce(new Vector3((float)(increaseX),y,(float)(increaseZ)) - rb.velocity, ForceMode.VelocityChange);
-
-      //  if (Math.Abs(rb.velocity.x) <= 5)
-       // rb.AddForce(Input.GetAxis("Horizontal") * movementSpeed,0,0,ForceMode.VelocityChange);
-       
-       
-       //rotatePlayer(Input.GetAxis("Horizontal")*Time.deltaTime);
         
-        if (Input.GetButtonDown("Jump") && isGrounded) {
-            //rb.velocity = new Vector3(x,jump,z);
-            rb.velocity = new Vector3(x,jump,z);
-        }
+        
     }
 }

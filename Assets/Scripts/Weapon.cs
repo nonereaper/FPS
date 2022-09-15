@@ -32,6 +32,8 @@ public class Weapon : MonoBehaviour
     // force backward from firing weapon
     [SerializeField] float backBlast;
 
+	// 0.3,0,0.5,
+	// 0, 40, 0
 	private float reloadTimeLeft;
 
 	public float getReloadTimeLeft() {

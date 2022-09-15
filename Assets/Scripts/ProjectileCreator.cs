@@ -98,6 +98,13 @@ public class ProjectileCreator : MonoBehaviour
     public int getCurrentWeaponSlot() {
         return currentWeaponSlot;
     }
+    public Weapon getCurrentWeapon() {
+        if (currentWeaponSlot == -1) {
+            return null;
+        } else {
+            return weaponSlot[currentWeaponSlot];
+        }
+    }
     public Weapon swapWeapon(int index, Weapon w) {
         if (index != -1) {
             weaponSlot[index] = w;
