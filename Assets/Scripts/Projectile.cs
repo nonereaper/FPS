@@ -36,15 +36,10 @@ public class Projectile : MonoBehaviour
             //Debug.DrawRay(point.point, point.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
             Quaternion rotation = Quaternion.FromToRotation(Vector3.up, point.normal);
             Vector3 position = point.point;
-            Transform parentTransform = collision.gameObject.GetComponent<Transform>();
-            Transform childTransform = hitPoint.GetComponent<Transform>();
-            GameObject o = Instantiate(hitPoint, position, rotation,parentTransform);
-            // 10
-            double x = (double)childTransform.localScale.x / parentTransform.localScale.x,
-            y = (double)childTransform.localScale.y / parentTransform.localScale.y,
-            z = (double)childTransform.localScale.z / parentTransform.localScale.z;
-            o.GetComponent<Transform>().localScale = new Vector3((float)x,(float)y,(float)z);
+            GameObject o = Instantiate(hitPoint, position, rotation,controller.getDecayTransformation());
             controller.addDecay(o);
+            Destroy(gameObject);
+        } else if (collision.gameObject.tag == "Obstacle") {
             Destroy(gameObject);
         }
     } 

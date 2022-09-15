@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
         controller.addWeapon(tempTransform.gameObject);
     }
     public void movePlayer(float x, float y, float z) {
-        rb.AddForce(new Vector3(x,y,z));
+        rb.AddForce(new Vector3(x,y,z),ForceMode.VelocityChange);
     }
     // Update is called once per frame
     void Update()
@@ -186,7 +186,7 @@ public class Player : MonoBehaviour
         }
         double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*tempMovementSpeed,
         increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*tempMovementSpeed;
-        rb.velocity = new Vector3((float)(increaseX),y,(float)(increaseZ));
+        rb.AddForce(new Vector3((float)(increaseX),y,(float)(increaseZ)) - rb.velocity, ForceMode.VelocityChange);
 
       //  if (Math.Abs(rb.velocity.x) <= 5)
        // rb.AddForce(Input.GetAxis("Horizontal") * movementSpeed,0,0,ForceMode.VelocityChange);

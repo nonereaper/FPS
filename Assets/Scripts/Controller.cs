@@ -80,6 +80,9 @@ public class Controller : MonoBehaviour
     public Transform getProjectileTransformation() {
         return tf.GetChild(0);
     }
+    public Transform getDecayTransformation() {
+        return tf.GetChild(3);
+    }
     // add proj and decay
     public void addProjectile(GameObject go) {
         projectiles.Add(go);
