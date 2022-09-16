@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     private Controller controller;
     private ProjectileCreator projectileCreator;
     private Transform useTf;
+    private Transform movementHitboxTf;
     private String highlightedUse;
     private GameObject holdingObstacle;
     // Start is called before the first frame update
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
         controller = controllerObject.GetComponent<Controller>();
         projectileCreator = tf.GetChild(0).GetChild(0).GetComponent<ProjectileCreator>();
         useTf = tf.GetChild(0).GetChild(0).GetChild(0).GetComponent<Transform>();
+        movementHitboxTf = tf.GetChild(7);
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
@@ -105,9 +107,13 @@ public class Player : MonoBehaviour
         float tempMovementSpeed = movementSpeed;
         if (Input.GetButtonDown("Crouch")) {
             tf.position = new Vector3(tf.position.x,tf.position.y-0.4f,tf.position.z);
+            movementHitboxTf.localPosition = new Vector3(0,0.05f,0);
+            movementHitboxTf.localScale = new Vector3(1.5f,1.15f,1.5f);
             isCrouching = true;
         } else if (Input.GetButtonUp("Crouch")) {
             isCrouching = false;
+            movementHitboxTf.localPosition = new Vector3(0,-0.145f,0);
+            movementHitboxTf.localScale = new Vector3(1.5f,1.335f,1.5f);
             if (isGrounded) {
                 tf.position = new Vector3(tf.position.x,tf.position.y+0.4f,tf.position.z);
             }
