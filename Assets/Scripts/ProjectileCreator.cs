@@ -29,6 +29,9 @@ public class ProjectileCreator : MonoBehaviour
         weaponSlot = new Weapon[9];
         currentWeaponSlot = -1;
     }
+    public void moveTo(float z) {
+        tf.localPosition = new Vector3(tf.localPosition.x,tf.localPosition.y,z);
+    }
     public String getWeaponInfo() {
         String temp = "";
         for (int i = 0; i < weaponSlot.Length; i++) {
@@ -167,6 +170,7 @@ public class ProjectileCreator : MonoBehaviour
                 double angleOfCamera = parentClass.getCameriaAngle()/180*Math.PI;
                 double increaseY = Math.Sin(angleOfCamera)*currentWeapon.getBackBlast(), increaseZ = Math.Cos(angleOfCamera)*currentWeapon.getBackBlast();
                 parentClass.movePlayer(0,(float)increaseY,-(float)increaseZ);
+                Instantiate(currentWeapon.getFireExplosion(),currentWeapon.getMussle().GetComponent<Transform>().position,currentWeapon.getMussle().GetComponent<Transform>().rotation,controller.getDecayTransformation());
             }
         }
     }

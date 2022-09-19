@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
         tf = GetComponent<Transform>();
         controller = controllerObject.GetComponent<Controller>();
         projectileCreator = tf.GetChild(0).GetChild(0).GetComponent<ProjectileCreator>();
-        useTf = tf.GetChild(0).GetChild(0).GetChild(0).GetComponent<Transform>();
+        useTf = tf.GetChild(0).GetChild(1).GetComponent<Transform>();
         movementHitboxTf = tf.GetChild(7);
         weaponLocationTf =tf.GetChild(5).GetChild(1).GetComponent<Transform>();
         angle = 0.0f;
@@ -69,7 +69,11 @@ public class Player : MonoBehaviour
     public String getHighlightedUse() {
         return highlightedUse;
     }
-    
+    private void setProjectileCreatorDistance(Weapon w) {
+        float distance = w.getMussle().GetComponent<Transform>().position.z-tf.position.z;
+        Debug.Log(w.getMussle().GetComponent<Transform>().position.z + "  " + tf.position.z);
+        projectileCreator.moveTo(distance);
+    }
     private void changeWeapon(GameObject w) {
         Weapon tempWeapon = w.GetComponent<Weapon>();
         int index = projectileCreator.indexToSwapWith(tempWeapon);
@@ -80,7 +84,7 @@ public class Player : MonoBehaviour
             }
             Transform tempTransform = w.GetComponent<Transform>();
             tempTransform.SetParent(tf.GetChild(5));
-            tempTransform.localPosition = weaponLocationTf.localPosition;
+            tempTransform.localPosition = weaponLocationTf.localPosition - tempWeapon.getHandPostion().GetComponent<Transform>().localPosition;
             tempTransform.localRotation = Quaternion.Euler(0f,0f,0f);
             w.layer = LayerMask.NameToLayer("EquippedDrops");
             Transform[] oTemp = w.GetComponentsInChildren<Transform>();
@@ -91,6 +95,9 @@ public class Player : MonoBehaviour
             controller.removeWeapon(w);
             if (index != -1 && projectileCreator.getCurrentWeaponSlot() != index) {
                 tempTransform.gameObject.SetActive(false);
+            }
+            if (projectileCreator.getCurrentWeaponSlot() == index) {
+                setProjectileCreatorDistance(tempWeapon);
             }
         }
     }
@@ -219,6 +226,9 @@ public class Player : MonoBehaviour
         for (int i = 0; i < projectileCreator.getWeaponSlotLength(); i++) {
             if (Input.GetKeyDown(""+i)) {
                 projectileCreator.setCurrentWeaponSlot(i-1);
+                if (i-1 != -1 && projectileCreator.getCurrentWeapon() != null) {
+                    setProjectileCreatorDistance(projectileCreator.getCurrentWeapon());
+                }
             }
         }
         

@@ -5,6 +5,8 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {   
     [SerializeField] GameObject proj;
+	[SerializeField] GameObject fireExplosion;
+
     [SerializeField] int magazine;
     [SerializeField] int totalAmmo;
     [SerializeField] int currentMagazine;
@@ -32,6 +34,12 @@ public class Weapon : MonoBehaviour
     // force backward from firing weapon
     [SerializeField] float backBlast;
 
+	[SerializeField] GameObject mussle;
+	[SerializeField] GameObject handPostion;
+
+	
+
+
 	// 0.3,0,0.5,
 	// 0, 40, 0
 	private float reloadTimeLeft;
@@ -44,6 +52,29 @@ public class Weapon : MonoBehaviour
 		this.reloadTimeLeft = reloadTimeLeft;
 	}
 
+	public GameObject getFireExplosion() {
+		return this.fireExplosion;
+	}
+
+	public void setFireExplosion(GameObject fireExplosion) {
+		this.fireExplosion = fireExplosion;
+	}
+
+	public GameObject getMussle() {
+		return this.mussle;
+	}
+
+	public void setMussle(GameObject mussle) {
+		this.mussle = mussle;
+	}
+
+	public GameObject getHandPostion() {
+		return this.handPostion;
+	}
+
+	public void setHandPostion(GameObject handPostion) {
+		this.handPostion = handPostion;
+	}
 
 	public GameObject getProj() {
 		return this.proj;
@@ -184,6 +215,8 @@ public class Weapon : MonoBehaviour
     void Start()
     {
        reloadTimeLeft = 0f; 
+	   mussle = GetComponent<Transform>().GetChild(0).gameObject;
+	   handPostion = GetComponent<Transform>().GetChild(1).gameObject;
     }
 
     // Update is called once per frame
