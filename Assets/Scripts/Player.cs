@@ -23,6 +23,8 @@ public class Player : MonoBehaviour
     private ProjectileCreator projectileCreator;
     private Transform useTf;
     private Transform movementHitboxTf;
+    private Transform weaponLocationTf;
+    
     private String highlightedUse;
     private GameObject holdingObstacle;
     // Start is called before the first frame update
@@ -34,6 +36,7 @@ public class Player : MonoBehaviour
         projectileCreator = tf.GetChild(0).GetChild(0).GetComponent<ProjectileCreator>();
         useTf = tf.GetChild(0).GetChild(0).GetChild(0).GetComponent<Transform>();
         movementHitboxTf = tf.GetChild(7);
+        weaponLocationTf =tf.GetChild(5).GetChild(1).GetComponent<Transform>();
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
@@ -77,8 +80,13 @@ public class Player : MonoBehaviour
             }
             Transform tempTransform = w.GetComponent<Transform>();
             tempTransform.SetParent(tf.GetChild(5));
-            tempTransform.localPosition = new Vector3(-0.27f,0.22f,0.47f);
+            tempTransform.localPosition = weaponLocationTf.localPosition;
             tempTransform.localRotation = Quaternion.Euler(0f,0f,0f);
+            w.layer = LayerMask.NameToLayer("EquippedDrops");
+            Transform[] oTemp = w.GetComponentsInChildren<Transform>();
+            for (int i = 0; i < oTemp.Length; i++) {
+                oTemp[i].gameObject.layer = LayerMask.NameToLayer("EquippedDrops");
+            }
             w.GetComponent<Rigidbody>().isKinematic = true;
             controller.removeWeapon(w);
             if (index != -1 && projectileCreator.getCurrentWeaponSlot() != index) {
@@ -94,6 +102,11 @@ public class Player : MonoBehaviour
         Rigidbody tempRigidbody = w.GetComponent<Rigidbody>();
         tempRigidbody.GetComponent<Rigidbody>().isKinematic = false;
         tempRigidbody.AddRelativeForce(new Vector3(0,0,500f));
+        tempTransform.gameObject.layer = LayerMask.NameToLayer("Drops");
+        Transform[] oTemp = tempTransform.gameObject.GetComponentsInChildren<Transform>();
+            for (int i = 0; i < oTemp.Length; i++) {
+                oTemp[i].gameObject.layer = LayerMask.NameToLayer("Drops");
+            }
         controller.addWeapon(tempTransform.gameObject);
     }
     public void movePlayer(float x, float y, float z) {
