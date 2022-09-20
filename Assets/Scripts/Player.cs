@@ -43,6 +43,9 @@ public class Player : MonoBehaviour
         isCrouching = false;
         holdingObstacle = null;
     }
+    public GameObject getController() {
+        return controllerObject;
+    }
     public float getAngle() {
         return angle;
     }
@@ -71,8 +74,7 @@ public class Player : MonoBehaviour
     }
     private void setProjectileCreatorDistance(Weapon w) {
         float distance = w.getMussle().GetComponent<Transform>().position.z-tf.position.z;
-        Debug.Log(w.getMussle().GetComponent<Transform>().position.z + "  " + tf.position.z);
-        projectileCreator.moveTo(distance);
+        projectileCreator.moveTo(distance+0.5f);
     }
     private void changeWeapon(GameObject w) {
         Weapon tempWeapon = w.GetComponent<Weapon>();
