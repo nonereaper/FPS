@@ -6,7 +6,7 @@ using UnityEngine;
 public class ProjectileCreator : MonoBehaviour
 {
     // projectile Controller
-    [SerializeField] GameObject controllerObject;
+    private GameObject controllerObject;
     private Controller controller;
 
     private Weapon[] weaponSlot;
@@ -21,8 +21,9 @@ public class ProjectileCreator : MonoBehaviour
     void Start()
     {
         tf = GetComponent<Transform>();
-        controller = controllerObject.GetComponent<Controller>();
         parentClass = GetComponentInParent<Player>();
+        controllerObject = parentClass.getController();
+        controller = controllerObject.GetComponent<Controller>();
         cameriaMovement = tf.parent.GetComponentInChildren<CameriaMovement>();
         time = UnityEngine.Time.time;
         time2 = UnityEngine.Time.time;
