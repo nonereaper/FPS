@@ -18,25 +18,34 @@ public class Player : MonoBehaviour
     private bool isGrounded, isCrouching;
     private float cameriaAngle;
     private float angle;
-    [SerializeField] GameObject controllerObject;
+    private GameObject controllerObject;
     private Controller controller;
+    [SerializeField] GameObject projectileCreatorGameObject;
     private ProjectileCreator projectileCreator;
+    private float distanceOfProjectileCreator;
+    [SerializeField] GameObject UseGameObject;
     private Transform useTf;
+    private float distanceOfUse;
     private Transform movementHitboxTf;
     private Transform weaponLocationTf;
     
     private String highlightedUse;
     private GameObject holdingObstacle;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         tf = GetComponent<Transform>();
+        controllerObject = GameObject.Find("Controller");
         controller = controllerObject.GetComponent<Controller>();
-        projectileCreator = tf.GetChild(0).GetChild(0).GetComponent<ProjectileCreator>();
-        useTf = tf.GetChild(0).GetChild(1).GetComponent<Transform>();
+        projectileCreator = projectileCreatorGameObject.GetComponent<ProjectileCreator>();
+        projectileCreator.setController(controllerObject);
+        useTf = UseGameObject.GetComponent<Transform>();
         movementHitboxTf = tf.GetChild(7);
         weaponLocationTf =tf.GetChild(5).GetChild(1).GetComponent<Transform>();
+        distanceOfProjectileCreator = projectileCreatorGameObject.GetComponent<Transform>().localPosition.z;
+        distanceOfUse = UseGameObject.GetComponent<Transform>().localPosition.z;
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
@@ -72,9 +81,18 @@ public class Player : MonoBehaviour
     public String getHighlightedUse() {
         return highlightedUse;
     }
-    private void setProjectileCreatorDistance(Weapon w) {
+    public void setProjectileCreatorDistance(Weapon w) {
         float distance = w.getMussle().GetComponent<Transform>().position.z-tf.position.z;
-        projectileCreator.moveTo(distance+0.5f);
+        distanceOfProjectileCreator = distance + 0.2f;
+    }
+    private void moveProjectileCreatorAndUse() {
+        double tempAngle = Math.PI*cameriaAngle/180;
+        Transform tempTf = projectileCreatorGameObject.GetComponent<Transform>();
+        tempTf.localRotation = Quaternion.Euler(cameriaAngle,0f,0f);
+        tempTf.localPosition = new Vector3(0f,(float)(-Math.Sin(tempAngle)*distanceOfProjectileCreator)+0.7f,(float)(Math.Cos(tempAngle)*distanceOfProjectileCreator));
+
+        useTf.localRotation = Quaternion.Euler(cameriaAngle,0f,0f);
+        useTf.localPosition = new Vector3(0f,(float)(-Math.Sin(tempAngle)*distanceOfUse)+0.7f,(float)(Math.Cos(tempAngle)*distanceOfUse));
     }
     private void changeWeapon(GameObject w) {
         Weapon tempWeapon = w.GetComponent<Weapon>();
@@ -127,19 +145,6 @@ public class Player : MonoBehaviour
             tempAngleP -= Math.PI*2;
         }
         float tempMovementSpeed = movementSpeed;
-        if (Input.GetButtonDown("Crouch")) {
-            tf.position = new Vector3(tf.position.x,tf.position.y-0.4f,tf.position.z);
-            movementHitboxTf.localPosition = new Vector3(0,0.05f,0);
-            movementHitboxTf.localScale = new Vector3(1.5f,1.15f,1.5f);
-            isCrouching = true;
-        } else if (Input.GetButtonUp("Crouch")) {
-            isCrouching = false;
-            movementHitboxTf.localPosition = new Vector3(0,-0.145f,0);
-            movementHitboxTf.localScale = new Vector3(1.5f,1.335f,1.5f);
-            if (isGrounded) {
-                tf.position = new Vector3(tf.position.x,tf.position.y+0.4f,tf.position.z);
-            }
-        }
         if (isCrouching) {
             tempMovementSpeed *= crouchSpeedMult;
         } else if (Input.GetButton("Sprint")) {
@@ -166,6 +171,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         bool canFire = Input.GetButton("Fire1") || Input.GetButtonDown("Fire1");
         if (canFire) {
             projectileCreator.useWeapon(Input.GetButtonDown("Fire1"));
@@ -233,7 +239,20 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        
+        if (Input.GetButtonDown("Crouch")) {
+            tf.position = new Vector3(tf.position.x,tf.position.y-0.4f,tf.position.z);
+            movementHitboxTf.localPosition = new Vector3(0,0.05f,0);
+            movementHitboxTf.localScale = new Vector3(1.5f,1.15f,1.5f);
+            isCrouching = true;
+        } else if (Input.GetButtonUp("Crouch")) {
+            isCrouching = false;
+            movementHitboxTf.localPosition = new Vector3(0,-0.145f,0);
+            movementHitboxTf.localScale = new Vector3(1.5f,1.335f,1.5f);
+            if (isGrounded) {
+                tf.position = new Vector3(tf.position.x,tf.position.y+0.4f,tf.position.z);
+            }
+        }
+        moveProjectileCreatorAndUse();
         
     }
 }

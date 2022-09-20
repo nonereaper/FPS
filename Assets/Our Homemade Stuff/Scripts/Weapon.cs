@@ -22,8 +22,6 @@ public class Weapon : MonoBehaviour
     [SerializeField] float reloadTime;
     // force added to projectile
     [SerializeField] float velocity;
-    // projectile radius
-    [SerializeField] float radius;
     [SerializeField] bool semiAuto, auto;
     // 0 - semiAuto, 1 - auto
     [SerializeField] int fireType;
@@ -154,14 +152,6 @@ public class Weapon : MonoBehaviour
 
 	public void setVelocity(float velocity) {
 		this.velocity = velocity;
-	}
-
-	public float getRadius() {
-		return this.radius;
-	}
-
-	public void setRadius(float radius) {
-		this.radius = radius;
 	}
 
 	public bool isSemiAuto() {

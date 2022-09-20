@@ -22,13 +22,15 @@ public class ProjectileCreator : MonoBehaviour
     {
         tf = GetComponent<Transform>();
         parentClass = GetComponentInParent<Player>();
-        controllerObject = parentClass.getController();
-        controller = controllerObject.GetComponent<Controller>();
         cameriaMovement = tf.parent.GetComponentInChildren<CameriaMovement>();
         time = UnityEngine.Time.time;
         time2 = UnityEngine.Time.time;
         weaponSlot = new Weapon[9];
         currentWeaponSlot = -1;
+    }
+    public void setController(GameObject o) {
+        controllerObject = parentClass.getController();
+        controller = controllerObject.GetComponent<Controller>();
     }
     public void moveTo(float z) {
         tf.localPosition = new Vector3(tf.localPosition.x,tf.localPosition.y,z);
@@ -62,6 +64,7 @@ public class ProjectileCreator : MonoBehaviour
             currentWeaponSlot = i;
             if (weaponSlot[i] != null) {
                 weaponSlot[i].GetComponent<Transform>().gameObject.SetActive(true);
+                parentClass.setProjectileCreatorDistance(weaponSlot[i]);
             }
         }
     }
@@ -159,13 +162,13 @@ public class ProjectileCreator : MonoBehaviour
                 cameriaMovement.updateCameria(currentWeapon.getRecoil());
                 float spread = (float)(currentWeapon.getSpread()*crouchSpreadReduction);
                 for (int i = 0; i < currentWeapon.getNumber(); i++) {
-                    float rotationTempX = tf.rotation.eulerAngles.x + UnityEngine.Random.Range(-spread,spread),
-                    rotationTempY = tf.rotation.eulerAngles.y + UnityEngine.Random.Range(-spread,spread);
-                    Quaternion q = Quaternion.Euler(rotationTempX, rotationTempY, tf.rotation.eulerAngles.z);
-                    GameObject o = Instantiate(currentWeapon.getProj(),tf.position,q,controller.getProjectileTransformation());
+                    Transform tf2 = currentWeapon.getMussle().GetComponent<Transform>();
+                    float rotationTempX = tf2.rotation.eulerAngles.x + UnityEngine.Random.Range(-spread,spread),
+                    rotationTempY = tf2.rotation.eulerAngles.y + UnityEngine.Random.Range(-spread,spread);
+                    Quaternion q = Quaternion.Euler(rotationTempX, rotationTempY, tf2.rotation.eulerAngles.z);
+                    GameObject o = Instantiate(currentWeapon.getProj(),tf2.position,q,controller.getProjectileTransformation());
                     o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,currentWeapon.getVelocity()));
-                    o.GetComponent<Projectile>().setup(currentWeapon.getDamage(),tf.parent.gameObject.transform.parent.gameObject,10,controllerObject);
-                    o.GetComponent<Transform>().localScale = new Vector3(currentWeapon.getRadius(),currentWeapon.getRadius(),currentWeapon.getRadius());
+                    o.GetComponent<Projectile>().setup(currentWeapon.getDamage(),tf.transform.parent.gameObject,10,controllerObject);
                     controller.addProjectile(o);
                 }
                 double angleOfCamera = parentClass.getCameriaAngle()/180*Math.PI;
