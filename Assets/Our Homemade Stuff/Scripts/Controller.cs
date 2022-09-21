@@ -6,6 +6,7 @@ public class Controller : MonoBehaviour
 {
     private List<GameObject> obstacles; 
     private List<GameObject> weapons;
+    private List<GameObject> meleeWeapons;
     private List<GameObject> projectiles;
     private List<GameObject> decay;
     private Transform tf;
@@ -16,6 +17,7 @@ public class Controller : MonoBehaviour
     {
         obstacles = new List<GameObject>();
         weapons = new List<GameObject>();
+        meleeWeapons = new List<GameObject>();
         projectiles = new List<GameObject>();
         decay = new List<GameObject>();
         tf = GetComponent<Transform>();
@@ -23,7 +25,10 @@ public class Controller : MonoBehaviour
             Transform tempTf = tf.GetChild(i);
             for (int q = 0; q < tempTf.childCount; q++) {
                 if (i == 1) {
+                    if (tempTf.GetChild(q).GetComponent<Weapon>() != null)
                     weapons.Add(tempTf.GetChild(q).gameObject);
+                    else
+                    meleeWeapons.Add(tempTf.GetChild(q).gameObject);
                 } else if (i == 2) {
                     obstacles.Add(tempTf.GetChild(q).gameObject);
                 }
@@ -51,6 +56,14 @@ public class Controller : MonoBehaviour
                 savedType = 1;
             }
         }
+        for (int i = 0; i < meleeWeapons.Count; i++) {
+            float tempDistance = Vector3.Distance(meleeWeapons[i].GetComponent<Transform>().position,p);
+            if (tempDistance <= rad && tempDistance < distance) {
+                tempObject = meleeWeapons[i];
+                distance = tempDistance;
+                savedType = 2;
+            }
+        }
         savedDistance = distance;
         return tempObject;
     }
@@ -70,6 +83,9 @@ public class Controller : MonoBehaviour
     // add weapon
     public void removeWeapon(GameObject w) {
         weapons.Remove(w);
+    }
+    public void removeMeleeWeapon(GameObject w) {
+        meleeWeapons.Remove(w);
     }
     public void addWeapon(GameObject w) {
         weapons.Add(w);

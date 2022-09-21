@@ -40,7 +40,6 @@ public class Player : MonoBehaviour
         controllerObject = GameObject.Find("Controller");
         controller = controllerObject.GetComponent<Controller>();
         projectileCreator = projectileCreatorGameObject.GetComponent<ProjectileCreator>();
-        projectileCreator.setController(controllerObject);
         useTf = UseGameObject.GetComponent<Transform>();
         movementHitboxTf = tf.GetChild(7);
         weaponLocationTf =tf.GetChild(5).GetChild(1).GetComponent<Transform>();
@@ -95,33 +94,39 @@ public class Player : MonoBehaviour
         useTf.localPosition = new Vector3(0f,(float)(-Math.Sin(tempAngle)*distanceOfUse)+0.7f,(float)(Math.Cos(tempAngle)*distanceOfUse));
     }
     private void changeWeapon(GameObject w) {
-        Weapon tempWeapon = w.GetComponent<Weapon>();
-        int index = projectileCreator.indexToSwapWith(tempWeapon);
-        if (projectileCreator.getCurrentWeaponSlot()!=-1 || index != -1) {  
-            Weapon tempWeapon2 = projectileCreator.swapWeapon(index, tempWeapon);
-            if (tempWeapon2 != null) {
-                removeWeapon(tempWeapon2);
-            }
-            Transform tempTransform = w.GetComponent<Transform>();
-            tempTransform.SetParent(tf.GetChild(5));
-            tempTransform.localPosition = weaponLocationTf.localPosition - tempWeapon.getHandPostion().GetComponent<Transform>().localPosition;
-            tempTransform.localRotation = Quaternion.Euler(0f,0f,0f);
-            w.layer = LayerMask.NameToLayer("EquippedDrops");
-            Transform[] oTemp = w.GetComponentsInChildren<Transform>();
-            for (int i = 0; i < oTemp.Length; i++) {
-                oTemp[i].gameObject.layer = LayerMask.NameToLayer("EquippedDrops");
-            }
-            w.GetComponent<Rigidbody>().isKinematic = true;
-            controller.removeWeapon(w);
-            if (index != -1 && projectileCreator.getCurrentWeaponSlot() != index) {
-                tempTransform.gameObject.SetActive(false);
-            }
-            if (projectileCreator.getCurrentWeaponSlot() == index) {
-                setProjectileCreatorDistance(tempWeapon);
-            }
+        Weapon tempWp = w.GetComponent<Weapon>();
+        MeleeWeapon tempMeWp = w.GetComponent<MeleeWeapon>();
+        int index = projectileCreator.indexToSwapWith(w,tempMeWp != null);
+        if (index == -1)
+        return;
+        GameObject outWeapon = projectileCreator.swapWeapon(index, w);
+        if (outWeapon != null)
+        removeWeapon(outWeapon);
+        Transform inWpTf = w.GetComponent<Transform>();
+        inWpTf.SetParent(tf.GetChild(5));
+        if (tempWp != null)
+        inWpTf.localPosition = weaponLocationTf.localPosition - tempWp.getHandPostion().GetComponent<Transform>().localPosition;
+        else if (tempMeWp != null)
+        inWpTf.localPosition = weaponLocationTf.localPosition - tempMeWp.getHandPosition().GetComponent<Transform>().localPosition;
+        
+        inWpTf.localRotation = Quaternion.Euler(0f,0f,0f);
+        w.layer = LayerMask.NameToLayer("EquippedDrops");
+        Transform[] oTemp = w.GetComponentsInChildren<Transform>();
+        for (int i = 0; i < oTemp.Length; i++) {
+            oTemp[i].gameObject.layer = LayerMask.NameToLayer("EquippedDrops");
         }
+        w.GetComponent<Rigidbody>().isKinematic = true;
+        controller.removeWeapon(w);
+        controller.removeMeleeWeapon(w);
+        if (projectileCreator.getCurrentWeaponSlot() != index) {
+            w.SetActive(false);
+        }
+        if (projectileCreator.getCurrentWeaponSlot() == index && index != 0) {
+            setProjectileCreatorDistance(tempWp);
+        }
+            
     }
-    private void removeWeapon(Weapon w) {
+    private void removeWeapon(GameObject w) {
         Transform tempTransform = w.GetComponent<Transform>();
         tempTransform.SetParent(controller.GetComponent<Transform>());
         tempTransform.position = useTf.position;
@@ -129,12 +134,12 @@ public class Player : MonoBehaviour
         Rigidbody tempRigidbody = w.GetComponent<Rigidbody>();
         tempRigidbody.GetComponent<Rigidbody>().isKinematic = false;
         tempRigidbody.AddRelativeForce(new Vector3(0,0,500f));
-        tempTransform.gameObject.layer = LayerMask.NameToLayer("Drops");
+        w.layer = LayerMask.NameToLayer("Drops");
         Transform[] oTemp = tempTransform.gameObject.GetComponentsInChildren<Transform>();
             for (int i = 0; i < oTemp.Length; i++) {
                 oTemp[i].gameObject.layer = LayerMask.NameToLayer("Drops");
             }
-        controller.addWeapon(tempTransform.gameObject);
+        controller.addWeapon(w);
     }
     public void movePlayer(float x, float y, float z) {
         rb.AddForce(new Vector3(x,y,z),ForceMode.VelocityChange);
@@ -186,7 +191,7 @@ public class Player : MonoBehaviour
             int typeOfHighlight = controller.getSavedtype();
             //Debug.Log(typeOfHighlight);
 
-            if (typeOfHighlight == 0) {
+            if (typeOfHighlight == 0 || typeOfHighlight == 2) {
                 highlightedUse = "Press E to swap weapons with " + tempObject.name;
             } else if (typeOfHighlight == 1) {
                 highlightedUse = "Press E to move " + tempObject.name;
@@ -195,7 +200,7 @@ public class Player : MonoBehaviour
             }
 
             if (Input.GetButtonDown("Use")) {
-                if (typeOfHighlight == 0) {
+                if (typeOfHighlight == 0 || typeOfHighlight == 2) {
                     changeWeapon(tempObject);
                 } else if (typeOfHighlight == 1) {
                     holdingObstacle = tempObject;
@@ -210,7 +215,7 @@ public class Player : MonoBehaviour
         }
         if (Input.GetButtonDown("Drop")) {
             if (holdingObstacle == null) {
-            Weapon droppingWeapon = projectileCreator.removeCurrentWeapon();
+            GameObject droppingWeapon = projectileCreator.removeCurrentWeapon();
             if (droppingWeapon != null) {
                 removeWeapon(droppingWeapon);
             }
@@ -234,8 +239,8 @@ public class Player : MonoBehaviour
         for (int i = 0; i < projectileCreator.getWeaponSlotLength(); i++) {
             if (Input.GetKeyDown(""+i)) {
                 projectileCreator.setCurrentWeaponSlot(i-1);
-                if (i-1 != -1 && projectileCreator.getCurrentWeapon() != null) {
-                    setProjectileCreatorDistance(projectileCreator.getCurrentWeapon());
+                if (i-1 != 0 && projectileCreator.getCurrentWeapon() != null) {
+                    setProjectileCreatorDistance(projectileCreator.getCurrentWeapon().GetComponent<Weapon>());
                 }
             }
         }

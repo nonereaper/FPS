@@ -9,8 +9,8 @@ public class ProjectileCreator : MonoBehaviour
     private GameObject controllerObject;
     private Controller controller;
 
-    private Weapon[] weaponSlot;
-    // -1= melee, 0=weaponSlot1, 1= weaponSlot2,
+    private GameObject[] weaponSlot;
+    // 0= melee, 1=weaponSlot1, 2= weaponSlot2,
     private int currentWeaponSlot; 
 
     private float time, time2;
@@ -23,14 +23,12 @@ public class ProjectileCreator : MonoBehaviour
         tf = GetComponent<Transform>();
         parentClass = GetComponentInParent<Player>();
         cameriaMovement = tf.parent.GetComponentInChildren<CameriaMovement>();
+        controllerObject = GameObject.Find("Controller");
+        controller = controllerObject.GetComponent<Controller>();
         time = UnityEngine.Time.time;
         time2 = UnityEngine.Time.time;
-        weaponSlot = new Weapon[9];
-        currentWeaponSlot = -1;
-    }
-    public void setController(GameObject o) {
-        controllerObject = parentClass.getController();
-        controller = controllerObject.GetComponent<Controller>();
+        weaponSlot = new GameObject[9];
+        currentWeaponSlot = 0;
     }
     public void moveTo(float z) {
         tf.localPosition = new Vector3(tf.localPosition.x,tf.localPosition.y,z);
@@ -42,12 +40,11 @@ public class ProjectileCreator : MonoBehaviour
             if (weaponSlot[i] == null) {
             temp+= "empty.\n" ;
             } else {
-            temp+= weaponSlot[i].GetComponent<Transform>().gameObject.name + "\n";
+            temp+= weaponSlot[i].name + "\n";
             }
         }
-        temp += "Melee Weapon is: " + "\n";
-        if (currentWeaponSlot != -1) {
-            Weapon currentWeapon = weaponSlot[currentWeaponSlot];
+        if (currentWeaponSlot != 0  && weaponSlot[currentWeaponSlot] != null) {
+            Weapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<Weapon>();
             if (currentWeapon != null) {
                 temp += "Magazine: (" + currentWeapon.getCurrentMagazine() + "/" + currentWeapon.getMagazine() + ")\n";
                 temp += "Stored ammo Left: (" + currentWeapon.getCurrentTotalAmmo() + "/" + currentWeapon.getTotalAmmo() + ")";
@@ -56,27 +53,27 @@ public class ProjectileCreator : MonoBehaviour
         return temp;
     }
     public void setCurrentWeaponSlot(int i) {
-        if (currentWeaponSlot != -1  && weaponSlot[currentWeaponSlot] != null)
-        weaponSlot[currentWeaponSlot].GetComponent<Transform>().gameObject.SetActive(false);
-        if (i == -1)
-            currentWeaponSlot = -1;
-        else {
-            currentWeaponSlot = i;
-            if (weaponSlot[i] != null) {
-                weaponSlot[i].GetComponent<Transform>().gameObject.SetActive(true);
-                parentClass.setProjectileCreatorDistance(weaponSlot[i]);
+        if (weaponSlot[currentWeaponSlot] != null)
+        weaponSlot[currentWeaponSlot].SetActive(false);
+        
+        currentWeaponSlot = i;
+        if (weaponSlot[i] != null) {
+            weaponSlot[i].SetActive(true);
+            if (i != 0) {
+                parentClass.setProjectileCreatorDistance(weaponSlot[i].GetComponent<Weapon>());
             }
         }
+  
     }
     public int getWeaponSlotLength() {
-        return weaponSlot.Length + 1;   
+        return weaponSlot.Length;   
     }
     public void reload() {
-        if (currentWeaponSlot != -1) {
-            Weapon currentWeapon = weaponSlot[currentWeaponSlot];
-            if (currentWeapon == null) {
+        if (currentWeaponSlot != 0) {
+            if (weaponSlot[currentWeaponSlot] == null) {
                 return;
             }
+            Weapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<Weapon>();
             if (currentWeapon.getReloadTimeLeft() != 0f) {
                 return;
             }
@@ -92,52 +89,46 @@ public class ProjectileCreator : MonoBehaviour
             currentWeapon.setReloadTimeLeft(currentWeapon.getReloadTime());
         }
     }
-    public int indexToSwapWith(Weapon w) {
-        if (currentWeaponSlot != -1 && weaponSlot[currentWeaponSlot] == null)
-        return currentWeaponSlot;
-        for (int i = 0; i < weaponSlot.Length; i++) {
-            if (weaponSlot[i] == null) {
-                return i;
-            }
+    public int indexToSwapWith(GameObject w, bool isMeleeWeapon) {
+        if (isMeleeWeapon) {
+            return 0;
+        } else {
+            for (int i = 1; i < weaponSlot.Length; i++) {
+                if (weaponSlot[i] == null) {
+                    return i;
+                }
+            }       
         }
+        if (isMeleeWeapon && currentWeaponSlot == 0)
+        return currentWeaponSlot;
+
         return -1;
     }
     public int getCurrentWeaponSlot() {
         return currentWeaponSlot;
     }
-    public Weapon getCurrentWeapon() {
-        if (currentWeaponSlot == -1) {
-            return null;
-        } else {
-            return weaponSlot[currentWeaponSlot];
-        }
+    public GameObject getCurrentWeapon() {
+        return weaponSlot[currentWeaponSlot];
     }
-    public Weapon swapWeapon(int index, Weapon w) {
-        if (index != -1) {
-            weaponSlot[index] = w;
-            return null;
-        } else {
-            Weapon temp = weaponSlot[currentWeaponSlot];
-            weaponSlot[currentWeaponSlot] = w;
-            return temp;
-        }
+    public GameObject swapWeapon(int index, GameObject w) {
+        GameObject temp = weaponSlot[index];
+        weaponSlot[index] = w;
+        return temp;
     }
-    public Weapon removeCurrentWeapon() {
-        if (currentWeaponSlot != -1) {
-            Weapon temp = weaponSlot[currentWeaponSlot];
-            weaponSlot[currentWeaponSlot] = null;
-            return temp;
-        }
-        return null;
+    public GameObject removeCurrentWeapon() {
+        GameObject temp = weaponSlot[currentWeaponSlot];
+        weaponSlot[currentWeaponSlot] = null;
+        return temp;
     }
     public void useWeapon(bool buttonDown) {
-        if (currentWeaponSlot == -1) {
-
-        } else { // do weapon
-            Weapon currentWeapon = weaponSlot[currentWeaponSlot];
-            if (currentWeapon == null) { // no weapon: stop
+        if (weaponSlot[currentWeaponSlot] == null) { // no weapon: stop
                 return;
             }
+        if (currentWeaponSlot == 0) {
+            MeleeWeapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<MeleeWeapon>();
+        } else { // do weapon
+            Weapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<Weapon>();
+            
             if (currentWeapon.getReloadTimeLeft() != 0f) { // in the middle of reload
                 return;
             }
@@ -181,9 +172,9 @@ public class ProjectileCreator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentWeaponSlot != -1) {
-            Weapon currentWeapon = weaponSlot[currentWeaponSlot];
-            if (currentWeapon != null &&  currentWeapon.getReloadTimeLeft() != 0f) {
+        if (currentWeaponSlot != 0 && weaponSlot[currentWeaponSlot] != null) {
+            Weapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<Weapon>();
+            if (currentWeapon.getReloadTimeLeft() != 0f) {
                 currentWeapon.setReloadTimeLeft(currentWeapon.getReloadTimeLeft()-(UnityEngine.Time.time-time2));
                 if (currentWeapon.getReloadTimeLeft() < 0f){
                     currentWeapon.setReloadTimeLeft(0f);
