@@ -1,5 +1,6 @@
 using System.Collections;
 using System;
+using Unity.Netcode;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ using UnityEngine;
 /* https://www.youtube.com/watch?v=n0GQL5JgJcY&list=PLrnPJCHvNZuB5ATsJZLKX3AW4V9XaIV9b&index=1
     Video series used to write help write movement code
 */
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     private Rigidbody rb;
     private Transform tf;
@@ -258,6 +259,29 @@ public class Player : MonoBehaviour
             }
         }
         moveProjectileCreatorAndUse();
-        
+    }
+    public override void OnNetworkSpawn()
+    {
+        if (IsClient)
+        {
+            TestServerRpc(0);
+        }
+    }
+
+    [ClientRpc]
+    void TestClientRpc(int value)
+    {
+        if (IsClient)
+        {
+            Debug.Log("Client Received the RPC #" + value);
+            TestServerRpc(value + 1);
+        }
+    }
+
+    [ServerRpc]
+    void TestServerRpc(int value)
+    {
+        Debug.Log("Server Received the RPC #" + value);
+        TestClientRpc(value);
     }
 }
