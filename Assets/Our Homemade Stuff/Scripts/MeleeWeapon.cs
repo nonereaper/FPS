@@ -8,9 +8,45 @@ public class MeleeWeapon : MonoBehaviour
 
     [SerializeField] float attackSpeed;
     [SerializeField] bool turn90;
+	[SerializeField] float swingTime;
+	[SerializeField] double startAngleOfSwing;
+	[SerializeField] double endAngleOfSwing;
 
     [SerializeField] GameObject handPosition;
 
+	private float reloadTimeLeft;
+
+	public float getReloadTimeLeft() {
+		return this.reloadTimeLeft;
+	}
+
+	public void setReloadTimeLeft(float reloadTimeLeft) {
+		this.reloadTimeLeft = reloadTimeLeft;
+	}
+
+	public float getSwingTime() {
+		return this.swingTime;
+	}
+
+	public void setSwingTime(float swingTime) {
+		this.swingTime = swingTime;
+	}
+
+	public double getStartAngleOfSwing() {
+		return this.startAngleOfSwing;
+	}
+
+	public void setStartAngleOfSwing(double startAngleOfSwing) {
+		this.startAngleOfSwing = startAngleOfSwing;
+	}
+
+	public double getEndAngleOfSwing() {
+		return this.endAngleOfSwing;
+	}
+
+	public void setEndAngleOfSwing(double endAngleOfSwing) {
+		this.endAngleOfSwing = endAngleOfSwing;
+	}
 
 	public GameObject getHandPosition() {
 		return this.handPosition;

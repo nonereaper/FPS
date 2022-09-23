@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
-using com.Unity.UnityTransport;
 using UnityEngine;
 
 public class networkManager2 : MonoBehaviour
@@ -37,7 +36,7 @@ public class networkManager2 : MonoBehaviour
 
             GUILayout.Label("Transport: " +
                 NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name);
-            GUILayout.Label("Mode: " + mode + NetworkManager.Singleton.GetComponent<UnityTransport>().GetConnectionData());
+            GUILayout.Label("Mode: " + mode);
         }
     
 }
