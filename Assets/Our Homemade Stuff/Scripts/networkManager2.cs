@@ -36,7 +36,7 @@ public class networkManager2 : MonoBehaviour
 
             GUILayout.Label("Transport: " +
                 NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name);
-            GUILayout.Label("Mode: " + mode);
+            GUILayout.Label("Mode: " + mode +"  "+ NetworkManager.ServerClientId + "   " + NetworkManager.Singleton.GetComponent<UnityTransport>());
         }
     
 }
