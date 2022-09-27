@@ -37,7 +37,7 @@ public class Player : NetworkBehaviour
     private String highlightedUse;
     private GameObject holdingObstacle;
 
-    public TMP_Text multInfo;
+    public TMP_Text multInfo, serverInfo;
 
     // Start is called before the first frame update
     void Start()
@@ -64,6 +64,7 @@ public class Player : NetworkBehaviour
         } else {
             multInfo.text = "Client";
         }
+        serverInfo.text = "";
     }
     public GameObject getController() {
         return controllerObject;
@@ -194,7 +195,16 @@ public class Player : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        serverInfo.text = "";
+        if (NetworkManager.Singleton.IsHost) {
+            IReadOnlyList<NetworkClient> t = NetworkManager.ConnectedClientsList;
+            for (int i = 0; i < t.Count; i++) {
+                serverInfo.text += t[i].ClientId + ", ";
+            }
+            //serverInfo 
+        } else {
+            serverInfo.text = NetworkManager.Singleton.ConnectedHostname;
+        }
         bool canFire = Input.GetButton("Fire1") || Input.GetButtonDown("Fire1");
         if (canFire) {
             projectileCreator.useWeapon(Input.GetButtonDown("Fire1"));
