@@ -12,7 +12,7 @@ public class CameriaMovement : MonoBehaviour
     void Start()
     {
         tf = GetComponent<Transform>();
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
         firstPerson = true;
         parentClass = GetComponentInParent<Player>();
     }

@@ -13,7 +13,7 @@ public class ProjectileCreator : MonoBehaviour
     // 0= melee, 1=weaponSlot1, 2= weaponSlot2,
     private int currentWeaponSlot; 
 
-    private float time, time2;
+    private float time, time2, meleeTime;
     private Player parentClass;
     private CameriaMovement cameriaMovement;
     private Transform tf;
@@ -27,6 +27,7 @@ public class ProjectileCreator : MonoBehaviour
         controller = controllerObject.GetComponent<Controller>();
         time = UnityEngine.Time.time;
         time2 = UnityEngine.Time.time;
+        meleeTime = UnityEngine.Time.time;
         weaponSlot = new GameObject[9];
         currentWeaponSlot = 0;
     }
@@ -126,6 +127,17 @@ public class ProjectileCreator : MonoBehaviour
             }
         if (currentWeaponSlot == 0) {
             MeleeWeapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<MeleeWeapon>();
+            if (UnityEngine.Time.time < time+currentWeapon.getAttackSpeed()) { // cannot attack let: stop
+                return;
+            }
+            if (meleeTime != 0) {
+                return;
+            }
+            time = UnityEngine.Time.time;
+            meleeTime = currentWeapon.getSwingTime();
+            //if (currentWeapon.getTurn90()) {
+
+            //}
         } else { // do weapon
             Weapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<Weapon>();
             

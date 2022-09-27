@@ -1,5 +1,6 @@
 using System.Collections;
 using System;
+using Unity.Netcode;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ using UnityEngine;
 /* https://www.youtube.com/watch?v=n0GQL5JgJcY&list=PLrnPJCHvNZuB5ATsJZLKX3AW4V9XaIV9b&index=1
     Video series used to write help write movement code
 */
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     private Rigidbody rb;
     private Transform tf;
@@ -258,6 +259,6 @@ public class Player : MonoBehaviour
             }
         }
         moveProjectileCreatorAndUse();
-        
     }
+    
 }
