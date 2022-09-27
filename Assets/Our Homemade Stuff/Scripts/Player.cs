@@ -1,6 +1,7 @@
 using System.Collections;
 using System;
 using Unity.Netcode;
+using TMPro;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,9 +30,14 @@ public class Player : NetworkBehaviour
     private float distanceOfUse;
     private Transform movementHitboxTf;
     private Transform weaponLocationTf;
+
+    [SerializeField] GameObject aimCameraObject;
+    private Transform aimCameraTf;
     
     private String highlightedUse;
     private GameObject holdingObstacle;
+
+    public TMP_Text multInfo;
 
     // Start is called before the first frame update
     void Start()
@@ -46,17 +52,27 @@ public class Player : NetworkBehaviour
         weaponLocationTf =tf.GetChild(5).GetChild(1).GetComponent<Transform>();
         distanceOfProjectileCreator = projectileCreatorGameObject.GetComponent<Transform>().localPosition.z;
         distanceOfUse = UseGameObject.GetComponent<Transform>().localPosition.z;
+        aimCameraTf = aimCameraObject.GetComponent<Transform>();
+        aimCameraObject.GetComponent<Camera>().enabled = false;
         angle = 0.0f;
         cameriaAngle = 0.0f;
         isGrounded = false;
         isCrouching = false;
         holdingObstacle = null;
+        if (NetworkManager.Singleton.IsHost) {
+            multInfo.text = "Host";
+        } else {
+            multInfo.text = "Client";
+        }
     }
     public GameObject getController() {
         return controllerObject;
     }
     public float getAngle() {
         return angle;
+    }
+    public Transform getWeaponLocationTransform() {
+        return weaponLocationTf;
     }
     public void rotatePlayer(float an) {        
         rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0,an,0)));
@@ -106,7 +122,7 @@ public class Player : NetworkBehaviour
         Transform inWpTf = w.GetComponent<Transform>();
         inWpTf.SetParent(tf.GetChild(5));
         if (tempWp != null)
-        inWpTf.localPosition = weaponLocationTf.localPosition - tempWp.getHandPostion().GetComponent<Transform>().localPosition;
+        inWpTf.localPosition = weaponLocationTf.localPosition - tempWp.getHandPosition().GetComponent<Transform>().localPosition;
         else if (tempMeWp != null)
         inWpTf.localPosition = weaponLocationTf.localPosition - tempMeWp.getHandPosition().GetComponent<Transform>().localPosition;
         
@@ -124,6 +140,7 @@ public class Player : NetworkBehaviour
         }
         if (projectileCreator.getCurrentWeaponSlot() == index && index != 0) {
             setProjectileCreatorDistance(tempWp);
+            aimCameraTf.position = tempWp.getAimPosition().GetComponent<Transform>().position;
         }
             
     }
@@ -229,9 +246,13 @@ public class Player : NetworkBehaviour
                 holdingObstacle = null;
             }
         }
-        if (Input.GetButtonDown("Fire2")) {
-            if (holdingObstacle != null) {
-                holdingObstacle.GetComponent<Rigidbody>().isKinematic = !holdingObstacle.GetComponent<Rigidbody>().isKinematic;
+        if (projectileCreator.getCurrentWeapon() != null) {
+            if (Input.GetButtonDown("Fire2")) {
+                aimCameraObject.GetComponent<Camera>().enabled = true;
+                tf.GetChild(0).gameObject.GetComponent<Camera>().enabled = false;
+            } else if (Input.GetButtonUp("Fire2")) {
+                aimCameraObject.GetComponent<Camera>().enabled = false;
+                tf.GetChild(0).gameObject.GetComponent<Camera>().enabled = true;
             }
         }
         if (Input.GetButtonDown("Reload")) {
@@ -242,6 +263,7 @@ public class Player : NetworkBehaviour
                 projectileCreator.setCurrentWeaponSlot(i-1);
                 if (i-1 != 0 && projectileCreator.getCurrentWeapon() != null) {
                     setProjectileCreatorDistance(projectileCreator.getCurrentWeapon().GetComponent<Weapon>());
+                    aimCameraTf.position = projectileCreator.getCurrentWeapon().GetComponent<Weapon>().getAimPosition().GetComponent<Transform>().position;
                 }
             }
         }

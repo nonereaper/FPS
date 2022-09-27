@@ -24,6 +24,14 @@ public class MeleeWeapon : MonoBehaviour
 		this.reloadTimeLeft = reloadTimeLeft;
 	}
 
+	public bool isTurn90() {
+		return this.turn90;
+	}
+
+	public void setTurn90(bool turn90) {
+		this.turn90 = turn90;
+	}
+
 	public float getSwingTime() {
 		return this.swingTime;
 	}

@@ -6,14 +6,15 @@ public class CameriaMovement : MonoBehaviour
 {
     [SerializeField] float mouseSen;
     private Player parentClass;
-    private bool firstPerson;
+    private bool firstPerson, cursorIn;
     private Transform tf;
     // Start is called before the first frame update
     void Start()
     {
         tf = GetComponent<Transform>();
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
         firstPerson = true;
+        cursorIn = true;
         parentClass = GetComponentInParent<Player>();
     }
     public void updateCameria(float amount) {
@@ -32,9 +33,10 @@ public class CameriaMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
-        parentClass.rotatePlayer(Input.GetAxis("Mouse X") * Time.deltaTime * mouseSen);
-        updateCameria(Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSen);
-        
+        if (cursorIn) {
+            parentClass.rotatePlayer(Input.GetAxis("Mouse X") * Time.deltaTime * mouseSen);
+            updateCameria(Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSen);
+        }
         
         if (Input.GetButtonDown("ChangeMouseView")) {
             if (firstPerson) {
@@ -44,6 +46,14 @@ public class CameriaMovement : MonoBehaviour
                 tf.localPosition = new Vector3(0,0.9f,0);
             }
             firstPerson = !firstPerson;
+        }
+        if (Input.GetButtonDown("LockMouse")) {
+            cursorIn = !cursorIn;
+            if (cursorIn) {
+                Cursor.lockState = CursorLockMode.Locked;
+            } else {
+                Cursor.lockState = CursorLockMode.None;
+            }
         }
     }
 }

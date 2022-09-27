@@ -135,9 +135,11 @@ public class ProjectileCreator : MonoBehaviour
             }
             time = UnityEngine.Time.time;
             meleeTime = currentWeapon.getSwingTime();
-            //if (currentWeapon.getTurn90()) {
-
-            //}
+            Transform tempTf = currentWeapon.GetComponent<Transform>();
+            if (currentWeapon.isTurn90()) {
+                tempTf.localRotation = Quaternion.Euler(0f,0f,-90f);
+                //tempTf.localPosition = parentClass.getWeaponLocationTransform().position - currentWeapon.getHandPosition().GetComponent<Transform>().position;
+            }
         } else { // do weapon
             Weapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<Weapon>();
             
@@ -178,6 +180,10 @@ public class ProjectileCreator : MonoBehaviour
                 double increaseY = Math.Sin(angleOfCamera)*currentWeapon.getBackBlast(), increaseZ = Math.Cos(angleOfCamera)*currentWeapon.getBackBlast();
                 parentClass.movePlayer(0,(float)increaseY,-(float)increaseZ);
                 Instantiate(currentWeapon.getFireExplosion(),currentWeapon.getMussle().GetComponent<Transform>().position,currentWeapon.getMussle().GetComponent<Transform>().rotation,controller.getDecayTransformation());
+                if (currentWeapon.isLaunchShells()) {
+                    GameObject o = Instantiate(currentWeapon.getShells(),currentWeapon.getShellPosition().GetComponent<Transform>().position,currentWeapon.getShellPosition().GetComponent<Transform>().rotation,controller.getDecayTransformation());
+                    o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(currentWeapon.getShellForce(),0,0));
+                }
             }
         }
     }
