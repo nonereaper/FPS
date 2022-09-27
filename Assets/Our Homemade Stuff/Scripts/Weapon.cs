@@ -6,6 +6,8 @@ public class Weapon : MonoBehaviour
 {   
     [SerializeField] GameObject proj;
 	[SerializeField] GameObject fireExplosion;
+	[SerializeField] GameObject shells;
+
 
     [SerializeField] int magazine;
     [SerializeField] int totalAmmo;
@@ -32,10 +34,20 @@ public class Weapon : MonoBehaviour
     // force backward from firing weapon
     [SerializeField] float backBlast;
 
+	[SerializeField] bool launchShells;
+	[SerializeField] float shellForce;
+
 	[SerializeField] GameObject mussle;
-	[SerializeField] GameObject handPostion;
+	[SerializeField] GameObject handPosition;
 
 	
+	[SerializeField] GameObject aimPosition;
+	[SerializeField] GameObject shellPosition;
+	
+
+	public GameObject getShellPosition() {
+		return this.shellPosition;
+	}
 
 
 	// 0.3,0,0.5,
@@ -48,6 +60,42 @@ public class Weapon : MonoBehaviour
 
 	public void setReloadTimeLeft(float reloadTimeLeft) {
 		this.reloadTimeLeft = reloadTimeLeft;
+	}
+	
+	public void setShellPosition(GameObject shellPosition) {
+		this.shellPosition = shellPosition;
+	}
+
+	public float getShellForce() {
+		return this.shellForce;
+	}
+
+	public void setShellForce(float shellForce) {
+		this.shellForce = shellForce;
+	}
+
+	public GameObject getShells() {
+		return this.shells;
+	}
+
+	public void setShells(GameObject shells) {
+		this.shells = shells;
+	}
+
+	public GameObject getHandPosition() {
+		return this.handPosition;
+	}
+
+	public void setHandPosition(GameObject handPosition) {
+		this.handPosition = handPosition;
+	}
+
+	public GameObject getAimPosition() {
+		return this.aimPosition;
+	}
+
+	public void setAimPosition(GameObject aimPosition) {
+		this.aimPosition = aimPosition;
 	}
 
 	public GameObject getFireExplosion() {
@@ -66,20 +114,20 @@ public class Weapon : MonoBehaviour
 		this.mussle = mussle;
 	}
 
-	public GameObject getHandPostion() {
-		return this.handPostion;
-	}
-
-	public void setHandPostion(GameObject handPostion) {
-		this.handPostion = handPostion;
-	}
-
 	public GameObject getProj() {
 		return this.proj;
 	}
 
 	public void setProj(GameObject proj) {
 		this.proj = proj;
+	}
+	
+	public bool isLaunchShells() {
+		return this.launchShells;
+	}
+
+	public void setLaunchShells(bool launchShells) {
+		this.launchShells = launchShells;
 	}
 
 	public int getMagazine() {
@@ -205,8 +253,6 @@ public class Weapon : MonoBehaviour
     void Start()
     {
        reloadTimeLeft = 0f; 
-	   mussle = GetComponent<Transform>().GetChild(0).gameObject;
-	   handPostion = GetComponent<Transform>().GetChild(1).gameObject;
     }
 
     // Update is called once per frame
