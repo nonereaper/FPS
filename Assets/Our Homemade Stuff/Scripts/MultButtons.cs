@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using TMPro;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class MultButtons : MonoBehaviour
 {
     private NetworkManager networkManager;
+    [SerializeField] GameObject inputFieldGameObject;
 
     // https://learn.unity.com/tutorial/working-with-textmesh-pro#
     [SerializeField] GameObject camera, canvas;
@@ -33,5 +35,9 @@ public class MultButtons : MonoBehaviour
         Debug.Log("Ran Client");
         camera.SetActive(false);
         canvas.SetActive(false);
+    }
+    public void setAddress() {
+        InputField inputField = inputFieldGameObject.GetComponent<InputField>();
+        
     }
 }

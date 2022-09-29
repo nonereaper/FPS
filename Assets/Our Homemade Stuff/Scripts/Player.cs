@@ -1,8 +1,6 @@
 using System.Collections;
 using System;
-using Unity.Netcode;
-using TMPro;
-using Unity.Networking.Transport;
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +8,7 @@ using UnityEngine;
 /* https://www.youtube.com/watch?v=n0GQL5JgJcY&list=PLrnPJCHvNZuB5ATsJZLKX3AW4V9XaIV9b&index=1
     Video series used to write help write movement code
 */
-public class Player : NetworkBehaviour
+public class Player : MonoBehaviour
 {
     private Rigidbody rb;
     private Transform tf;
@@ -38,7 +36,7 @@ public class Player : NetworkBehaviour
     private String highlightedUse;
     private GameObject holdingObstacle;
 
-    public TMP_Text multInfo, serverInfo;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -60,12 +58,7 @@ public class Player : NetworkBehaviour
         isGrounded = false;
         isCrouching = false;
         holdingObstacle = null;
-        if (NetworkManager.Singleton.IsHost) {
-            multInfo.text = "Host";
-        } else {
-            multInfo.text = "Client";
-        }
-        serverInfo.text = "";
+        
     }
     public GameObject getController() {
         return controllerObject;
@@ -165,7 +158,6 @@ public class Player : NetworkBehaviour
         rb.AddForce(new Vector3(x,y,z),ForceMode.VelocityChange);
     }
     void FixedUpdate() {
-        if (IsOwner) {
         double tempAngle = Math.PI*angle/180, tempAngleP = tempAngle+(Math.PI/2);
         if (tempAngleP > Math.PI) {
             tempAngleP -= Math.PI*2;
@@ -193,23 +185,11 @@ public class Player : NetworkBehaviour
             //rb.velocity = new Vector3(x,jump,z);
             rb.AddForce(new Vector3(0,jump,0),ForceMode.VelocityChange);
         }
-        }
     }
     // Update is called once per frame
     void Update()
     {
-        serverInfo.text = "";
-        if (NetworkManager.Singleton.IsHost) {
-            IReadOnlyList<NetworkClient> t = NetworkManager.ConnectedClientsList;
-            for (int i = 0; i < t.Count; i++) {
-                serverInfo.text += t[i].ClientId + ", ";
-            }
-            //serverInfo 
-        } else {
-            serverInfo.text = NetworkManager.Singleton.ConnectedHostname;
-            var utpTransport = (Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
-        }
-        if (IsOwner) {
+        
         bool canFire = Input.GetButton("Fire1") || Input.GetButtonDown("Fire1");
         if (canFire) {
             projectileCreator.useWeapon(Input.GetButtonDown("Fire1"));
@@ -296,7 +276,6 @@ public class Player : NetworkBehaviour
             }
         }
         moveProjectileCreatorAndUse();
-        }
     }
     
 }
