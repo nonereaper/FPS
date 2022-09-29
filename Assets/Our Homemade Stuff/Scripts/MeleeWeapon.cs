@@ -9,19 +9,47 @@ public class MeleeWeapon : MonoBehaviour
     [SerializeField] float attackSpeed;
     [SerializeField] bool turn90;
 	[SerializeField] float swingTime;
-	[SerializeField] double startAngleOfSwing;
-	[SerializeField] double endAngleOfSwing;
+	[SerializeField] float startAngleOfSwing;
+	[SerializeField] float endAngleOfSwing;
 
     [SerializeField] GameObject handPosition;
 
-	private float reloadTimeLeft;
+	private float timeLeftInSwing;
+	private float angleSwingLeft;
+	private Vector3 origPos;
+	private Vector3 origRot;
 
-	public float getReloadTimeLeft() {
-		return this.reloadTimeLeft;
+
+	public Vector3 getOrigPos() {
+		return this.origPos;
 	}
 
-	public void setReloadTimeLeft(float reloadTimeLeft) {
-		this.reloadTimeLeft = reloadTimeLeft;
+	public void setOrigPos(Vector3 origPos) {
+		this.origPos = origPos;
+	}
+
+	public Vector3 getOrigRot() {
+		return this.origRot;
+	}
+
+	public void setOrigRot(Vector3 origRot) {
+		this.origRot = origRot;
+	}
+
+	public Object getTimeLeftInSwing() {
+		return this.timeLeftInSwing;
+	}
+
+	public void setTimeLeftInSwing(Object timeLeftInSwing) {
+		this.timeLeftInSwing = timeLeftInSwing;
+	}
+
+	public float getAngleSwingLeft() {
+		return this.angleSwingLeft;
+	}
+
+	public void setAngleSwingLeft(float angleSwingLeft) {
+		this.angleSwingLeft = angleSwingLeft;
 	}
 
 	public bool isTurn90() {
@@ -40,19 +68,19 @@ public class MeleeWeapon : MonoBehaviour
 		this.swingTime = swingTime;
 	}
 
-	public double getStartAngleOfSwing() {
+	public float getStartAngleOfSwing() {
 		return this.startAngleOfSwing;
 	}
 
-	public void setStartAngleOfSwing(double startAngleOfSwing) {
+	public void setStartAngleOfSwing(float startAngleOfSwing) {
 		this.startAngleOfSwing = startAngleOfSwing;
 	}
 
-	public double getEndAngleOfSwing() {
+	public float getEndAngleOfSwing() {
 		return this.endAngleOfSwing;
 	}
 
-	public void setEndAngleOfSwing(double endAngleOfSwing) {
+	public void setEndAngleOfSwing(float endAngleOfSwing) {
 		this.endAngleOfSwing = endAngleOfSwing;
 	}
 

@@ -1929,11 +1929,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  attackSpeed: 0.5
+  attackSpeed: 2.5
   turn90: 1
   swingTime: 0
-  startAngleOfSwing: 0
-  endAngleOfSwing: 0
+  startAngleOfSwing: 45
+  endAngleOfSwing: 135
   handPosition: {fileID: 819913292}
 --- !u!4 &1768831706
 Transform:

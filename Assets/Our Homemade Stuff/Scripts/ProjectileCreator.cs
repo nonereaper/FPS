@@ -27,7 +27,7 @@ public class ProjectileCreator : MonoBehaviour
         controller = controllerObject.GetComponent<Controller>();
         time = UnityEngine.Time.time;
         time2 = UnityEngine.Time.time;
-        meleeTime = UnityEngine.Time.time;
+        meleeTime = 0;
         weaponSlot = new GameObject[9];
         currentWeaponSlot = 0;
     }
@@ -134,12 +134,16 @@ public class ProjectileCreator : MonoBehaviour
                 return;
             }
             time = UnityEngine.Time.time;
-            meleeTime = currentWeapon.getSwingTime();
+            
+            currentWeapon.setTimeLeftInSwing(currentWeapon.getSwingTime());
             Transform tempTf = currentWeapon.GetComponent<Transform>();
+            currentWeapon.setOrigPos(tempTf.position);
+            currentWeapon.setOrigRot(tempTf.rotation);
             if (currentWeapon.isTurn90()) {
-                tempTf.localRotation = Quaternion.Euler(0f,0f,-90f);
-                //tempTf.localPosition = parentClass.getWeaponLocationTransform().position - currentWeapon.getHandPosition().GetComponent<Transform>().position;
+                tempTf.RotateAround(parentClass.getWeaponLocationTransform().position,parentClass.getWeaponLocationTransform().forward,90f);
             }
+            tempTf.RotateAround(parentClass.getWeaponLocationTransform().position,parentClass.getWeaponLocationTransform().up,currentWeapon.getStartAngleOfSwing());
+                
         } else { // do weapon
             Weapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<Weapon>();
             
@@ -198,6 +202,12 @@ public class ProjectileCreator : MonoBehaviour
                     currentWeapon.setReloadTimeLeft(0f);
                 }
             }
+        } else if (currentWeaponSlot == 0 && meleeTime != 0) {
+            MeleeWeapon currentWeapon = weaponSlot[currentWeaponSlot].GetComponent<MeleeWeapon>();
+            Transform tempTf = currentWeapon.GetComponent<Transform>();
+            float changeInAngle = currentWeapon.getEndAngleOfSwing() - currentWeapon.getStartAngleOfSwing();
+            tempTf.RotateAround(parentClass.getWeaponLocationTransform().position,parentClass.getWeaponLocationTransform().up,changeInAngle);
+            meleeTime=meleeTime-(UnityEngine.Time.time-time2);
         }
         time2 = UnityEngine.Time.time;
     }

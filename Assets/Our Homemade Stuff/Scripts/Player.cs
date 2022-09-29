@@ -2,6 +2,7 @@ using System.Collections;
 using System;
 using Unity.Netcode;
 using TMPro;
+using Unity.Networking.Transport;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -164,6 +165,7 @@ public class Player : NetworkBehaviour
         rb.AddForce(new Vector3(x,y,z),ForceMode.VelocityChange);
     }
     void FixedUpdate() {
+        if (IsOwner) {
         double tempAngle = Math.PI*angle/180, tempAngleP = tempAngle+(Math.PI/2);
         if (tempAngleP > Math.PI) {
             tempAngleP -= Math.PI*2;
@@ -191,6 +193,7 @@ public class Player : NetworkBehaviour
             //rb.velocity = new Vector3(x,jump,z);
             rb.AddForce(new Vector3(0,jump,0),ForceMode.VelocityChange);
         }
+        }
     }
     // Update is called once per frame
     void Update()
@@ -204,7 +207,9 @@ public class Player : NetworkBehaviour
             //serverInfo 
         } else {
             serverInfo.text = NetworkManager.Singleton.ConnectedHostname;
+            var utpTransport = (Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
         }
+        if (IsOwner) {
         bool canFire = Input.GetButton("Fire1") || Input.GetButtonDown("Fire1");
         if (canFire) {
             projectileCreator.useWeapon(Input.GetButtonDown("Fire1"));
@@ -291,6 +296,7 @@ public class Player : NetworkBehaviour
             }
         }
         moveProjectileCreatorAndUse();
+        }
     }
     
 }
