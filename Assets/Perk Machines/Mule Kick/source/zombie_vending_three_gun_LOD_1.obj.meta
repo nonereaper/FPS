@@ -1,38 +1,13 @@
 fileFormatVersion: 2
-guid: 3dac1fbfb3f3f6743936f1ff3df5fa54
-SketchUpImporter:
+guid: d9d981854505dab41afa21871f0e88e9
+ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: mtl_zombie_vending_doubletap2
-    second: {fileID: 2100000, guid: 9851547155b843044a32eb34615b4d92, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: mtl_zombie_vending_doubletap2_on
-    second: {fileID: 2100000, guid: 73ff3993da736ac4187554a76e848ab9, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: mtl_zombie_vending_doubletap2_vent_on
-    second: {fileID: 2100000, guid: 0e35760e7fdf76d42b2a38b29fb4a466, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: ~-gzombie_vending_doubletap2_c
-    second: {fileID: 2800000, guid: 93d4ac1d7ef035e4dbc08f92a79d845e, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: ~-gzombie_vending_doubletap2_vent_on
-    second: {fileID: 2800000, guid: 53655d516b06a9a4894fb66f2380e1dd, type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 2
-    materialName: 2
-    materialSearch: 0
+    materialName: 0
+    materialSearch: 1
     materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
@@ -60,7 +35,7 @@ SketchUpImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.0254
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -101,7 +76,7 @@ SketchUpImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 0
+  importAnimation: 1
   humanDescription:
     serializedVersion: 3
     human: []
@@ -113,14 +88,14 @@ SketchUpImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.0254
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
@@ -129,10 +104,3 @@ SketchUpImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-  generateBackFace: 1
-  mergeCoplanarFaces: 0
-  selectedNodes: 0000000001000000
-  assetHash:
-    serializedVersion: 2
-    Hash: ee419e1e9e20c204a4968c616551d495
-  fileUnit: 0
