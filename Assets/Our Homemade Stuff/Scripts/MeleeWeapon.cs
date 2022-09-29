@@ -17,7 +17,7 @@ public class MeleeWeapon : MonoBehaviour
 	private float timeLeftInSwing;
 	private float angleSwingLeft;
 	private Vector3 origPos;
-	private Vector3 origRot;
+	private Quaternion origRot;
 
 
 	public Vector3 getOrigPos() {
@@ -28,19 +28,19 @@ public class MeleeWeapon : MonoBehaviour
 		this.origPos = origPos;
 	}
 
-	public Vector3 getOrigRot() {
+	public Quaternion getOrigRot() {
 		return this.origRot;
 	}
 
-	public void setOrigRot(Vector3 origRot) {
+	public void setOrigRot(Quaternion origRot) {
 		this.origRot = origRot;
 	}
 
-	public Object getTimeLeftInSwing() {
+	public float getTimeLeftInSwing() {
 		return this.timeLeftInSwing;
 	}
 
-	public void setTimeLeftInSwing(Object timeLeftInSwing) {
+	public void setTimeLeftInSwing(float timeLeftInSwing) {
 		this.timeLeftInSwing = timeLeftInSwing;
 	}
 
