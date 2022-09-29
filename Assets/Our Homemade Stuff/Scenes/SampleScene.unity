@@ -325,6 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd7cc81dfb4cfa740b8c12a14dd1430f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputFieldGameObject: {fileID: 12121759}
   camera: {fileID: 1565989637}
   canvas: {fileID: 2105496219}
 --- !u!1 &227033966
