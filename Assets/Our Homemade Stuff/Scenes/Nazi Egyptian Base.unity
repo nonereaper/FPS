@@ -315,7 +315,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0a9457c9e664a2749bb58f29e41aa82b, type: 3}
       propertyPath: m_Name
-      value: 849985ce858c4074a4fe28caaf0b3a69.obj
+      value: Double Tap Machine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a9457c9e664a2749bb58f29e41aa82b, type: 3}
@@ -2042,7 +2042,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 1ce18be1288f35c4f8edae373541bf56, type: 2}
     - target: {fileID: 919132149155446097, guid: dd7e32ae92240a94c9394bd558b81540, type: 3}
       propertyPath: m_Name
-      value: 24c9c338c3254ba98e6dbc266c97e764.obj
+      value: Juggernog Machine
       objectReference: {fileID: 0}
     - target: {fileID: 3418002285673343216, guid: dd7e32ae92240a94c9394bd558b81540, type: 3}
       propertyPath: m_Materials.Array.data[0]
