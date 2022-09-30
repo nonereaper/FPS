@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Our Homemade Stuff/Scenes/Nazi Egyptian Base.unity
     guid: 4ec085d8140d5874887f6f1d5c471588
+  - enabled: 1
+    path: Assets/Our Homemade Stuff/Scenes/Lobby Screen.unity
+    guid: 766376cc4c0161141bd9a214e118cea4
   m_configObjects: {}
