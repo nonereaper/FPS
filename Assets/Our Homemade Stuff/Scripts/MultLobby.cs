@@ -10,9 +10,9 @@ public class MultLobby : NetworkBehaviour
     private TMP_Text connectedClientListText;
 
     public override void OnNetworkSpawn() {
-        connectedClientListText = GameObject.Find("InLobby/LobbyClients").GetComponent<TMP_Text>();
+        connectedClientListText = GameObject.Find("LobbyClients").GetComponent<TMP_Text>();
         if (IsServer) {
-            connectedClientList = "H: " + OwnerClientId + "\n";
+            connectedClientList = "Server Address: " + ((Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.NetworkConfig.NetworkTransport).ConnectionData.Address +"\nH: " + OwnerClientId + "\n";
             connectedClientListText.text = connectedClientList;
         } else 
         addToConnectedClientListServerRpc();

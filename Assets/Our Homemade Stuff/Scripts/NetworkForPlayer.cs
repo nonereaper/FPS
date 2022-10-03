@@ -32,7 +32,7 @@ public class NetworkForPlayer : NetworkBehaviour
         } else {
             serverInfo.text = NetworkManager.Singleton.ConnectedHostname;
         }
-        var utpTransport = (Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
+        Unity.Netcode.Transports.UTP.UnityTransport utpTransport = (Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
 
         serverInfo.text += "   " + utpTransport.ConnectionData.Address;
     }
