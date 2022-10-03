@@ -11,7 +11,7 @@ public class MultButtons : MonoBehaviour
 {
     private NetworkManager networkManager;
     private Unity.Netcode.Transports.UTP.UnityTransport utpTransport;
-    [SerializeField] TMP_Text infoText, runText, lobbyText;
+    [SerializeField] TMP_Text infoText, runText;
     [SerializeField] GameObject inputFieldGameObject, startButton;
 
     // https://learn.unity.com/tutorial/working-with-textmesh-pro#
@@ -47,15 +47,13 @@ public class MultButtons : MonoBehaviour
     }
     // Update is called once per frame
     void Update()
-    {       
-        if (inLobby.activeInHierarchy && networkManager.IsHost) {
-            lobbyText.text = "Host: " + networkManager.ConnectedHostname + "\n";
-            IReadOnlyList<NetworkClient> l = networkManager.ConnectedClientsList;
-            for (int i = 1; i < l.Count; i++) {
-                lobbyText.text += "Client: " + l[i].ClientId;
-                if (i+1 < l.Count) {
-                    lobbyText.text += "\n";
-                }
+    {   
+        if (stateOfMult == 3) {
+            if (!networkManager.IsConnectedClient) {
+                    infoText.text = "Trying to Connecting";
+                } else {
+                    findLobby.SetActive(false);
+                    inLobby.SetActive(true);
             }
         }
     }
@@ -75,7 +73,7 @@ public class MultButtons : MonoBehaviour
         }
     }
     public void runClient() {
-        if (stateOfMult == 2) {
+        if (stateOfMult == 2 || stateOfMult == 3) {
         stateOfMult = 0;
         infoText.text = "";
         inputFieldGameObject.SetActive(false);
@@ -98,17 +96,13 @@ public class MultButtons : MonoBehaviour
         }
     }
     public void runMult() {
+        inLobby.SetActive(true);
         if (stateOfMult == 1) {
-            networkManager.StartHost();
             findLobby.SetActive(false);
+            networkManager.StartHost();
         } else {
             networkManager.StartClient();
-            if (!networkManager.IsConnectedClient) {
-                infoText.text = "Failed to connect";
-            } else {
-                findLobby.SetActive(false);
-                inLobby.SetActive(true);
-            }
+            stateOfMult = 3;
         }
 
     }
