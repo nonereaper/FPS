@@ -5,13 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Our Homemade Stuff/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
+  - enabled: 0
     path: Assets/Samples/Netcode for GameObjects/1.0.2/Bootstrap/Scenes/Bootstrap.unity
     guid: 7a6e122bd2b01425989087a299b6bb93
-  - enabled: 1
+  - enabled: 0
     path: Assets/Our Homemade Stuff/Scenes/Nazi Egyptian Base.unity
     guid: 4ec085d8140d5874887f6f1d5c471588
   - enabled: 1
