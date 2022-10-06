@@ -22,7 +22,7 @@ public class m_Player : NetworkBehaviour
     [SerializeField] LayerMask ground;
 
     // is character crouching
-    private bool isCrouching;
+    private NetworkVariable<bool> isCrouching = new NetworkVariable<bool>();
     // camera's angle up and down
     private NetworkVariable<float> cameraAngle = new NetworkVariable<float>();
     // character's angle left and right 
@@ -43,7 +43,7 @@ public class m_Player : NetworkBehaviour
         cameraAngle.Value = 0f;
         characterAngle.Value = 0f;
         rb = GetComponent<Rigidbody>();
-        isCrouching = false;
+        isCrouching.value = false;
         controller = GameObject.Find("Controller").GetComponent<Controller>();
     }
     [ServerRpc]
@@ -59,25 +59,62 @@ public class m_Player : NetworkBehaviour
         else if (angle2 < -90f)
         angle2 = -90f;
         characterAngle.Value = angle2;
+        rotateArmsServerRpc(angle2);
         camera.transform.localRotation = Quaternion.Euler(angle2,0f,0f);
+    }
+    [ServerRpc]
+    private void rotateArmsServerRpc(float angle) {
+        double changeX = Math.Cos(angle)*0.25, changeY = Math.Sin(angle)*0.25;
+        leftArm.transform.localPosition = new Vector3(leftArm.transform.localPosition.x,(float)(changeY+0.23f),(float)changeX);
+        leftArm.transform.localRotation = Quaternion.Euler(angle,0,0);
+        rightArm.transform.localPosition = new Vector3(rightArm.transform.localPosition.x,(float)(changeY+0.23f),(float)changeX);
+        rightArm.transform.localRotation = Quaternion.Euler(angle,0,0);
     }
     [ServerRpc]
     private void movePlayerServerRpc(Vector3 velocity) {
         rb.AddForce(velocity - rb.velocity, ForceMode.VelocityChange);
     }
+    [ServerRpc]
+    private void crouchPlayerServerRpc() {
+        Transform upperLTf = leftLeg.transform.GetChild(0), lowerLTf = leftLeg.transform.GetChild(1),
+        upperRTf = rightLeg.transform.GetChild(0), lowerRTf = rightLeg.transform.GetChild(1);
+        if (isCrouching.value) {
+            upperLTf.localPosition = new Vector3(0,0.4f,0.15f);
+            upperLTf.localRotation = Quaternion.Euler(-25,0,0);
+            lowerLTf.localPosition = new Vector3(0,0.15f,-0.15f);
+            upperRTf.localPosition = new Vector3(0,0.4f,0.15f);
+            upperRTf.localRotation = Quaternion.Euler(-25,0,0);
+            lowerRTf.localPosition = new Vector3(0,0.15f,-0.15f);
+        } else {
+            upperLTf.localPosition = new Vector3(0,0.25f,0);
+            upperLTf.localRotation = Quaternion.Euler(0,0,0);
+            lowerLTf.localPosition = new Vector3(0,-0.25f,-0);
+            upperRTf.localPosition = new Vector3(0,0.25f,0);
+            upperRTf.localRotation = Quaternion.Euler(0,0,0);
+            lowerRTf.localPosition = new Vector3(0,-0.25f,-0);
+        }
+    }
     private bool isGrounded() {
         return 
-        Physics.CheckBox(leftLeg.transform.position,new Vector3(leftLeg.transform.localScale.x/2,leftLeg.transform.localScale.y/2+0.2f,leftLeg.transform.localScale.z/2),leftLeg.transform.rotation,ground) ||
-        Physics.CheckBox(rightLeg.transform.position,new Vector3(rightLeg.transform.localScale.x/2,rightLeg.transform.localScale.y/2+0.2f,rightLeg.transform.localScale.z/2),rightLeg.transform.rotation,ground);
+        Physics.CheckBox(leftLeg.transform.GetChild(1).position,new Vector3(leftLeg.transform.GetChild(1).localScale.x/2,leftLeg.transform.GetChild(1).localScale.y/2+0.2f,leftLeg.transform.GetChild(1).localScale.z/2),leftLeg.transform.GetChild(1).rotation,ground) ||
+        Physics.CheckBox(rightLeg.transform.GetChild(1).position,new Vector3(rightLeg.transform.GetChild(1).localScale.x/2,rightLeg.transform.GetChild(1).localScale.y/2+0.2f,rightLeg.transform.GetChild(1).localScale.z/2),rightLeg.transform.GetChild(1).rotation,ground);
     }
     void FixedUpdate() {
         if (!IsOwner) return;
         rotatePlayerServerRpc(Input.GetAxis("Mouse X") * Time.deltaTime * mouseSen);
         rotateCameraServerRpc(Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSen);
 
+        if (Input.GetButtonDown("Crouch")) {
+            isCrouching.value = true;
+            crouchPlayerServerRpc();
+        }
+        if (Input.GetButtonUp("Crouch")) {
+            isCrouching.value = false;
+            crouchPlayerServerRpc();
+        }
         double tempAngle = characterAngle.Value/180*Math.PI, tempAngleP = tempAngle+(Math.PI/2);
         float tempMovementSpeed = movementSpeed;
-        if (isCrouching)
+        if (isCrouching.value)
             tempMovementSpeed *= crouchSpeedMult;
         else if (Input.GetButton("Sprint"))
             tempMovementSpeed *= sprintSpeedMult;
