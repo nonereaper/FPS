@@ -36,6 +36,32 @@ public class Controller : MonoBehaviour
         }
         
     }
+    public int getClosestWeapon(Vector3 p, float rad) {
+        float distance = float.MaxValue;
+        int index = -1;
+        for (int i = 0; i < weapons.Count; i++) {
+            float tempDistance = Vector3.Distance(weapons[i].GetComponent<Transform>().position,p);
+            if (tempDistance <= rad && tempDistance < distance) {
+                index = i;  
+                distance = tempDistance;
+                savedType = 0;
+            }
+        }
+        return index;
+    }
+    public int getClosestProp(Vector3 p, float rad) {
+        float distance = float.MaxValue;
+        int index = -1;
+        for (int i = 0; i < obstacles.Count; i++) {
+            float tempDistance = Vector3.Distance(obstacles[i].GetComponent<Transform>().position,p);
+            if (tempDistance <= rad && tempDistance < distance) {
+                index = i;  
+                distance = tempDistance;
+                savedType = 0;
+            }
+        }
+        return index;
+    }
     public GameObject getClosestObject(Vector3 p, float rad) {
         GameObject tempObject = null;
         float distance = float.MaxValue;
@@ -80,7 +106,12 @@ public class Controller : MonoBehaviour
 	public void setSavedtype(int savedType) {
 		this.savedType = savedType;
 	}
-    // add weapon
+    public GameObject getWeapon(int index) {
+        return weapons[index];
+    }
+    public GameObject getProp(int index) {
+        return obstacles[index];
+    }
     public void removeWeapon(GameObject w) {
         weapons.Remove(w);
     }
