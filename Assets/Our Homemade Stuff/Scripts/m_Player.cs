@@ -38,6 +38,7 @@ public class m_Player : NetworkBehaviour
     private int currentWeaponIndex;
     private NetworkVariable<float> savedTime = new NetworkVariable<float>();
 
+    [SerializeField] private GameObject camera;
     [SerializeField] private GameObject leftArm;
     [SerializeField] private GameObject rightArm;
     [SerializeField] private GameObject emptyWeaponLocation;
@@ -120,7 +121,7 @@ public class m_Player : NetworkBehaviour
         characterAngle.Value = angle2;
         rotateArmsServerRpc(angle2/180*Math.PI);
         moveProjectileCreatorAndUseServerRpc(angle2/180*Math.PI);
-        GetComponent<Camera>().transform.localRotation = Quaternion.Euler(angle2,0f,0f);
+        camera.transform.localRotation = Quaternion.Euler(angle2,0f,0f);
     }
     [ServerRpc]
     private void rotateArmsServerRpc(double angle) {

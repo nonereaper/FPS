@@ -80,7 +80,6 @@ public class MultLobbyController : MonoBehaviour
             infoText.text = "";
         } else if (value == 2) {
             networkManager.StartClient();
-            Debug.Log();
         }
     }
     // Update is called once per frame
