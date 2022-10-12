@@ -6,25 +6,18 @@ using TMPro;
 
 public class MultLobby : NetworkBehaviour
 {
-    private string connectedClientList;
+    private string address;
     private TMP_Text connectedClientListText;
 
     public override void OnNetworkSpawn() {
         connectedClientListText = GameObject.Find("LobbyClients").GetComponent<TMP_Text>();
+        Debug.Log(connectedClientListText != null);
         if (IsServer) {
-            connectedClientList = "Server Address: " + ((Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.NetworkConfig.NetworkTransport).ConnectionData.Address +"\nH: " + OwnerClientId + "\n";
-            connectedClientListText.text = connectedClientList;
-        } else 
-        addToConnectedClientListServerRpc();
-    }
-
-    [ServerRpc]
-    public void addToConnectedClientListServerRpc() {
-        connectedClientList += "C: " + OwnerClientId + "\n";
-        addToConnectedClientListClientRpc(connectedClientList);
+            address = ((Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.NetworkConfig.NetworkTransport).ConnectionData.Address+"";
+        }
     }
     [ClientRpc]
-    public void addToConnectedClientListClientRpc(string s) {
+    public void setListOfClientsClientRpc(string s) {
         connectedClientListText.text = s;
     }
     // Start is called before the first frame update
@@ -36,5 +29,17 @@ public class MultLobby : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsServer) {
+            IReadOnlyList<NetworkClient> list = NetworkManager.ConnectedClientsList;
+            string temp = "Server Address: "+ address + ".\n";
+            for (int i = 0; i < list.Count; i++) {
+                string temp2 = "Client: ";
+                if (i == 0)
+                    temp2 = "Host: ";
+                temp+= temp2 + list[i].ClientId + ".\n";
+            }
+            setListOfClientsClientRpc(temp);
+        }
+        
     }
 }

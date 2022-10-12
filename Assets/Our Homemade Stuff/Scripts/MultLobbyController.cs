@@ -11,7 +11,7 @@ public class MultLobbyController : MonoBehaviour
 {
     private NetworkManager networkManager;
     private Unity.Netcode.Transports.UTP.UnityTransport utpTransport;
-    [SerializeField] TMP_Text infoText, runText;
+    [SerializeField] TMP_Text infoText, runText, lobbyClients;
     [SerializeField] GameObject IPAddressInput, startButton, selectorDropdown, backButton;
 
     // https://learn.unity.com/tutorial/working-with-textmesh-pro#
@@ -77,8 +77,10 @@ public class MultLobbyController : MonoBehaviour
         int value = selectorDropdown.GetComponent<TMP_Dropdown>().value;
         if (value == 1) {
             networkManager.StartHost();
+            infoText.text = "";
         } else if (value == 2) {
             networkManager.StartClient();
+            Debug.Log();
         }
     }
     // Update is called once per frame
@@ -90,10 +92,13 @@ public class MultLobbyController : MonoBehaviour
                 infoText.text = "";
             }
         }
+        else if (stateOfMult == 2) {
+
+        }
     }
     public void setAddress() {
         InputField inputField = IPAddressInput.GetComponent<InputField>();
-        int value = selectorDropdown.GetComponent<Dropdown>().value;
+        int value = selectorDropdown.GetComponent<TMP_Dropdown>().value;
         if (value == 1) {
             utpTransport.ConnectionData.Address = inputField.text;
         } else if (value == 2) {
@@ -101,11 +106,18 @@ public class MultLobbyController : MonoBehaviour
         }
     }
     public void escapeLobby() {
+        if (networkManager.IsServer) {
+            IReadOnlyList<NetworkClient> list = NetworkManager.Singleton.ConnectedClientsList;
+            for (int i = 0; i < list.Count; i++) {
+                networkManager.DisconnectClient(list[i].ClientId);
+            }
+        }
         networkManager.Shutdown();
         backButton.SetActive(false);
         selectorDropdown.SetActive(true);
         stateOfMult = 0;
         infoText.text = "";
+        lobbyClients.text = "";
         doDropdown();
     }
 }
