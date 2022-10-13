@@ -73,13 +73,14 @@ public class MultLobbyController : MonoBehaviour
         startButton.SetActive(false);
         backButton.SetActive(true);
         selectorDropdown.SetActive(false);
-        infoText.text = "Connecting";
+        infoText.text = "Connecting to ";
         int value = selectorDropdown.GetComponent<TMP_Dropdown>().value;
         if (value == 1) {
             networkManager.StartHost();
             infoText.text = "";
         } else if (value == 2) {
             networkManager.StartClient();
+            infoText.text += "" + utpTransport.ConnectionData.ServerListenAddress;
         }
     }
     // Update is called once per frame
