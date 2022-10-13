@@ -140,8 +140,10 @@ MonoBehaviour:
   leftArm: {fileID: 5820689285997889760}
   rightArm: {fileID: 5820689284528055174}
   emptyWeaponLocation: {fileID: 5820689285954588698}
+  aimCamera: {fileID: 0}
   leftLeg: {fileID: 5820689284644726611}
   rightLeg: {fileID: 5820689285130776947}
+  movementHitbox: {fileID: 5820689285864469473}
   emptyUse: {fileID: 5820689285374986712}
   emptyProjectile: {fileID: 5820689285185978961}
 --- !u!1 &5820689284390229905
