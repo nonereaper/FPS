@@ -80,6 +80,7 @@ public class MultLobbyController : MonoBehaviour
             infoText.text = "";
         } else if (value == 2) {
             networkManager.StartClient();
+            //infoText.text = "start client is " + utpTransport.StartClient();
             infoText.text += "" + utpTransport.ConnectionData.ServerListenAddress;
         }
     }

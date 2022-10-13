@@ -38,6 +38,11 @@ public class MultLobby : NetworkBehaviour
                     temp2 = "Host: ";
                 temp+= temp2 + list[i].ClientId + ".\n";
             }
+            
+            Dictionary<ulong, PendingClient> list2 = NetworkManager.PendingClients;
+            foreach (var thing in list2) {
+                temp+= "Incoming: " + thing.Key + ", and is " + thing.Value.ConnectionState + ".\n";
+            }
             setListOfClientsClientRpc(temp);
         }
         
