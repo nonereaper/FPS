@@ -13,14 +13,14 @@ public class m_LobbyPlayer : NetworkBehaviour
 
     public override void OnNetworkSpawn() {
         if (IsServer) {
-            serverAddress = NetworkManager.NetworkConfig.NetworkTransport.ConnectionData.Address+"";
+            serverAddress = ((Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.NetworkConfig.NetworkTransport).ConnectionData.Address+"";
         }
         if (IsHost) {
             selectSceneDropdown.SetActive(true);
         }
     }
     [ClientRpc]
-    private void updatePlayerListClientRpc(String s) {
+    private void updatePlayerListClientRpc(string s) {
         playerList.text = s;
     }
     private string getPlayerName() {
