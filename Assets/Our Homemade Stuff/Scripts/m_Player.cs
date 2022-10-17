@@ -83,18 +83,24 @@ public class m_Player : NetworkBehaviour
         GameObject weapon = controller.getWeapon(weaponTakenIndex);
         
         int index = findWeaponSlot(weapon.GetComponent<MeleeWeapon>() != null);
-        GameObject outWeapon = weaponBar[index];
+       
+        removeWeaponCurrentServerRpc(index);
 
-        if (outWeapon != null) {
-            outWeapon.transform.SetParent(controller.getWeaponTransformation());
-            controller.addWeapon(outWeapon);
-            outWeapon.SetActive(true);
-        }
         controller.removeWeapon(weapon);
         weaponBar[index] = weapon;
         weapon.transform.SetParent(leftArm.transform);
         if (index == currentWeaponIndex) {
             swapWeaponToServerRpc(index);
+        }
+    }
+    [ServerRpc]
+    private void removeWeaponCurrentServerRpc(int index) {
+        GameObject outWeapon = weaponBar[index];
+        weaponBar[index] = null;
+        if (outWeapon != null) {
+            outWeapon.transform.SetParent(controller.getWeaponTransformation());
+            controller.addWeapon(outWeapon);
+            outWeapon.SetActive(true);
         }
     }
     private int findWeaponSlot(bool isMeleeWeapon) {
@@ -177,14 +183,14 @@ public class m_Player : NetworkBehaviour
         rotatePlayerServerRpc(Input.GetAxis("Mouse X") * Time.deltaTime * mouseSen);
         rotateCameraServerRpc(Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSen);
 
-        if (Input.GetButtonDown("Crouch")) {
-            isCrouching.Value = true;
-            crouchPlayerServerRpc();
-        }
         if (Input.GetButtonUp("Crouch")) {
             isCrouching.Value = false;
             crouchPlayerServerRpc();
+        } else if (Input.GetButtonDown("Crouch")) {
+            isCrouching.Value = true;
+            crouchPlayerServerRpc();
         }
+        
         double tempAngle = characterAngle.Value/180*Math.PI, tempAngleP = tempAngle+(Math.PI/2);
         float tempMovementSpeed = movementSpeed;
         if (isCrouching.Value)
