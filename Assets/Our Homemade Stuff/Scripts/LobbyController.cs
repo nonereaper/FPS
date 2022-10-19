@@ -33,6 +33,7 @@ public class LobbyController : MonoBehaviour
     void Start()
     {
         networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+        networkManager.NetworkConfig.EnableNetworkLogs = true;
         utpTransport = (Unity.Netcode.Transports.UTP.UnityTransport)networkManager.NetworkConfig.NetworkTransport;
         
         utpTransport.ConnectionData.Address = getThisComputerAddress();
