@@ -1,0 +1,11 @@
+Model Information:
+* title:	Hussar tank
+* source:	https://sketchfab.com/3d-models/hussar-tank-d409d72e6cdc48c08a56a7295880b91c
+* author:	sanyaork (https://sketchfab.com/sanyaork)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Hussar tank" (https://sketchfab.com/3d-models/hussar-tank-d409d72e6cdc48c08a56a7295880b91c) by sanyaork (https://sketchfab.com/sanyaork) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
