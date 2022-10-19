@@ -25,7 +25,6 @@ public class m_LobbyController : MonoBehaviour
         IPAddressInput.SetActive(false);
         backButton.SetActive(false);
         // https://learn.microsoft.com/en-us/dotnet/api/system.net.ipaddress?view=net-6.0
-        // 
         utpTransport.ConnectionData.Address = getThisComputerAddress();
         infoText.text = "";
     }

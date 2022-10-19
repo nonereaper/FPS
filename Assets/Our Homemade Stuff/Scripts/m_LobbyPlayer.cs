@@ -7,16 +7,14 @@ using TMPro;
 public class m_LobbyPlayer : NetworkBehaviour
 {
     [SerializeField] private TMP_Text playerList;
-    [SerializeField] private GameObject selectSceneDropdown;
     private string serverAddress;
     private string playerName;
 
     public override void OnNetworkSpawn() {
         if (IsServer) {
+            playerList.text = "";
             serverAddress = ((Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.NetworkConfig.NetworkTransport).ConnectionData.Address+"";
-        }
-        if (IsHost) {
-            selectSceneDropdown.SetActive(true);
+            playerName = GameObject.Find("LobbyController").GetComponent<LobbyController>().m_getPlayerName();
         }
     }
     [ClientRpc]
@@ -40,6 +38,7 @@ public class m_LobbyPlayer : NetworkBehaviour
                 temp+= temp2 + mpc.getPlayerName() + " " + list[i].ClientId + ".\n";
             }
             
+            temp += "Server is listening: " +NetworkManager.IsListening + "\n";
             Dictionary<ulong, PendingClient> list2 = NetworkManager.PendingClients;
             foreach (var thing in list2) {
                 temp+= "Incoming: " + thing.Key + ", and is " + thing.Value.ConnectionState + ".\n";

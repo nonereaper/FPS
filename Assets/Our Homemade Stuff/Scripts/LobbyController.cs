@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System.Net;
+using System;
 using System.Net.Sockets;
 using TMPro;
 using UnityEngine.UI;
@@ -15,12 +16,19 @@ public class LobbyController : MonoBehaviour
 
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject s_menu;
-    [SerializeField] private GameObject m_menu;
     [SerializeField] private GameObject s_sceneSelect;
+    
+    private int s_sceneToLoad;
+    
+    [SerializeField] private string[] s_sceneNames;
+
+    [SerializeField] private GameObject m_menu;
     [SerializeField] private GameObject m_addressInput;
     [SerializeField] private GameObject m_portInput;
-    private int s_sceneToLoad;
-    [SerializeField] private string[] s_sceneNames;
+    [SerializeField] private GameObject m_nameInput;
+    [SerializeField] private TMP_Text m_status;
+    [SerializeField] private GameObject m_connectionedMenu;
+    private bool m_connecting;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,8 +37,12 @@ public class LobbyController : MonoBehaviour
         
         utpTransport.ConnectionData.Address = getThisComputerAddress();
         m_addressInput.GetComponent<InputField>().text = utpTransport.ConnectionData.Address;
-        m_portInput.GetComponent<InputField>().text = utpTransport.ConnectionData.Port;
+        utpTransport.SetConnectionData(utpTransport.ConnectionData.Address,utpTransport.ConnectionData.Port,utpTransport.ConnectionData.Address);
+        m_portInput.GetComponent<InputField>().text = utpTransport.ConnectionData.Port+"";
+        m_nameInput.GetComponent<InputField>().text = "TempName";
+        m_status.text = "";
 
+        m_connecting = false;
         s_sceneToLoad = 0;
         List<TMP_Dropdown.OptionData> s_scenesTemp = new List<TMP_Dropdown.OptionData>();
         for (int i = 0; i < s_sceneNames.Length; i++) {
@@ -69,14 +81,72 @@ public class LobbyController : MonoBehaviour
         SceneManager.LoadScene(s_sceneNames[s_sceneToLoad]);
     }
     public void m_setAddress() {
-        utpTransport.ConnectionData.Address = m_addressInput.GetComponent<InputField>().text;
+        utpTransport.SetConnectionData(m_addressInput.GetComponent<InputField>().text,utpTransport.ConnectionData.Port,m_addressInput.GetComponent<InputField>().text);
     }
     public void m_setPort() {
-        utpTransport.ConnectionData.Address = m_addressInput.GetComponent<InputField>().text;
+        bool failed = false;
+        ushort temp = utpTransport.ConnectionData.Port;
+        try {
+            temp = UInt16.Parse(m_portInput.GetComponent<InputField>().text);
+        } catch (Exception e) {
+            failed = true;
+            Debug.Log(e);
+        }
+        if (!failed) {
+            utpTransport.SetConnectionData(utpTransport.ConnectionData.Address,temp,utpTransport.ConnectionData.Address);
+        }
+    }
+    public string m_getPlayerName() {
+        return m_nameInput.GetComponent<InputField>().text;
+    }
+    public void m_runHost() {
+        m_status.text = "Running as host with server address: " +utpTransport.ConnectionData.Address + " and port number: " + utpTransport.ConnectionData.Port;
+        bool failedStart = false;
+        try {
+            networkManager.StartHost();
+        } catch (Exception e) {
+            failedStart = true;
+            m_status.text = e+"";
+        }
+        if (!failedStart) {
+            m_menu.SetActive(false);
+            m_connectionedMenu.SetActive(true);
+        }
+    }
+    public void m_runClient() {
+        m_status.text = "Connecting to host with server address: " +utpTransport.ConnectionData.Address + " and port number: " + utpTransport.ConnectionData.Port;
+        bool failedStart = false;
+        try {
+            networkManager.StartClient();
+        } catch (Exception e) {
+            failedStart = true;
+            m_status.text = e+"";
+        }
+        if (!failedStart) {
+            m_connecting = true;
+        }
+    }
+    public void m_disconnect() {
+        if (networkManager.IsServer) {
+            IReadOnlyList<NetworkClient> list = NetworkManager.Singleton.ConnectedClientsList;
+            for (int i = 0; i < list.Count; i++) {
+                networkManager.DisconnectClient(list[i].ClientId);
+            }
+        }
+        networkManager.Shutdown();
+        m_menu.SetActive(true);
+        m_connectionedMenu.SetActive(false);
+        m_status.text = "";
     }
     // Update is called once per frame
     void Update()
     {
-        
+        if (m_connecting) {
+            if (networkManager.IsConnectedClient) {
+                m_menu.SetActive(false);
+                m_connectionedMenu.SetActive(true);
+                m_connecting = false;
+            }
+        }
     }
 }
