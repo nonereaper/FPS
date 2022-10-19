@@ -8,14 +8,23 @@ public class m_LobbyPlayer : NetworkBehaviour
 {
     [SerializeField] private TMP_Text playerList;
     private string serverAddress;
+    private string portNumber;
     private string playerName;
 
     public override void OnNetworkSpawn() {
         if (IsServer) {
             playerList.text = "";
             serverAddress = ((Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.NetworkConfig.NetworkTransport).ConnectionData.Address+"";
-            playerName = GameObject.Find("LobbyController").GetComponent<LobbyController>().m_getPlayerName();
+            portNumber = ((Unity.Netcode.Transports.UTP.UnityTransport)NetworkManager.NetworkConfig.NetworkTransport).ConnectionData.Port+"";
+            
         }
+        if (IsOwner && IsClient) {
+            updatePlayerNameServerRpc(GameObject.Find("LobbyController").GetComponent<LobbyController>().m_getPlayerName());
+        }
+    }
+    [ServerRpc]
+    private void updatePlayerNameServerRpc(string s) {
+        playerName = s;
     }
     [ClientRpc]
     private void updatePlayerListClientRpc(string s) {
@@ -29,7 +38,7 @@ public class m_LobbyPlayer : NetworkBehaviour
     {
         if (IsServer) {
             IReadOnlyList<NetworkClient> list = NetworkManager.ConnectedClientsList;
-            string temp = "Server Address: "+ serverAddress + ".\n";
+            string temp = "Server Address: "+ serverAddress + ".\nPort Number: " + portNumber + "\n";
             for (int i = 0; i < list.Count; i++) {
                 m_LobbyPlayer mpc = NetworkManager.Singleton.ConnectedClients[list[i].ClientId].PlayerObject.GetComponent<m_LobbyPlayer>();
                 string temp2 = "Client: ";

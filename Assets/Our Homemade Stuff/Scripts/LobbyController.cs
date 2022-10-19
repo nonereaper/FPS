@@ -28,7 +28,15 @@ public class LobbyController : MonoBehaviour
     [SerializeField] private GameObject m_nameInput;
     [SerializeField] private TMP_Text m_status;
     [SerializeField] private GameObject m_connectionedMenu;
+    
+    [SerializeField] private GameObject m_sceneSelect;
+    [SerializeField] private GameObject m_sceneLoad;
     private bool m_connecting;
+
+    private int m_sceneToLoad;
+    private float timerBeforeDisconnect;
+    
+    [SerializeField] private string[] m_sceneNames;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,10 +45,10 @@ public class LobbyController : MonoBehaviour
         utpTransport = (Unity.Netcode.Transports.UTP.UnityTransport)networkManager.NetworkConfig.NetworkTransport;
         
         utpTransport.ConnectionData.Address = getThisComputerAddress();
-        m_addressInput.GetComponent<InputField>().text = utpTransport.ConnectionData.Address;
+        m_addressInput.GetComponent<TMP_InputField>().text = utpTransport.ConnectionData.Address;
         utpTransport.SetConnectionData(utpTransport.ConnectionData.Address,utpTransport.ConnectionData.Port,utpTransport.ConnectionData.Address);
-        m_portInput.GetComponent<InputField>().text = utpTransport.ConnectionData.Port+"";
-        m_nameInput.GetComponent<InputField>().text = "TempName";
+        m_portInput.GetComponent<TMP_InputField>().text = utpTransport.ConnectionData.Port+"";
+        m_nameInput.GetComponent<TMP_InputField>().text = "TempName";
         m_status.text = "";
 
         m_connecting = false;
@@ -50,6 +58,12 @@ public class LobbyController : MonoBehaviour
             s_scenesTemp.Add(new TMP_Dropdown.OptionData(s_sceneNames[i]));
         }
         s_sceneSelect.GetComponent<TMP_Dropdown>().options = s_scenesTemp;
+        m_sceneToLoad = 0;
+        List<TMP_Dropdown.OptionData> m_scenesTemp = new List<TMP_Dropdown.OptionData>();
+        for (int i = 0; i < m_sceneNames.Length; i++) {
+            m_scenesTemp.Add(new TMP_Dropdown.OptionData(m_sceneNames[i]));
+        }
+        m_sceneSelect.GetComponent<TMP_Dropdown>().options = m_scenesTemp;
     }
     // https://www.codegrepper.com/code-examples/csharp/how+to+get+your+ipv4+address+in+C%23
     private string getThisComputerAddress() {
@@ -81,14 +95,20 @@ public class LobbyController : MonoBehaviour
     public void s_loadScene() {
         SceneManager.LoadScene(s_sceneNames[s_sceneToLoad]);
     }
+    public void m_selectScene() {
+        m_sceneToLoad = m_sceneSelect.GetComponent<TMP_Dropdown>().value;
+    }
+    public void m_loadScene() {
+        networkManager.SceneManager.LoadScene(m_sceneNames[m_sceneToLoad],LoadSceneMode.Single);
+    }
     public void m_setAddress() {
-        utpTransport.SetConnectionData(m_addressInput.GetComponent<InputField>().text,utpTransport.ConnectionData.Port,m_addressInput.GetComponent<InputField>().text);
+        utpTransport.SetConnectionData(m_addressInput.GetComponent<TMP_InputField>().text,utpTransport.ConnectionData.Port,m_addressInput.GetComponent<TMP_InputField>().text);
     }
     public void m_setPort() {
         bool failed = false;
         ushort temp = utpTransport.ConnectionData.Port;
         try {
-            temp = UInt16.Parse(m_portInput.GetComponent<InputField>().text);
+            temp = UInt16.Parse(m_portInput.GetComponent<TMP_InputField>().text);
         } catch (Exception e) {
             failed = true;
             Debug.Log(e);
@@ -98,33 +118,42 @@ public class LobbyController : MonoBehaviour
         }
     }
     public string m_getPlayerName() {
-        return m_nameInput.GetComponent<InputField>().text;
+        return m_nameInput.GetComponent<TMP_InputField>().text;
     }
     public void m_runHost() {
+        networkManager.Shutdown();
         m_status.text = "Running as host with server address: " +utpTransport.ConnectionData.Address + " and port number: " + utpTransport.ConnectionData.Port;
         bool failedStart = false;
         try {
             networkManager.StartHost();
         } catch (Exception e) {
             failedStart = true;
+            networkManager.Shutdown();
             m_status.text = e+"";
         }
         if (!failedStart) {
             m_menu.SetActive(false);
             m_connectionedMenu.SetActive(true);
+            if(networkManager.IsServer) {
+                m_sceneSelect.SetActive(true);
+                m_sceneLoad.SetActive(true);
+            }   
         }
     }
     public void m_runClient() {
+        networkManager.Shutdown();
         m_status.text = "Connecting to host with server address: " +utpTransport.ConnectionData.Address + " and port number: " + utpTransport.ConnectionData.Port;
         bool failedStart = false;
         try {
             networkManager.StartClient();
         } catch (Exception e) {
             failedStart = true;
+            networkManager.Shutdown();
             m_status.text = e+"";
         }
         if (!failedStart) {
             m_connecting = true;
+            timerBeforeDisconnect = UnityEngine.Time.time;
         }
     }
     public void m_disconnect() {
@@ -133,6 +162,8 @@ public class LobbyController : MonoBehaviour
             for (int i = 0; i < list.Count; i++) {
                 networkManager.DisconnectClient(list[i].ClientId);
             }
+            m_sceneSelect.SetActive(false);
+            m_sceneLoad.SetActive(false);
         }
         networkManager.Shutdown();
         m_menu.SetActive(true);
@@ -146,6 +177,14 @@ public class LobbyController : MonoBehaviour
             if (networkManager.IsConnectedClient) {
                 m_menu.SetActive(false);
                 m_connectionedMenu.SetActive(true);
+                if(networkManager.IsServer) {
+                    m_sceneSelect.SetActive(true);
+                    m_sceneLoad.SetActive(true);
+                }
+                m_connecting = false;
+            } else if ((UnityEngine.Time.time-timerBeforeDisconnect) > 240f){
+                networkManager.Shutdown();
+                m_status.text = "Connect timed out.";
                 m_connecting = false;
             }
         }
