@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -32,7 +33,7 @@ public class m_Player : NetworkBehaviour
     // the distance from the camera to the projectile empty 
     private NetworkVariable<float> distanceOfProjectile = new NetworkVariable<float>();
 
-    private Controller controller;
+    private m_Controller controller;
 
     private GameObject[] weaponBar;
     private int currentWeaponIndex;
@@ -49,17 +50,33 @@ public class m_Player : NetworkBehaviour
     [SerializeField] private GameObject emptyUse;
     [SerializeField] private GameObject emptyProjectile;
 
+    private GameObject heldProp;
+
+    [SerializeField] private TMP_Text useText;
+
     public override void OnNetworkSpawn() {
         cameraAngle.Value = 0f;
         characterAngle.Value = 0f;
         rb = GetComponent<Rigidbody>();
         isCrouching.Value = false;
+        heldProp = null;
         distanceOfProjectile.Value = emptyProjectile.transform.localPosition.z;
         distanceOfUse.Value = emptyUse.transform.localPosition.z;
-        controller = GameObject.Find("Controller").GetComponent<Controller>();
+        controller = GameObject.Find("Controller").GetComponent<m_Controller>();
         weaponBar = new GameObject[5];
         currentWeaponIndex = 0;
         savedTime.Value = UnityEngine.Time.time;
+        useText.text = "";
+    }
+    [ServerRpc]
+    private void holdPropServerRpc(int index) {
+        heldProp = controller.getProp(index);
+        heldProp.GetComponent<Rigidbody>().useGravity = false;
+        
+    }
+    [ServerRpc]
+    private void dropPropServerRpc() {
+        heldProp = null;
     }
     [ServerRpc]
     private void swapWeaponToServerRpc(int index) {
@@ -98,7 +115,7 @@ public class m_Player : NetworkBehaviour
         GameObject outWeapon = weaponBar[index];
         weaponBar[index] = null;
         if (outWeapon != null) {
-            outWeapon.transform.SetParent(controller.getWeaponTransformation());
+            outWeapon.transform.SetParent(controller.getWeaponTf());
             controller.addWeapon(outWeapon);
             outWeapon.SetActive(true);
         }
@@ -183,11 +200,11 @@ public class m_Player : NetworkBehaviour
         rotatePlayerServerRpc(Input.GetAxis("Mouse X") * Time.deltaTime * mouseSen);
         rotateCameraServerRpc(Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSen);
 
-        if (Input.GetButtonUp("Crouch")) {
-            isCrouching.Value = false;
-            crouchPlayerServerRpc();
-        } else if (Input.GetButtonDown("Crouch")) {
+        if (Input.GetButtonDown("Crouch")) {
             isCrouching.Value = true;
+            crouchPlayerServerRpc();
+        } else if (Input.GetButtonUp("Crouch")) {
+            isCrouching.Value = false;
             crouchPlayerServerRpc();
         }
         
@@ -197,8 +214,8 @@ public class m_Player : NetworkBehaviour
             tempMovementSpeed *= crouchSpeedMult;
         else if (Input.GetButton("Sprint"))
             tempMovementSpeed *= sprintSpeedMult;
-        double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*tempMovementSpeed,
-        increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*tempMovementSpeed;
+        double increaseZ = Input.GetAxis("Vertical")/*Math.Cos(tempAngle)*/*tempMovementSpeed + Input.GetAxis("Horizontal")/*Math.Cos(tempAngleP)*/*tempMovementSpeed,
+        increaseX = Input.GetAxis("Vertical")/*Math.Sin(tempAngle)*/*tempMovementSpeed + Input.GetAxis("Horizontal")/*Math.Sin(tempAngleP)*/*tempMovementSpeed;
         float increaseY = rb.velocity.y;
         if (Input.GetButtonDown("Jump") && isGrounded()) {
             increaseY = jump;
@@ -208,6 +225,38 @@ public class m_Player : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!IsOwner) return;
+        int weaponIndex = controller.getClosestWeapon(emptyUse.transform.position,5f);
+        float weaponDistance = controller.getSavedDistance();
+        int propIndex = controller.getClosestProp(emptyUse.transform.position,5f);
+        float propDistance = controller.getSavedDistance();
+        int typeToUse = -1;
+        if (weaponIndex != -1 && propIndex != -1) {
+            if (weaponDistance > propDistance) {
+                typeToUse = 0;
+            } else {
+                typeToUse = 1;
+            }
+        } else if (weaponIndex != -1) {
+            typeToUse = 0;
+        } else if (propIndex != -1) {
+            typeToUse = 1;
+        }
+        if (typeToUse == 0) {
+            GameObject weapon = controller.getWeapon(weaponIndex);
+            useText.text = "Equip: " + weapon.name;
+        } else if (typeToUse == 1) {
+            GameObject prop = controller.getProp(propIndex);
+            useText.text = "Pick up: " + prop.name;
+        } else {
+            useText.text = "";
+        }
+        if (Input.GetButtonDown("Use")) {
+            if (typeToUse == 0) {
+                addWeaponToPlayerServerRpc(weaponIndex);
+            } else if (typeToUse == 1) {
+
+            }
+        }
     }
 }
