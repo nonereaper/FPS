@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Our Homemade Stuff/Scenes/Asset Testing.unity
     guid: 4ec085d8140d5874887f6f1d5c471588
+  - enabled: 1
+    path: Assets/Our Homemade Stuff/Scenes/Tutorial.unity
+    guid: 0dd2b04f18ef1fd4a9c55fafc8ec8782
   m_configObjects: {}

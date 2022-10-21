@@ -35,10 +35,10 @@ public class m_Controller : MonoBehaviour
                 for (int q = 0; q < tempTf.childCount; q++) {
                     if (i == 1) {
                         weapons.Add(tempTf.GetChild(q).gameObject);
-                        tempTf.GetChild(q).gameObject.GetComponent<NetworkObject>().Spawn();
+                        //tempTf.GetChild(q).gameObject.GetComponent<NetworkObject>().Spawn();
                     } else if (i == 2) {
                         props.Add(tempTf.GetChild(q).gameObject);
-                        tempTf.GetChild(q).gameObject.GetComponent<NetworkObject>().Spawn();
+                        //tempTf.GetChild(q).gameObject.GetComponent<NetworkObject>().Spawn();
                     }
                 }
             }

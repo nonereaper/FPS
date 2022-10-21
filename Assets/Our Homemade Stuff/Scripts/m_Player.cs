@@ -52,6 +52,9 @@ public class m_Player : NetworkBehaviour
     private GameObject heldProp;
 
     [SerializeField] private TMP_Text useText;
+    [SerializeField] private TMP_Text itemInfoText;
+
+    private bool lockCursor;
 
     public override void OnNetworkSpawn() {
         cameraAngle.Value = 0f;
@@ -61,6 +64,8 @@ public class m_Player : NetworkBehaviour
 
         savedTime.Value = UnityEngine.Time.time;
         useText.text = "";
+        lockCursor = true;
+        Cursor.lockState = CursorLockMode.Locked;
         if (IsServer) {
             rb = GetComponent<Rigidbody>();
             heldProp = null;
@@ -70,6 +75,32 @@ public class m_Player : NetworkBehaviour
             
             weaponBar = new GameObject[5];
             currentWeaponIndex = 0;
+        }
+    }
+    [ServerRpc]
+    private void setTextItemTextServerRpc() {
+        string temp = "" + isGrounded() + "\n";
+        for (int i = 0; i < weaponBar.Length; i++) {
+            temp+="Weapon Slot " +(i+1) + " is: ";
+            if (weaponBar[i] == null) {
+            temp+= "empty.\n" ;
+            } else {
+            temp+= weaponBar[i].name + "\n";
+            }
+        }
+        if (weaponBar[currentWeaponIndex] != null) {
+            Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
+            if (currentWeapon != null) {
+                temp += "Magazine: (" + currentWeapon.getCurrentMagazine() + "/" + currentWeapon.getMagazine() + ")\n";
+                temp += "Stored ammo Left: (" + currentWeapon.getCurrentTotalAmmo() + "/" + currentWeapon.getTotalAmmo() + ")";
+            }
+        }
+        setTextItemTextClientRpc(temp);
+    }
+    [ClientRpc]
+    private void setTextItemTextClientRpc(string t) {
+        if (IsOwner && IsClient) {
+            itemInfoText.text = t;
         }
     }
     [ServerRpc]
@@ -185,8 +216,10 @@ public class m_Player : NetworkBehaviour
 
         controller.removeWeapon(weapon);
         weaponBar[index] = weapon;
-        weapon.transform.SetParent(leftArm.transform);
-
+        weapon.transform.SetParent(rightArm.transform);
+        weapon.transform.position = emptyWeaponLocation.transform.position;
+        weapon.transform.rotation = emptyWeaponLocation.transform.rotation;
+        weapon.GetComponent<Rigidbody>().isKinematic = true;
         weapon.layer = LayerMask.NameToLayer("IgnoreCollisions");
         Transform[] oTemp = weapon.GetComponentsInChildren<Transform>();
         for (int i = 0; i < oTemp.Length; i++) {
@@ -203,6 +236,7 @@ public class m_Player : NetworkBehaviour
         weaponBar[index] = null;
         if (outWeapon != null) {
             outWeapon.transform.SetParent(controller.getWeaponTf());
+            outWeapon.GetComponent<Rigidbody>().isKinematic = true;
             outWeapon.layer = LayerMask.NameToLayer("Moveable Objects");
             Transform[] oTemp = outWeapon.GetComponentsInChildren<Transform>();
             for (int i = 0; i < oTemp.Length; i++) {
@@ -233,7 +267,7 @@ public class m_Player : NetworkBehaviour
         angle2 = 90f;
         else if (angle2 < -90f)
         angle2 = -90f;
-        characterAngle.Value = angle2;
+        cameraAngle.Value = angle2;
         rotateArmsServerRpc(angle2/180*Math.PI);
         moveProjectileCreatorAndUseServerRpc(angle2/180*Math.PI);
         camera.transform.localRotation = Quaternion.Euler(angle2,0f,0f);
@@ -263,7 +297,7 @@ public class m_Player : NetworkBehaviour
         temp.y = y;
         if (changeZ)
         temp.z = z;
-        rb.AddForce(new Vector3(x,y,z) - rb.velocity, ForceMode.VelocityChange);
+        rb.AddForce(temp - rb.velocity, ForceMode.VelocityChange);
     }
     [ServerRpc]
     private void crouchPlayerServerRpc() {
@@ -326,8 +360,8 @@ public class m_Player : NetworkBehaviour
             tempMovementSpeed *= crouchSpeedMult;
         else if (characterMovementState.Value == 2)
             tempMovementSpeed *= sprintSpeedMult;
-        double increaseZ = Input.GetAxis("Vertical")/*Math.Cos(tempAngle)*/*tempMovementSpeed + Input.GetAxis("Horizontal")/*Math.Cos(tempAngleP)*/*tempMovementSpeed,
-        increaseX = Input.GetAxis("Vertical")/*Math.Sin(tempAngle)*/*tempMovementSpeed + Input.GetAxis("Horizontal")/*Math.Sin(tempAngleP)*/*tempMovementSpeed;
+        double increaseZ = Input.GetAxis("Vertical")*Math.Cos(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Cos(tempAngleP)*tempMovementSpeed,
+        increaseX = Input.GetAxis("Vertical")*Math.Sin(tempAngle)*tempMovementSpeed + Input.GetAxis("Horizontal")*Math.Sin(tempAngleP)*tempMovementSpeed;
         if (Input.GetButtonDown("Jump") && isGrounded()) {
             movePlayerServerRpc(true,true,true,(float)increaseX,jump,(float)increaseZ);
         } else {
@@ -374,5 +408,14 @@ public class m_Player : NetworkBehaviour
         if (canFire) {
             useWeaponServerRpc(Input.GetButtonDown("Fire1"));
         }
+        if (Input.GetButtonDown("LockMouse")) {
+            lockCursor = !lockCursor;
+            if (lockCursor) {
+                Cursor.lockState = CursorLockMode.Locked;
+            } else {
+                Cursor.lockState = CursorLockMode.None;
+            }
+        }
+        setTextItemTextServerRpc();
     }
 }
