@@ -17,11 +17,11 @@ TagManager:
   - UI
   - Ground
   - Projectile
-  - Drops
+  - Movable Objects
   - PlayerNonMovement
-  - Obstacles
   - PlayerMovement
-  - EquippedDrops
+  - IgnoreCollisions
+  - 
   - 
   - 
   - 

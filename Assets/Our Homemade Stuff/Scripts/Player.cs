@@ -122,10 +122,10 @@ public class Player : MonoBehaviour
         inWpTf.localPosition = weaponLocationTf.localPosition - tempMeWp.getHandPosition().GetComponent<Transform>().localPosition;
         
         inWpTf.localRotation = Quaternion.Euler(0f,0f,0f);
-        w.layer = LayerMask.NameToLayer("EquippedDrops");
+        w.layer = LayerMask.NameToLayer("IgnoreCollisions");
         Transform[] oTemp = w.GetComponentsInChildren<Transform>();
         for (int i = 0; i < oTemp.Length; i++) {
-            oTemp[i].gameObject.layer = LayerMask.NameToLayer("EquippedDrops");
+            oTemp[i].gameObject.layer = LayerMask.NameToLayer("IgnoreCollisions");
         }
         w.GetComponent<Rigidbody>().isKinematic = true;
         controller.removeWeapon(w);
@@ -147,10 +147,10 @@ public class Player : MonoBehaviour
         Rigidbody tempRigidbody = w.GetComponent<Rigidbody>();
         tempRigidbody.GetComponent<Rigidbody>().isKinematic = false;
         tempRigidbody.AddRelativeForce(new Vector3(0,0,500f));
-        w.layer = LayerMask.NameToLayer("Drops");
+        w.layer = LayerMask.NameToLayer("Moveable Objects");
         Transform[] oTemp = tempTransform.gameObject.GetComponentsInChildren<Transform>();
             for (int i = 0; i < oTemp.Length; i++) {
-                oTemp[i].gameObject.layer = LayerMask.NameToLayer("Drops");
+                oTemp[i].gameObject.layer = LayerMask.NameToLayer("Moveable Objects");
             }
         controller.addWeapon(w);
     }

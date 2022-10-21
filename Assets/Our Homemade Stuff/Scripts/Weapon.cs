@@ -4,45 +4,48 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {   
-    [SerializeField] GameObject proj;
-	[SerializeField] GameObject fireExplosion;
-	[SerializeField] GameObject shells;
+    [SerializeField] private GameObject proj;
+	[SerializeField] private GameObject fireExplosion;
+	[SerializeField] private GameObject shells;
 
 
-    [SerializeField] int magazine;
-    [SerializeField] int totalAmmo;
-    [SerializeField] int currentMagazine;
-    [SerializeField] int currentTotalAmmo;
+    [SerializeField] private int magazine;
+    [SerializeField] private int totalAmmo;
+    [SerializeField] private int currentMagazine;
+    [SerializeField] private int currentTotalAmmo;
     // spread of weapon's projectile from center point by degree
-    [SerializeField] float spread;
+    [SerializeField] private float spread;
     // number of projectiles
-    [SerializeField] int number;
-    [SerializeField] int damage;
+    [SerializeField] private int number;
+    [SerializeField] private int damage;
     // seconds before each attack
-    [SerializeField] float attackSpeed;
+    [SerializeField] private float attackSpeed;
     // seconds for reload
-    [SerializeField] float reloadTime;
+    [SerializeField] private float reloadTime;
     // force added to projectile
-    [SerializeField] float velocity;
-    [SerializeField] bool semiAuto, auto;
+    [SerializeField] private float velocity;
+    [SerializeField] private bool semiAuto, auto;
     // 0 - semiAuto, 1 - auto
-    [SerializeField] int fireType;
+    [SerializeField] private int fireType;
     // reduced spread of weapon's projectiles (0.0 -> 1.0)
-    [SerializeField] double crouchSpread;
+    [SerializeField] private double crouchSpread;
+	// increased spread of weapon's projectiles (# >= 0)
+	[SerializeField] private double sprintSpread;
+
     // recoil of firing weapon by degree amount upward
-    [SerializeField] float recoil;
+    [SerializeField] private float recoil;
     // force backward from firing weapon
-    [SerializeField] float backBlast;
+    [SerializeField] private float backBlast;
 
-	[SerializeField] bool launchShells;
-	[SerializeField] float shellForce;
+	[SerializeField] private bool launchShells;
+	[SerializeField] private float shellForce;
 
-	[SerializeField] GameObject mussle;
-	[SerializeField] GameObject handPosition;
+	[SerializeField] private GameObject mussle;
+	[SerializeField] private GameObject handPosition;
 
 	
-	[SerializeField] GameObject aimPosition;
-	[SerializeField] GameObject shellPosition;
+	[SerializeField] private GameObject aimPosition;
+	[SerializeField] private GameObject shellPosition;
 	
 
 	public GameObject getShellPosition() {
@@ -170,6 +173,14 @@ public class Weapon : MonoBehaviour
 		this.spread = spread;
 	}
 
+	public double getSprintSpread() {
+		return this.sprintSpread;
+	}
+
+	public void setSprintSpread(double sprintSpread) {
+		this.sprintSpread = sprintSpread;
+	}
+	
 	public int getNumber() {
 		return this.number;
 	}
