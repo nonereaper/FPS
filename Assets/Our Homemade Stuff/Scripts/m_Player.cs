@@ -57,6 +57,7 @@ public class m_Player : NetworkBehaviour
     private bool lockCursor;
 
     public override void OnNetworkSpawn() {
+        if (!IsOwner) Destroy(gameObject);
         cameraAngle.Value = 0f;
         characterAngle.Value = 0f;
         characterMovementState.Value = 0;
@@ -113,6 +114,7 @@ public class m_Player : NetworkBehaviour
     }
     [ServerRpc]
     private void holdPropServerRpc(int index) {
+        if (heldProp != null) return;
         heldProp = controller.getProp(index);
         heldProp.GetComponent<Rigidbody>().useGravity = false;
         heldProp.layer = LayerMask.NameToLayer("IgnoreCollisions");
@@ -123,6 +125,7 @@ public class m_Player : NetworkBehaviour
     }
     [ServerRpc]
     private void dropPropServerRpc() {
+        if (heldProp == null) return;
         heldProp.GetComponent<Rigidbody>().useGravity = true;
         heldProp.layer = LayerMask.NameToLayer("Moveable Objects");
         Transform[] oTemp = heldProp.GetComponentsInChildren<Transform>();
@@ -198,7 +201,7 @@ public class m_Player : NetworkBehaviour
         currentWeaponIndex = index;
         GameObject currentWeapon = weaponBar[currentWeaponIndex];
         if (currentWeapon != null) {
-            pastWeapon.SetActive(true);
+            currentWeapon.SetActive(true);
             if (currentWeaponIndex != 0) {
                 float distance = currentWeapon.GetComponent<Weapon>().getMussle().transform.position.z-transform.position.z;
                 distanceOfProjSpawn = distance + 0.2f;
@@ -216,7 +219,8 @@ public class m_Player : NetworkBehaviour
 
         controller.removeWeapon(weapon);
         weaponBar[index] = weapon;
-        weapon.transform.SetParent(rightArm.transform);
+        //weapon.transform.SetParent(rightArm.transform);
+        weapon.SetActive(false);
         weapon.transform.position = emptyWeaponLocation.transform.position;
         weapon.transform.rotation = emptyWeaponLocation.transform.rotation;
         weapon.GetComponent<Rigidbody>().isKinematic = true;
@@ -231,11 +235,19 @@ public class m_Player : NetworkBehaviour
         }
     }
     [ServerRpc]
+    private void moveAllWeaponServerRpc() {
+        for (int i = 0; i < weaponBar.Length; i++) {
+            if (weaponBar[i] != null) {
+                weaponBar[i].transform.position = emptyWeaponLocation.transform.position;
+                weaponBar[i].transform.rotation = emptyWeaponLocation.transform.rotation;
+            }
+        }
+    }
+    [ServerRpc]
     private void removeWeaponCurrentServerRpc(int index) {
         GameObject outWeapon = weaponBar[index];
         weaponBar[index] = null;
         if (outWeapon != null) {
-            outWeapon.transform.SetParent(controller.getWeaponTf());
             outWeapon.GetComponent<Rigidbody>().isKinematic = true;
             outWeapon.layer = LayerMask.NameToLayer("Moveable Objects");
             Transform[] oTemp = outWeapon.GetComponentsInChildren<Transform>();
@@ -401,8 +413,11 @@ public class m_Player : NetworkBehaviour
             if (typeToUse == 0) {
                 addWeaponToPlayerServerRpc(weaponIndex);
             } else if (typeToUse == 1) {
-
+                holdPropServerRpc(propIndex);
             }
+        }
+        if (Input.GetButtonDown("Drop")) {
+
         }
         bool canFire = Input.GetButton("Fire1") || Input.GetButtonDown("Fire1");
         if (canFire) {
@@ -416,6 +431,12 @@ public class m_Player : NetworkBehaviour
                 Cursor.lockState = CursorLockMode.None;
             }
         }
+        for (int i = 1; i <= weaponBar.Length; i++) {
+            if (Input.GetKeyDown(""+i)) {
+                swapWeaponToServerRpc(i-1);
+            }
+        }
+        moveAllWeaponServerRpc();
         setTextItemTextServerRpc();
     }
 }

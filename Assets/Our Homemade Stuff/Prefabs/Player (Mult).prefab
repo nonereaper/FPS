@@ -1499,7 +1499,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5820689285864469472}
   - component: {fileID: 5820689285864469479}
-  m_Layer: 11
+  m_Layer: 10
   m_Name: MovementHitboxs
   m_TagString: Untagged
   m_Icon: {fileID: 0}

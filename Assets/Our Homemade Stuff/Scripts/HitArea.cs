@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class HitArea : MonoBehaviour
 {   
@@ -16,6 +17,9 @@ public class HitArea : MonoBehaviour
     void Update()
     {
         if (Time.time >= secondsBeforeRemoved+time) {
+            if (GetComponent<NetworkObject>() != null) {
+                GetComponent<NetworkObject>().Despawn();
+            }
             Destroy(gameObject);
         }
     }
