@@ -287,9 +287,9 @@ public class m_Player : NetworkBehaviour
     [ServerRpc]
     private void rotateArmsServerRpc(double angle) {
         double changeX = Math.Cos(angle)*0.25, changeY = Math.Sin(angle)*0.25;
-        leftArm.transform.localPosition = new Vector3(leftArm.transform.localPosition.x,(float)(changeY+0.23f),(float)changeX);
+        //leftArm.transform.localPosition = new Vector3(leftArm.transform.localPosition.x,(float)(changeY+0.23f),(float)changeX);
         leftArm.transform.localRotation = Quaternion.Euler((float)(angle*180/Math.PI),0,0);
-        rightArm.transform.localPosition = new Vector3(rightArm.transform.localPosition.x,(float)(changeY+0.23f),(float)changeX);
+        //rightArm.transform.localPosition = new Vector3(rightArm.transform.localPosition.x,(float)(changeY+0.23f),(float)changeX);
         rightArm.transform.localRotation = Quaternion.Euler((float)(angle*180/Math.PI),0,0);
     }
     [ServerRpc]
