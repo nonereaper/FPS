@@ -4975,6 +4975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c08e452a842d094e8980b0e2d01e06f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 5820689284282098140, guid: cca544dd4306a5e4aa91e053b7a54386, type: 3}
   mainMenu: {fileID: 809459597}
   s_menu: {fileID: 621157097}
   s_sceneSelect: {fileID: 1276540738}

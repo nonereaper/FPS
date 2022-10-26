@@ -13,6 +13,7 @@ public class LobbyController : MonoBehaviour
 {
     private NetworkManager networkManager;
     private Unity.Netcode.Transports.UTP.UnityTransport utpTransport;
+    [SerializeField] private GameObject playerPrefab;
 
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject s_menu;

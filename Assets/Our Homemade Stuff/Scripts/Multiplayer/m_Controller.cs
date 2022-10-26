@@ -23,6 +23,7 @@ public class m_Controller : MonoBehaviour
             for (int i = 0; i < list.Count; i++) {
                 NetworkObject mpc = networkManager.ConnectedClients[list[i].ClientId].PlayerObject;
                 mpc.Despawn();
+                Destroy(mpc.GetComponent<GameObject>());
                 GameObject temp = Instantiate(playerPrefab);
                 temp.GetComponent<NetworkObject>().SpawnAsPlayerObject(list[i].ClientId);
             }
@@ -106,9 +107,18 @@ public class m_Controller : MonoBehaviour
     public Transform getDecayTf() {
         return transform.GetChild(3);
     }
+    [ServerRpc]
+    private void spawnPlayerServerRpc(ulong clinetId) {
+        
+    }
     // Update is called once per frame
     void Update()
     {
-        
+        /*if (!networkManager.IsServer) return;
+        IReadOnlyList<NetworkClient> list = networkManager.ConnectedClientsList;
+        for (int i = 0; i < list.Count; i++) {
+            NetworkManager t = networkManager.ConnectedClients[list[i].ClientId].PlayerObject.NetworkManager;
+            
+        }*/
     }
 }

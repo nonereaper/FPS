@@ -57,7 +57,7 @@ public class m_Player : NetworkBehaviour
     private bool lockCursor;
 
     public override void OnNetworkSpawn() {
-        if (!IsOwner) Destroy(gameObject);
+        //if (!IsOwner) Destroy(gameObject);
         cameraAngle.Value = 0f;
         characterAngle.Value = 0f;
         characterMovementState.Value = 0;
