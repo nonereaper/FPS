@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class m_LobbyPlayer : NetworkBehaviour
 {
@@ -37,6 +38,7 @@ public class m_LobbyPlayer : NetworkBehaviour
     void Update()
     {
         if (IsServer) {
+            if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("LobbyScreen")) {
             IReadOnlyList<NetworkClient> list = NetworkManager.ConnectedClientsList;
             string temp = "Server Address: "+ serverAddress + ".\nPort Number: " + portNumber + "\n";
             for (int i = 0; i < list.Count; i++) {
@@ -53,6 +55,9 @@ public class m_LobbyPlayer : NetworkBehaviour
                 temp+= "Incoming: " + thing.Key + ", and is " + thing.Value.ConnectionState + ".\n";
             }
             updatePlayerListClientRpc(temp);
+            } else {
+                Controller.spawnPlayerServerRpc(GetComponent<NetworkObject>().OwnerClientId);
+            }
         }
     }
 }

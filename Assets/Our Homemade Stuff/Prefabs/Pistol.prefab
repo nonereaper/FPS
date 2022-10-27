@@ -55,9 +55,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a42b2b20b79fd8941b0c82f9531ce0d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  proj: {fileID: 6101169944759066609, guid: 6d8a545ead297be44a2298261a6c374b, type: 3}
-  fireExplosion: {fileID: 5495665595247342380, guid: a6f437bec162b91429772678802b6aae, type: 3}
-  shells: {fileID: 9045597362030343815, guid: 8eba4fb70569f88429184b20db769690, type: 3}
+  proj: {fileID: 6101169944759066609, guid: e6ba4d50dccf16849abf54eea3d062b6, type: 3}
+  fireExplosion: {fileID: 5495665595247342380, guid: 0b76f977271b7914788f5b5931f67f76, type: 3}
+  shells: {fileID: 9045597362030343815, guid: a692ae21f52013a42a3051c6a6e3f14f, type: 3}
   magazine: 8
   totalAmmo: 1000
   currentMagazine: 8
