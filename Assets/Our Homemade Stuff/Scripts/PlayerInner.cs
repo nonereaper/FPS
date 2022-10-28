@@ -136,10 +136,10 @@ public class PlayerInner : MonoBehaviour
     public void dropProp() {
         if (heldProp == null) return;
         heldProp.GetComponent<Rigidbody>().useGravity = true;
-        heldProp.layer = LayerMask.NameToLayer("Moveable Objects");
+        heldProp.layer = LayerMask.NameToLayer("Movable Objects");
         Transform[] oTemp = heldProp.GetComponentsInChildren<Transform>();
         for (int i = 0; i < oTemp.Length; i++) {
-            oTemp[i].gameObject.layer = LayerMask.NameToLayer("Moveable Objects");
+            oTemp[i].gameObject.layer = LayerMask.NameToLayer("Movable Objects");
         }
         heldProp = null;
     }
@@ -304,10 +304,10 @@ public class PlayerInner : MonoBehaviour
         weaponBar[index] = null;
         if (outWeapon != null) {
             outWeapon.GetComponent<Rigidbody>().isKinematic = true;
-            outWeapon.layer = LayerMask.NameToLayer("Moveable Objects");
+            outWeapon.layer = LayerMask.NameToLayer("Movable Objects");
             Transform[] oTemp = outWeapon.GetComponentsInChildren<Transform>();
             for (int i = 0; i < oTemp.Length; i++) {
-                oTemp[i].gameObject.layer = LayerMask.NameToLayer("Moveable Objects");
+                oTemp[i].gameObject.layer = LayerMask.NameToLayer("Movable Objects");
             }
             controller.addWeapon(outWeapon);
             outWeapon.SetActive(true);
@@ -382,10 +382,10 @@ public class PlayerInner : MonoBehaviour
         }
     }
     public bool isGrounded() {
-        Transform tL = leftLeg.transform.GetChild(1), tR = rightLeg.transform.GetChild(1);
-        return 
-        Physics.CheckBox(tL.position,new Vector3(tL.localScale.x/2,tL.localScale.y/2+0.4f,tL.localScale.z/2),tL.rotation,LayerMask.NameToLayer("Ground")) ||
-        Physics.CheckBox(tR.position,new Vector3(tR.localScale.x/2,tR.localScale.y/2+0.4f,tR.localScale.z/2),tR.rotation,LayerMask.NameToLayer("Ground"));
+        //Transform tL = leftLeg.transform.GetChild(1), tR = rightLeg.transform.GetChild(1);
+        return Physics.CheckBox(movementHitbox.transform.position,new Vector3(movementHitbox.transform.localScale.x/4,movementHitbox.transform.localScale.y/2,movementHitbox.transform.localScale.y/4),movementHitbox.transform.rotation,LayerMask.GetMask("Ground"));
+        // Physics.CheckBox(tL.position,new Vector3(tL.localScale.x/2,tL.localScale.y/2+0.4f,tL.localScale.z/2),tL.rotation,LayerMask.NameToLayer("Ground")) ||
+        //Physics.CheckBox(tR.position,new Vector3(tR.localScale.x/2,tR.localScale.y/2+0.4f,tR.localScale.z/2),tR.rotation,LayerMask.NameToLayer("Ground"));
     }
     public void switchView() {
         lockCursor = !lockCursor;
@@ -439,20 +439,20 @@ public class PlayerInner : MonoBehaviour
         }
     }
     public void changeStateOfCharacter(bool sprint, bool enterC, bool exitC) {
-        if (sprint) {
-            if (characterMovementState == 1) {
-                characterMovementState = 0;
-                crouchPlayer();
+        if (sprint) { // sprint button is held down
+            if (characterMovementState == 1) { // if crouched
+                characterMovementState = 0; // uncrouched on
+                crouchPlayer(); // fix character
             } 
-            characterMovementState = 2;
+            characterMovementState = 2; // sprint on
         } else {
             bool changeInState = false;
-            if (enterC) {
-                characterMovementState = 1;
+            if (enterC) { // pressed crouch button
+                characterMovementState = 1; // enter crouch
                 changeInState = true;
             } 
-            if (exitC) {
-                characterMovementState = 0;
+            if (exitC) { // let go of coruch button
+                characterMovementState = 0; // exit crouch
                 changeInState = true;
             }
             if (changeInState) {
