@@ -198,7 +198,7 @@ public class PlayerInner : MonoBehaviour
                 rotationTempY = tf2.rotation.eulerAngles.y + UnityEngine.Random.Range(-spread,spread);
                 Quaternion q = Quaternion.Euler(rotationTempX, rotationTempY, tf2.rotation.eulerAngles.z);
                 GameObject o = Instantiate(gun.getProj(),tf2.position,q,controller.getProjectileTf());
-                if (o.GetComponent<NetworkObject>() != null) {
+                if (controller.isIsMult()) {
                     o.GetComponent<NetworkObject>().Spawn();
                 }
                 o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,gun.getVelocity()));
@@ -207,17 +207,16 @@ public class PlayerInner : MonoBehaviour
             }
             double angleOfCamera = cameraAngle/180*Math.PI;
             double increaseY = Math.Sin(angleOfCamera)*gun.getBackBlast(), increaseZ = Math.Cos(angleOfCamera)*gun.getBackBlast();
-            // continue EDIT HERE
             addForceToPlayer(0f,(float)increaseY,-(float)increaseZ);
             rotateCamera(gun.getRecoil());
             GameObject o2 = Instantiate(gun.getFireExplosion(),gun.getMussle().transform.position,gun.getMussle().transform.rotation,controller.getDecayTf());
-            if (o2.GetComponent<NetworkObject>() != null) {
+            if (controller.isIsMult()) {
                 o2.GetComponent<NetworkObject>().Spawn();
             }
             if (gun.isLaunchShells()) {
                 GameObject o3 = Instantiate(gun.getShells(),gun.getShellPosition().transform.position,gun.getShellPosition().transform.rotation,controller.getDecayTf());
                 o3.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(gun.getShellForce(),0,0));
-                if (o3.GetComponent<NetworkObject>() != null) {
+                if (controller.isIsMult()) {
                     o3.GetComponent<NetworkObject>().Spawn();
                 }
             }    
@@ -358,9 +357,10 @@ public class PlayerInner : MonoBehaviour
         }
     }
     public bool isGrounded() {
+        Transform tL = leftLeg.transform.GetChild(1), tR = rightLeg.transform.GetChild(1);
         return 
-        Physics.CheckBox(leftLeg.transform.GetChild(1).position,new Vector3(leftLeg.transform.GetChild(1).localScale.x/4,leftLeg.transform.GetChild(1).localScale.y/2+0.2f,leftLeg.transform.GetChild(1).localScale.z/4),leftLeg.transform.GetChild(1).rotation,LayerMask.NameToLayer("Ground")) ||
-        Physics.CheckBox(rightLeg.transform.GetChild(1).position,new Vector3(rightLeg.transform.GetChild(1).localScale.x/4,rightLeg.transform.GetChild(1).localScale.y/2+0.2f,rightLeg.transform.GetChild(1).localScale.z/4),rightLeg.transform.GetChild(1).rotation,LayerMask.NameToLayer("Ground"));
+        Physics.CheckBox(tL.position,new Vector3(tL.localScale.x/2,tL.localScale.y/2+0.4f,tL.localScale.z/2),tL.rotation,LayerMask.NameToLayer("Ground")) ||
+        Physics.CheckBox(tR.position,new Vector3(tR.localScale.x/2,tR.localScale.y/2+0.4f,tR.localScale.z/2),tR.rotation,LayerMask.NameToLayer("Ground"));
     }
     public void switchView() {
         lockCursor = !lockCursor;
@@ -442,8 +442,8 @@ public class PlayerInner : MonoBehaviour
             tempMovementSpeed *= crouchSpeedMult;
         else if (characterMovementState == 2)
             tempMovementSpeed *= sprintSpeedMult;
-        double increaseZ = vertical/*Math.Cos(tempAngle)*/*tempMovementSpeed + horizontal*Math.Cos(tempAngleP)*tempMovementSpeed,
-        increaseX = vertical/*Math.Sin(tempAngle)*/*tempMovementSpeed + horizontal*Math.Sin(tempAngleP)*tempMovementSpeed;
+        double increaseZ = vertical*Math.Cos(tempAngle)*tempMovementSpeed + horizontal*Math.Cos(tempAngleP)*tempMovementSpeed,
+        increaseX = vertical*Math.Sin(tempAngle)*tempMovementSpeed + horizontal*Math.Sin(tempAngleP)*tempMovementSpeed;
         float up = rb.velocity.y;
         if (ju && isGrounded()) {
             up =jump;
@@ -483,11 +483,12 @@ public class PlayerInner : MonoBehaviour
         }
     }
     public void FixedUpdate() {
-        moveAllWeapon();
-        moveProp();
+        
     }
     public void Update()
     {
+        moveAllWeapon();
+        moveProp();
         updateItemInfo();
         updateTime();
     }
