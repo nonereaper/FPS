@@ -102,6 +102,11 @@ public class PlayerInner : MonoBehaviour
         if (weaponBar[currentWeaponIndex] != null) {
             Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
             if (currentWeapon != null) {
+                String fireType = "Automatic";
+                if (currentWeapon.getFireType() == 0) {
+                    fireType = "Semi-automatic";
+                }
+                temp += "Fire type: " + fireType + "\n";
                 temp += "Magazine: (" + currentWeapon.getCurrentMagazine() + "/" + currentWeapon.getMagazine() + ")\n";
                 temp += "Stored ammo Left: (" + currentWeapon.getCurrentTotalAmmo() + "/" + currentWeapon.getTotalAmmo() + ")";
             }
@@ -162,6 +167,22 @@ public class PlayerInner : MonoBehaviour
             currentWeapon.setReloadTimeLeft(currentWeapon.getReloadTime());
         }
     }
+    public void changeGunFireType() {
+        GameObject weapon = weaponBar[currentWeaponIndex];
+        if (weapon == null) {
+            return;
+        }
+        Weapon gun = weapon.GetComponent<Weapon>();
+        if (gun.getFireType() == 0) {
+            if (gun.isAuto()) {
+                gun.setFireType(1);
+            }
+        } else if (gun.getFireType() == 1) {
+            if (gun.isSemiAuto()) {
+                gun.setFireType(0);
+            }
+        }
+    }
     public void useWeapon(bool holdButtonDown) {
         GameObject weapon = weaponBar[currentWeaponIndex];
         if (weapon == null) {
@@ -179,7 +200,7 @@ public class PlayerInner : MonoBehaviour
                 reload();
                 return;
             }
-            if (!((!holdButtonDown && gun.isSemiAuto()) || (holdButtonDown && gun.isAuto()))) {
+            if (!((!holdButtonDown && gun.getFireType() == 0) || (holdButtonDown && gun.getFireType() == 1))) {
                 return;
             }
             gun.setCurrentMagazine(gun.getCurrentMagazine()-1);
