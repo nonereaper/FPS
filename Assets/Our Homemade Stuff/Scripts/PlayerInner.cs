@@ -486,6 +486,10 @@ public class PlayerInner : MonoBehaviour
         float differenceInTime = UnityEngine.Time.time-savedTime;
         savedTime = UnityEngine.Time.time;
         if (weaponBar[currentWeaponIndex] != null) {
+            fireWeapontime -= differenceInTime;
+            if (fireWeapontime < 0f) {
+                fireWeapontime = 0f;
+            }
             Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
             if (swapWeaponTime != 0f && differenceInTime != 0f) {
                 swapWeaponTime -= differenceInTime;
