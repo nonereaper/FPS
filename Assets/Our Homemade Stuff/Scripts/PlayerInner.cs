@@ -148,7 +148,7 @@ public class PlayerInner : MonoBehaviour
             if (weaponBar[currentWeaponIndex] == null) {
                 return;
             }
-            if (savedTime != 0f) {
+            if (swapWeaponTime != 0f) {
                 return;
             }
             Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
@@ -183,7 +183,7 @@ public class PlayerInner : MonoBehaviour
             }
         }
     }
-    public void useWeapon(bool holdButtonDown) {
+    public void useWeapon(bool notHoldDownButton) {
         GameObject weapon = weaponBar[currentWeaponIndex];
         if (weapon == null) {
             return;
@@ -200,7 +200,7 @@ public class PlayerInner : MonoBehaviour
                 reload();
                 return;
             }
-            if (!((!holdButtonDown && gun.getFireType() == 0) || (holdButtonDown && gun.getFireType() == 1))) {
+            if (!((notHoldDownButton && gun.getFireType() == 0) || (!notHoldDownButton && gun.getFireType() == 1))) {
                 return;
             }
             gun.setCurrentMagazine(gun.getCurrentMagazine()-1);
@@ -221,6 +221,8 @@ public class PlayerInner : MonoBehaviour
                 GameObject o = Instantiate(gun.getProj(),tf2.position,q,controller.getProjectileTf());
                 if (controller.isIsMult()) {
                     o.GetComponent<NetworkObject>().Spawn();
+                } else {
+                    o.GetComponent<Rigidbody>().isKinematic = false;
                 }
                 o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,gun.getVelocity()));
                 o.GetComponent<Projectile>().setup(gun.getDamage(),transform.gameObject,10);
@@ -239,6 +241,8 @@ public class PlayerInner : MonoBehaviour
                 o3.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(gun.getShellForce(),0,0));
                 if (controller.isIsMult()) {
                     o3.GetComponent<NetworkObject>().Spawn();
+                } else {
+                    o3.GetComponent<Rigidbody>().isKinematic = false;
                 }
             }    
         }
@@ -253,7 +257,7 @@ public class PlayerInner : MonoBehaviour
         if (currentWeapon != null) {
             currentWeapon.SetActive(true);
             /* add swap weapon time )TODO(*/
-            swapWeaponTime = 3;
+            swapWeaponTime = 1;
             if (currentWeaponIndex != 0) {
                 float distance = currentWeapon.GetComponent<Weapon>().getMussle().transform.position.z-transform.position.z;
                 distanceOfProjSpawn = distance + 0.2f;
