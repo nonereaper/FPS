@@ -1,0 +1,11 @@
+Model Information:
+* title:	Wessel Brattinga Character
+* source:	https://sketchfab.com/3d-models/wessel-brattinga-character-3c9a011ab0034ae0a0f88f3de45c7960
+* author:	nkaap (https://sketchfab.com/nkaap)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Wessel Brattinga Character" (https://sketchfab.com/3d-models/wessel-brattinga-character-3c9a011ab0034ae0a0f88f3de45c7960) by nkaap (https://sketchfab.com/nkaap) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
