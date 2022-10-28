@@ -27,8 +27,11 @@ public class s_Player : MonoBehaviour
         if (Input.GetButtonDown("LockMouse")) {
             player.switchView();
         }
+        if (Input.GetButtonDown("ChangeWeaponFireType")) {
+            player.changeGunFireType();
+        }
         if (Input.GetButtonDown("Fire1") || Input.GetButton("Fire1")) {
-            player.useWeapon(Input.GetButton("Fire1"));
+            player.useWeapon(Input.GetButtonDown("Fire1"));
         }
         if (Input.GetButtonDown("Fire2")) {
             player.switchWeaponSights(true);

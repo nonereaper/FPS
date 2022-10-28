@@ -102,6 +102,11 @@ public class PlayerInner : MonoBehaviour
         if (weaponBar[currentWeaponIndex] != null) {
             Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
             if (currentWeapon != null) {
+                String fireType = "Automatic";
+                if (currentWeapon.getFireType() == 0) {
+                    fireType = "Semi-automatic";
+                }
+                temp += "Fire type: " + fireType + "\n";
                 temp += "Magazine: (" + currentWeapon.getCurrentMagazine() + "/" + currentWeapon.getMagazine() + ")\n";
                 temp += "Stored ammo Left: (" + currentWeapon.getCurrentTotalAmmo() + "/" + currentWeapon.getTotalAmmo() + ")";
             }
@@ -143,7 +148,7 @@ public class PlayerInner : MonoBehaviour
             if (weaponBar[currentWeaponIndex] == null) {
                 return;
             }
-            if (savedTime != 0f) {
+            if (swapWeaponTime != 0f) {
                 return;
             }
             Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
@@ -162,7 +167,23 @@ public class PlayerInner : MonoBehaviour
             currentWeapon.setReloadTimeLeft(currentWeapon.getReloadTime());
         }
     }
-    public void useWeapon(bool buttonDown) {
+    public void changeGunFireType() {
+        GameObject weapon = weaponBar[currentWeaponIndex];
+        if (weapon == null) {
+            return;
+        }
+        Weapon gun = weapon.GetComponent<Weapon>();
+        if (gun.getFireType() == 0) {
+            if (gun.isAuto()) {
+                gun.setFireType(1);
+            }
+        } else if (gun.getFireType() == 1) {
+            if (gun.isSemiAuto()) {
+                gun.setFireType(0);
+            }
+        }
+    }
+    public void useWeapon(bool notHoldDownButton) {
         GameObject weapon = weaponBar[currentWeaponIndex];
         if (weapon == null) {
             return;
@@ -179,7 +200,7 @@ public class PlayerInner : MonoBehaviour
                 reload();
                 return;
             }
-            if (!((buttonDown && gun.isSemiAuto()) || (!buttonDown && gun.isAuto()))) {
+            if (!((notHoldDownButton && gun.getFireType() == 0) || (!notHoldDownButton && gun.getFireType() == 1))) {
                 return;
             }
             gun.setCurrentMagazine(gun.getCurrentMagazine()-1);
@@ -200,6 +221,8 @@ public class PlayerInner : MonoBehaviour
                 GameObject o = Instantiate(gun.getProj(),tf2.position,q,controller.getProjectileTf());
                 if (controller.isIsMult()) {
                     o.GetComponent<NetworkObject>().Spawn();
+                } else {
+                    o.GetComponent<Rigidbody>().isKinematic = false;
                 }
                 o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,gun.getVelocity()));
                 o.GetComponent<Projectile>().setup(gun.getDamage(),transform.gameObject,10);
@@ -218,6 +241,8 @@ public class PlayerInner : MonoBehaviour
                 o3.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(gun.getShellForce(),0,0));
                 if (controller.isIsMult()) {
                     o3.GetComponent<NetworkObject>().Spawn();
+                } else {
+                    o3.GetComponent<Rigidbody>().isKinematic = false;
                 }
             }    
         }
@@ -232,7 +257,7 @@ public class PlayerInner : MonoBehaviour
         if (currentWeapon != null) {
             currentWeapon.SetActive(true);
             /* add swap weapon time )TODO(*/
-            swapWeaponTime = 3;
+            swapWeaponTime = 1;
             if (currentWeaponIndex != 0) {
                 float distance = currentWeapon.GetComponent<Weapon>().getMussle().transform.position.z-transform.position.z;
                 distanceOfProjSpawn = distance + 0.2f;
@@ -442,8 +467,8 @@ public class PlayerInner : MonoBehaviour
             tempMovementSpeed *= crouchSpeedMult;
         else if (characterMovementState == 2)
             tempMovementSpeed *= sprintSpeedMult;
-        double increaseZ = vertical*Math.Cos(tempAngle)*tempMovementSpeed + horizontal*Math.Cos(tempAngleP)*tempMovementSpeed,
-        increaseX = vertical*Math.Sin(tempAngle)*tempMovementSpeed + horizontal*Math.Sin(tempAngleP)*tempMovementSpeed;
+        double increaseZ = vertical*Math.Cos(tempAngle)*tempMovementSpeed + horizontal*Math.Cos(tempAngle)*tempMovementSpeed,
+        increaseX = vertical*Math.Sin(tempAngle)*tempMovementSpeed + horizontal*Math.Sin(tempAngle)*tempMovementSpeed;
         float up = rb.velocity.y;
         if (ju && isGrounded()) {
             up =jump;
