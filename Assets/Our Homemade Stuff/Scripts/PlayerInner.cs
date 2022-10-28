@@ -162,7 +162,7 @@ public class PlayerInner : MonoBehaviour
             currentWeapon.setReloadTimeLeft(currentWeapon.getReloadTime());
         }
     }
-    public void useWeapon(bool buttonDown) {
+    public void useWeapon(bool holdButtonDown) {
         GameObject weapon = weaponBar[currentWeaponIndex];
         if (weapon == null) {
             return;
@@ -179,7 +179,7 @@ public class PlayerInner : MonoBehaviour
                 reload();
                 return;
             }
-            if (!((buttonDown && gun.isSemiAuto()) || (!buttonDown && gun.isAuto()))) {
+            if (!((!holdButtonDown && gun.isSemiAuto()) || (holdButtonDown && gun.isAuto()))) {
                 return;
             }
             gun.setCurrentMagazine(gun.getCurrentMagazine()-1);
@@ -442,8 +442,8 @@ public class PlayerInner : MonoBehaviour
             tempMovementSpeed *= crouchSpeedMult;
         else if (characterMovementState == 2)
             tempMovementSpeed *= sprintSpeedMult;
-        double increaseZ = vertical*Math.Cos(tempAngle)*tempMovementSpeed + horizontal*Math.Cos(tempAngleP)*tempMovementSpeed,
-        increaseX = vertical*Math.Sin(tempAngle)*tempMovementSpeed + horizontal*Math.Sin(tempAngleP)*tempMovementSpeed;
+        double increaseZ = vertical*Math.Cos(tempAngle)*tempMovementSpeed + horizontal*Math.Cos(tempAngle)*tempMovementSpeed,
+        increaseX = vertical*Math.Sin(tempAngle)*tempMovementSpeed + horizontal*Math.Sin(tempAngle)*tempMovementSpeed;
         float up = rb.velocity.y;
         if (ju && isGrounded()) {
             up =jump;
