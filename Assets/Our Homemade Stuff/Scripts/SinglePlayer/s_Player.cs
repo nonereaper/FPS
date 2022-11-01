@@ -12,12 +12,12 @@ public class s_Player : MonoBehaviour
     }
     public void FixedUpdate () {
         player.changeStateOfCharacter(Input.GetButton("Sprint"),Input.GetButtonDown("Crouch"),Input.GetButtonUp("Crouch"));
-        player.move(Input.GetAxis("Vertical"),Input.GetAxis("Vertical"),Input.GetButtonDown("Jump"));
+        player.move(Input.GetAxis("Vertical"),Input.GetAxis("Horizontal"),Input.GetButtonDown("Jump"));
     }
     public void Update() {
         player.rotatePlayer(Input.GetAxis("Mouse X") * Time.deltaTime * player.getMouseSen());
         player.rotateCamera(Input.GetAxis("Mouse Y") * Time.deltaTime * player.getMouseSen());
-        player.setUseTool(Input.GetButton("Use"));
+        player.setUseTool(Input.GetButtonDown("Use"));
         if (Input.GetButtonDown("Drop")) {
             player.drop();
         }

@@ -34,9 +34,7 @@ public class Weapon : MonoBehaviour
 
     // recoil of firing weapon by degree amount upward
     [SerializeField] private float recoil;
-    // force backward from firing weapon
-    [SerializeField] private float backBlast;
-
+    
 	[SerializeField] private bool launchShells;
 	[SerializeField] private float shellForce;
 
@@ -243,14 +241,6 @@ public class Weapon : MonoBehaviour
 
 	public void setRecoil(float recoil) {
 		this.recoil = recoil;
-	}
-
-	public float getBackBlast() {
-		return this.backBlast;
-	}
-
-	public void setBackBlast(float backBlast) {
-		this.backBlast = backBlast;
 	}
 
 	public float getReloadTime() {

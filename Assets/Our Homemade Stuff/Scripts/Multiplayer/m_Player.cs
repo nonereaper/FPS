@@ -49,19 +49,19 @@ public class m_Player : NetworkBehaviour
     }
     public void FixedUpdate () {
         changeStateOfCharacterServerRpc(Input.GetButton("Sprint"),Input.GetButtonDown("Crouch"),Input.GetButtonUp("Crouch"));
-        moveServerRpc(Input.GetAxis("Vertical"),Input.GetAxis("Vertical"),Input.GetButtonDown("Jump"));
+        moveServerRpc(Input.GetAxis("Vertical"),Input.GetAxis("Horizontal"),Input.GetButtonDown("Jump"));
     }
     public void Update() {
         rotateServerRpc(Input.GetAxis("Mouse X") * Time.deltaTime * player.getMouseSen(),
         Input.GetAxis("Mouse Y") * Time.deltaTime * player.getMouseSen());
-        useServerRpc(Input.GetButton("Use"));
+        useServerRpc(Input.GetButtonDown("Use"));
         if (Input.GetButtonDown("Drop")) {
             dropServerRpc();
         }
         if (Input.GetButtonDown("Reload")) {
             reloadServerRpc();
         }
-        if (Input.GetButtonDown("Escape")) {
+        if (Input.GetButtonDown("LockMouse")) {
             player.switchView();
         }
         if (Input.GetButtonDown("Fire2")) {

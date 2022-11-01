@@ -22,6 +22,12 @@ public class PlayerInner : MonoBehaviour
         public float getMouseSen() {
             return this.mouseSen;
         }
+    [SerializeField] private float sprintMaxTime;
+
+    private float currentSprintTime;
+    private float currentTimeBeforeRestore;
+    [SerializeField] private double restoreSprintTimeMult;
+    [SerializeField] private float timeBeforeStartRestoreSprint;
     
     // is character crouching
     private int characterMovementState;
@@ -42,6 +48,8 @@ public class PlayerInner : MonoBehaviour
     private float swapWeaponTime;
     private float fireWeapontime;
     private float savedTime;
+
+    [SerializeField] private LayerMask ground;
 
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject leftArm;
@@ -73,6 +81,9 @@ public class PlayerInner : MonoBehaviour
         characterMovementState = 0;
         controller = GameObject.Find("Controller").GetComponent<Controller>();
 
+        currentSprintTime = sprintMaxTime;
+        currentTimeBeforeRestore = 0f;
+
         useText.text = "";
         lockCursor = true;
         Cursor.lockState = CursorLockMode.Locked;
@@ -85,12 +96,15 @@ public class PlayerInner : MonoBehaviour
         swapWeaponTime = 0f;
         distanceOfProjSpawn = emptyProjectile.transform.localPosition.z;
         distanceOfUseSelector = emptyUse.transform.localPosition.z;
+
         
         weaponBar = new GameObject[5];
         currentWeaponIndex = 0;
     }
     public void updateItemInfo() {
         string temp = "" + isGrounded() + "\n";
+        temp += "State of Character: " + characterMovementState + "\n";
+        temp += "Sprint time left: " + currentSprintTime + "\n";
         for (int i = 0; i < weaponBar.Length; i++) {
             temp+="Weapon Slot " +(i+1) + " is: ";
             if (weaponBar[i] == null) {
@@ -228,9 +242,6 @@ public class PlayerInner : MonoBehaviour
                 o.GetComponent<Projectile>().setup(gun.getDamage(),transform.gameObject,10);
                 controller.addProjectile(o);
             }
-            double angleOfCamera = cameraAngle/180*Math.PI;
-            double increaseY = Math.Sin(angleOfCamera)*gun.getBackBlast(), increaseZ = Math.Cos(angleOfCamera)*gun.getBackBlast();
-            addForceToPlayer(0f,(float)increaseY,-(float)increaseZ);
             rotateCamera(gun.getRecoil());
             GameObject o2 = Instantiate(gun.getFireExplosion(),gun.getMussle().transform.position,gun.getMussle().transform.rotation,controller.getDecayTf());
             if (controller.isIsMult()) {
@@ -382,10 +393,10 @@ public class PlayerInner : MonoBehaviour
         }
     }
     public bool isGrounded() {
-        //Transform tL = leftLeg.transform.GetChild(1), tR = rightLeg.transform.GetChild(1);
-        return Physics.CheckBox(movementHitbox.transform.position,new Vector3(movementHitbox.transform.localScale.x/4,movementHitbox.transform.localScale.y/2,movementHitbox.transform.localScale.y/4),movementHitbox.transform.rotation,LayerMask.GetMask("Ground"));
-        // Physics.CheckBox(tL.position,new Vector3(tL.localScale.x/2,tL.localScale.y/2+0.4f,tL.localScale.z/2),tL.rotation,LayerMask.NameToLayer("Ground")) ||
-        //Physics.CheckBox(tR.position,new Vector3(tR.localScale.x/2,tR.localScale.y/2+0.4f,tR.localScale.z/2),tR.rotation,LayerMask.NameToLayer("Ground"));
+        Transform tL = leftLeg.transform.GetChild(1), tR = rightLeg.transform.GetChild(1);
+        return //Physics.CheckBox(movementHitbox.transform.position,new Vector3(movementHitbox.transform.localScale.x/4,movementHitbox.transform.localScale.y/2,movementHitbox.transform.localScale.y/4),movementHitbox.transform.rotation,ground);
+            Physics.CheckBox(tL.position,new Vector3(tL.localScale.x/2,tL.localScale.y/2+0.4f,tL.localScale.z/2),tL.rotation,ground) ||
+            Physics.CheckBox(tR.position,new Vector3(tR.localScale.x/2,tR.localScale.y/2+0.4f,tR.localScale.z/2),tR.rotation,ground);
     }
     public void switchView() {
         lockCursor = !lockCursor;
@@ -405,9 +416,10 @@ public class PlayerInner : MonoBehaviour
         }
     }
     public void setUseTool(bool usePressed) {
-        int weaponIndex = controller.getClosestWeapon(emptyUse.transform.position,5f);
+        if (heldProp != null) return;
+        int weaponIndex = controller.getClosestWeapon(emptyUse.transform.position,1f);
         float weaponDistance = controller.getSavedDistance();
-        int propIndex = controller.getClosestProp(emptyUse.transform.position,5f);
+        int propIndex = controller.getClosestProp(emptyUse.transform.position,1f);
         float propDistance = controller.getSavedDistance();
         int typeToUse = -1;
         if (weaponIndex != -1 && propIndex != -1) {
@@ -439,12 +451,13 @@ public class PlayerInner : MonoBehaviour
         }
     }
     public void changeStateOfCharacter(bool sprint, bool enterC, bool exitC) {
-        if (sprint) { // sprint button is held down
+        if (sprint && currentSprintTime > 0f) { // sprint button is held down
             if (characterMovementState == 1) { // if crouched
                 characterMovementState = 0; // uncrouched on
                 crouchPlayer(); // fix character
             } 
             characterMovementState = 2; // sprint on
+            currentTimeBeforeRestore = 0f;
         } else {
             bool changeInState = false;
             if (enterC) { // pressed crouch button
@@ -457,6 +470,8 @@ public class PlayerInner : MonoBehaviour
             }
             if (changeInState) {
                 crouchPlayer();
+            } else if (characterMovementState != 1) {
+                characterMovementState = 0;
             }
         }
     }
@@ -467,8 +482,8 @@ public class PlayerInner : MonoBehaviour
             tempMovementSpeed *= crouchSpeedMult;
         else if (characterMovementState == 2)
             tempMovementSpeed *= sprintSpeedMult;
-        double increaseZ = vertical*Math.Cos(tempAngle)*tempMovementSpeed + horizontal*Math.Cos(tempAngle)*tempMovementSpeed,
-        increaseX = vertical*Math.Sin(tempAngle)*tempMovementSpeed + horizontal*Math.Sin(tempAngle)*tempMovementSpeed;
+        double increaseZ = vertical*Math.Cos(tempAngle)*tempMovementSpeed + horizontal*Math.Cos(tempAngleP)*tempMovementSpeed,
+        increaseX = vertical*Math.Sin(tempAngle)*tempMovementSpeed + horizontal*Math.Sin(tempAngleP)*tempMovementSpeed;
         float up = rb.velocity.y;
         if (ju && isGrounded()) {
             up =jump;
@@ -485,6 +500,22 @@ public class PlayerInner : MonoBehaviour
     public void updateTime() {
         float differenceInTime = UnityEngine.Time.time-savedTime;
         savedTime = UnityEngine.Time.time;
+        if (characterMovementState == 2) {
+            currentSprintTime -= differenceInTime;
+            if (differenceInTime < 0f) {
+                currentSprintTime = 0f;
+                characterMovementState = 0;
+            }
+        } else {
+            if (currentTimeBeforeRestore < timeBeforeStartRestoreSprint) {
+                currentTimeBeforeRestore += differenceInTime;
+            } else {
+                currentSprintTime += (float)(differenceInTime*restoreSprintTimeMult);
+                if (currentSprintTime > sprintMaxTime) {
+                    currentSprintTime = sprintMaxTime;
+                }
+            }
+        }
         if (weaponBar[currentWeaponIndex] != null) {
             fireWeapontime -= differenceInTime;
             if (fireWeapontime < 0f) {
