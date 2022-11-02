@@ -49,8 +49,6 @@ public class PlayerInner : MonoBehaviour
     private float fireWeapontime;
     private float savedTime;
 
-    [SerializeField] private LayerMask ground;
-
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject leftArm;
     [SerializeField] private GameObject rightArm;
@@ -314,7 +312,7 @@ public class PlayerInner : MonoBehaviour
         GameObject outWeapon = weaponBar[index];
         weaponBar[index] = null;
         if (outWeapon != null) {
-            outWeapon.GetComponent<Rigidbody>().isKinematic = true;
+            outWeapon.GetComponent<Rigidbody>().isKinematic = false;
             outWeapon.layer = LayerMask.NameToLayer("Movable Objects");
             Transform[] oTemp = outWeapon.GetComponentsInChildren<Transform>();
             for (int i = 0; i < oTemp.Length; i++) {
@@ -394,9 +392,12 @@ public class PlayerInner : MonoBehaviour
     }
     public bool isGrounded() {
         Transform tL = leftLeg.transform.GetChild(1), tR = rightLeg.transform.GetChild(1);
+        LayerMask ground = LayerMask.GetMask("Ground"), props = LayerMask.GetMask("Movable Objects");
         return //Physics.CheckBox(movementHitbox.transform.position,new Vector3(movementHitbox.transform.localScale.x/4,movementHitbox.transform.localScale.y/2,movementHitbox.transform.localScale.y/4),movementHitbox.transform.rotation,ground);
-            Physics.CheckBox(tL.position,new Vector3(tL.localScale.x/2,tL.localScale.y/2+0.4f,tL.localScale.z/2),tL.rotation,ground) ||
-            Physics.CheckBox(tR.position,new Vector3(tR.localScale.x/2,tR.localScale.y/2+0.4f,tR.localScale.z/2),tR.rotation,ground);
+            Physics.CheckBox(tL.position,new Vector3(tL.localScale.x/4,tL.localScale.y/2+0.2f,tL.localScale.z/4),tL.rotation,ground) ||
+            Physics.CheckBox(tR.position,new Vector3(tR.localScale.x/4,tR.localScale.y/2+0.2f,tR.localScale.z/4),tR.rotation,ground) ||
+            Physics.CheckBox(tL.position,new Vector3(tL.localScale.x/4,tL.localScale.y/2+0.2f,tL.localScale.z/4),tL.rotation,props) ||
+            Physics.CheckBox(tR.position,new Vector3(tR.localScale.x/4,tR.localScale.y/2+0.2f,tR.localScale.z/4),tR.rotation,props);
     }
     public void switchView() {
         lockCursor = !lockCursor;

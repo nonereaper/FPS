@@ -13,7 +13,7 @@ public class Controller : MonoBehaviour
             this.isMult = isMult;
         }
     private NetworkManager networkManager;
-    [SerializeField] private static GameObject playerPrefab;
+    [SerializeField] private GameObject playerPrefab;
 
     private List<GameObject> props; 
     private List<GameObject> weapons;
@@ -36,7 +36,9 @@ public class Controller : MonoBehaviour
                     temp.GetComponent<NetworkObject>().SpawnAsPlayerObject(list[i].ClientId);
                 }  
             }*/
-        } 
+        } else {
+            Destroy(GameObject.Find("Player (Single)"));
+        }
             props = new List<GameObject>();
             weapons = new List<GameObject>();
             projectiles = new List<GameObject>();
@@ -46,12 +48,12 @@ public class Controller : MonoBehaviour
                 for (int q = 0; q < tempTf.childCount; q++) {
                     if (i == 1) {
                         weapons.Add(tempTf.GetChild(q).gameObject);
-                        if (isMult)
-                        tempTf.GetChild(q).gameObject.GetComponent<NetworkObject>().Spawn();
+                        //if (isMult)
+                        //tempTf.GetChild(q).gameObject.GetComponent<NetworkObject>().Spawn();
                     } else if (i == 2) {
                         props.Add(tempTf.GetChild(q).gameObject);
-                        if (isMult)
-                        tempTf.GetChild(q).gameObject.GetComponent<NetworkObject>().Spawn();
+                        //if (isMult)
+                        //tempTf.GetChild(q).gameObject.GetComponent<NetworkObject>().Spawn();
                     }
                 }
             }

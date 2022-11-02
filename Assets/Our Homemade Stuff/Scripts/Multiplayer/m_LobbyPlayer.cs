@@ -38,7 +38,7 @@ public class m_LobbyPlayer : NetworkBehaviour
     void Update()
     {
         if (IsServer) {
-            if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("LobbyScreen")) {
+            if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Lobby Screen")) {
             IReadOnlyList<NetworkClient> list = NetworkManager.ConnectedClientsList;
             string temp = "Server Address: "+ serverAddress + ".\nPort Number: " + portNumber + "\n";
             for (int i = 0; i < list.Count; i++) {
