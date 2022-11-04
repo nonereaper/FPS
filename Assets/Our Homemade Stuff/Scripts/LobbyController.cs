@@ -13,6 +13,7 @@ public class LobbyController : MonoBehaviour
 {
     private NetworkManager networkManager;
     private Unity.Netcode.Transports.UTP.UnityTransport utpTransport;
+    private SceneLoader sceneLoader;
     [SerializeField] private GameObject playerPrefab;
 
     [SerializeField] private GameObject mainMenu;
@@ -44,6 +45,7 @@ public class LobbyController : MonoBehaviour
         networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
         networkManager.NetworkConfig.EnableNetworkLogs = true;
         utpTransport = (Unity.Netcode.Transports.UTP.UnityTransport)networkManager.NetworkConfig.NetworkTransport;
+        sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         
         utpTransport.ConnectionData.Address = getThisComputerAddress();
         m_addressInput.GetComponent<TMP_InputField>().text = utpTransport.ConnectionData.Address;
@@ -94,13 +96,13 @@ public class LobbyController : MonoBehaviour
         s_sceneToLoad = s_sceneSelect.GetComponent<TMP_Dropdown>().value;
     }
     public void s_loadScene() {
-        SceneManager.LoadScene(s_sceneNames[s_sceneToLoad]);
+        sceneLoader.s_loadScene(s_sceneToLoad,s_sceneNames);
     }
     public void m_selectScene() {
         m_sceneToLoad = m_sceneSelect.GetComponent<TMP_Dropdown>().value;
     }
     public void m_loadScene() {
-        networkManager.SceneManager.LoadScene(m_sceneNames[m_sceneToLoad],LoadSceneMode.Single);
+        sceneLoader.m_loadScene(m_sceneToLoad,m_sceneNames);
     }
     public void m_setAddress() {
         utpTransport.SetConnectionData(m_addressInput.GetComponent<TMP_InputField>().text,utpTransport.ConnectionData.Port,m_addressInput.GetComponent<TMP_InputField>().text);

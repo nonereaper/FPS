@@ -5,6 +5,7 @@ using Unity.Netcode;
 
 public class Controller : MonoBehaviour
 {
+    private SceneLoader sceneLoader;
     [SerializeField] private bool isMult;
         public bool isIsMult() {
             return this.isMult;
@@ -24,6 +25,8 @@ public class Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+        isMult = sceneLoader.isIsMult();
         if (isMult) {
             networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
             /*if (networkManager.IsServer) {
@@ -121,7 +124,9 @@ public class Controller : MonoBehaviour
         return transform.GetChild(3);
     }
     [ServerRpc]
-    public static void spawnPlayerServerRpc(ulong clientId) {
+    public void spawnPlayerServerRpc(ulong clientId) {
+        NetworkObject mpc = networkManager.ConnectedClients[clientId].PlayerObject;
+                    mpc.Despawn();
         GameObject temp = Instantiate(playerPrefab);
         temp.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
     }

@@ -56,7 +56,7 @@ public class m_LobbyPlayer : NetworkBehaviour
             }
             updatePlayerListClientRpc(temp);
             } else {
-                Controller.spawnPlayerServerRpc(GetComponent<NetworkObject>().OwnerClientId);
+                GameObject.Find("Controller").GetComponent<Controller>().spawnPlayerServerRpc(GetComponent<NetworkObject>().OwnerClientId);
             }
         }
     }
