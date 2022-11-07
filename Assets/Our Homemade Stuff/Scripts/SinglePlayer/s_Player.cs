@@ -10,6 +10,9 @@ public class s_Player : MonoBehaviour
     public void Start() {
         player = GetComponent<PlayerInner>();
     }
+    public void selfDestroy() {
+        Destroy(gameObject);
+    }
     public void FixedUpdate () {
         player.changeStateOfCharacter(Input.GetButton("Sprint"),Input.GetButtonDown("Crouch"),Input.GetButtonUp("Crouch"));
         player.move(Input.GetAxis("Vertical"),Input.GetAxis("Horizontal"),Input.GetButtonDown("Jump"));

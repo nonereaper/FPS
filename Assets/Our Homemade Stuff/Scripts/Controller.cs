@@ -29,6 +29,9 @@ public class Controller : MonoBehaviour
         isMult = sceneLoader.isIsMult();
         if (isMult) {
             networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+            Destroy(GameObject.Find("Player (Single)"));
+            //GameObject.Find("Player (Single)").GetComponent<s_Player>().selfDestroy();
+
             /*if (networkManager.IsServer) {
                 IReadOnlyList<NetworkClient> list = networkManager.ConnectedClientsList;
                 for (int i = 0; i < list.Count; i++) {
@@ -40,7 +43,8 @@ public class Controller : MonoBehaviour
                 }  
             }*/
         } else {
-            Destroy(GameObject.Find("Player (Single)"));
+
+
         }
             props = new List<GameObject>();
             weapons = new List<GameObject>();

@@ -96,13 +96,13 @@ public class LobbyController : MonoBehaviour
         s_sceneToLoad = s_sceneSelect.GetComponent<TMP_Dropdown>().value;
     }
     public void s_loadScene() {
-        sceneLoader.s_loadScene(s_sceneToLoad,s_sceneNames);
+        sceneLoader.s_loadScene(s_sceneNames,s_sceneToLoad);
     }
     public void m_selectScene() {
         m_sceneToLoad = m_sceneSelect.GetComponent<TMP_Dropdown>().value;
     }
     public void m_loadScene() {
-        sceneLoader.m_loadScene(m_sceneToLoad,m_sceneNames);
+        sceneLoader.m_loadScene(m_sceneNames,m_sceneToLoad);
     }
     public void m_setAddress() {
         utpTransport.SetConnectionData(m_addressInput.GetComponent<TMP_InputField>().text,utpTransport.ConnectionData.Port,m_addressInput.GetComponent<TMP_InputField>().text);
