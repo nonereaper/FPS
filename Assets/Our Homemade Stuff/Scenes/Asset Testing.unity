@@ -1577,7 +1577,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4000013950294986, guid: 2ebdc32c603c0f74a8df3ff23c55e8e0, type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 4000013950294986, guid: 2ebdc32c603c0f74a8df3ff23c55e8e0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3166,7 +3166,6 @@ MonoBehaviour:
   crouchSpread: 0.5
   sprintSpread: 0
   recoil: 2
-  backBlast: 0
   launchShells: 1
   shellForce: 10
   mussle: {fileID: 2044061359}
