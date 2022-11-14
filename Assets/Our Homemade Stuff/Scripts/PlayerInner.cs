@@ -306,8 +306,9 @@ public class PlayerInner : MonoBehaviour
         for (int i = 0; i < weaponBar.Length; i++) {
             if (weaponBar[i] != null) {
                 weaponBar[i].transform.position = emptyWeaponLocation.transform.position;
-                weaponBar[i].transform.localRotation = emptyWeaponLocation.transform.localRotation;
-                //weaponBar[i].transform.rotation = Quaternion.Euler(new Vector3(weaponBar[i].transform.rotation.x,weaponBar[i].transform.rotation.y,weaponBar[i].transform.rotation.z));
+                weaponBar[i].transform.localRotation = emptyWeaponLocation.transform.rotation;
+                weaponBar[i].transform.Rotate(-90f,90f,0f);
+                //weaponBar[i].transform.localRotation = Quaternion.Euler(new Vector3(weaponBar[i].transform.rotation.x,weaponBar[i].transform.rotation.y,weaponBar[i].transform.rotation.z));
             }
         }
     }
