@@ -53,6 +53,7 @@ public class PlayerInner : MonoBehaviour
     [SerializeField] private GameObject feetHitbox;
     [SerializeField] private GameObject leftArm;
     [SerializeField] private GameObject rightArm;
+    [SerializeField] private GameObject head;
     [SerializeField] private GameObject emptyWeaponLocation;
     [SerializeField] private GameObject aimCamera;
     [SerializeField] private GameObject leftLeg;
@@ -305,7 +306,8 @@ public class PlayerInner : MonoBehaviour
         for (int i = 0; i < weaponBar.Length; i++) {
             if (weaponBar[i] != null) {
                 weaponBar[i].transform.position = emptyWeaponLocation.transform.position;
-                weaponBar[i].transform.rotation = emptyWeaponLocation.transform.rotation;
+                weaponBar[i].transform.localRotation = emptyWeaponLocation.transform.localRotation;
+                //weaponBar[i].transform.rotation = Quaternion.Euler(new Vector3(weaponBar[i].transform.rotation.x,weaponBar[i].transform.rotation.y,weaponBar[i].transform.rotation.z));
             }
         }
     }
@@ -344,6 +346,7 @@ public class PlayerInner : MonoBehaviour
         angle2 = -90f;
         cameraAngle = angle2;
         //rotateArms(angle2);
+        mainCamera.transform.position = head.transform.position;
         moveProjectileCreatorAndUse(angle2);
         mainCamera.transform.localRotation = Quaternion.Euler(angle2,0f,0f);
     }
