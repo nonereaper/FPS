@@ -25,8 +25,8 @@ public class Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
-        isMult = sceneLoader.isIsMult();
+        //sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
+        //isMult = sceneLoader.isIsMult();
         if (isMult) {
             networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
             Destroy(GameObject.Find("Player (Single)"));
@@ -129,6 +129,7 @@ public class Controller : MonoBehaviour
     }
     [ServerRpc]
     public void spawnPlayerServerRpc(ulong clientId) {
+        if (!networkManager.IsServer) return;
         NetworkObject mpc = networkManager.ConnectedClients[clientId].PlayerObject;
                     mpc.Despawn();
         GameObject temp = Instantiate(playerPrefab);

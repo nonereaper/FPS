@@ -48,10 +48,12 @@ public class m_Player : NetworkBehaviour
         }
     }
     public void FixedUpdate () {
+        if (!IsOwner || !IsClient) return;
         changeStateOfCharacterServerRpc(Input.GetButton("Sprint"),Input.GetButtonDown("Crouch"),Input.GetButtonUp("Crouch"));
         moveServerRpc(Input.GetAxis("Vertical"),Input.GetAxis("Horizontal"),Input.GetButtonDown("Jump"));
     }
     public void Update() {
+        if (!IsOwner || !IsClient) return;
         rotateServerRpc(Input.GetAxis("Mouse X") * Time.deltaTime * player.getMouseSen(),
         Input.GetAxis("Mouse Y") * Time.deltaTime * player.getMouseSen());
         useServerRpc(Input.GetButtonDown("Use"));
