@@ -28,6 +28,7 @@ public class PlayerInner : MonoBehaviour
     private float currentTimeBeforeRestore;
     [SerializeField] private double restoreSprintTimeMult;
     [SerializeField] private float timeBeforeStartRestoreSprint;
+    [SerializeField] private Animator animator; 
     
     // is character crouching
     private int characterMovementState;
@@ -48,6 +49,7 @@ public class PlayerInner : MonoBehaviour
     private float swapWeaponTime;
     private float fireWeapontime;
     private float savedTime;
+    private float runAnimationTime;
 
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject feetHitbox;
@@ -80,6 +82,7 @@ public class PlayerInner : MonoBehaviour
         characterAngle = 0f;
         characterMovementState = 0;
         controller = GameObject.Find("Controller").GetComponent<Controller>();
+        animator = GetComponent<Animator>();
 
         currentSprintTime = sprintMaxTime;
         currentTimeBeforeRestore = 0f;
@@ -242,6 +245,7 @@ public class PlayerInner : MonoBehaviour
                 o.GetComponent<Projectile>().setup(gun.getDamage(),transform.gameObject,10);
                 controller.addProjectile(o);
             }
+            animator.SetTrigger("shoot");
             rotateCamera(gun.getRecoil());
             GameObject o2 = Instantiate(gun.getFireExplosion(),gun.getMussle().transform.position,gun.getMussle().transform.rotation,controller.getDecayTf());
             if (controller.isIsMult()) {
@@ -305,9 +309,11 @@ public class PlayerInner : MonoBehaviour
     public void moveAllWeapon() {
         for (int i = 0; i < weaponBar.Length; i++) {
             if (weaponBar[i] != null) {
-                weaponBar[i].transform.position = emptyWeaponLocation.transform.position;
                 weaponBar[i].transform.localRotation = emptyWeaponLocation.transform.rotation;
-                weaponBar[i].transform.Rotate(-90f,90f,0f);
+                weaponBar[i].transform.position = emptyWeaponLocation.transform.position; //- weaponBar[i].GetComponent<Weapon>().getHandPosition().transform.localPosition;
+                weaponBar[i].transform.Rotate(180,90,90);
+                aimCamera.transform.position = weaponBar[i].GetComponent<Weapon>().getAimPosition().transform.position;
+                aimCamera.transform.rotation = weaponBar[i].GetComponent<Weapon>().getAimPosition().transform.rotation;
                 //weaponBar[i].transform.localRotation = Quaternion.Euler(new Vector3(weaponBar[i].transform.rotation.x,weaponBar[i].transform.rotation.y,weaponBar[i].transform.rotation.z));
             }
         }
@@ -495,6 +501,18 @@ public class PlayerInner : MonoBehaviour
             tempMovementSpeed *= sprintSpeedMult;
         double increaseZ = vertical*Math.Cos(tempAngle)*tempMovementSpeed + horizontal*Math.Cos(tempAngleP)*tempMovementSpeed,
         increaseX = vertical*Math.Sin(tempAngle)*tempMovementSpeed + horizontal*Math.Sin(tempAngleP)*tempMovementSpeed;
+        if (vertical == 0f && horizontal == 0f) {
+            animator.SetTrigger("idle");
+        } else {
+            if (runAnimationTime == 0f) {
+                runAnimationTime = 1.6f; 
+                if (characterMovementState == 2) {
+                    animator.SetTrigger("sprint");
+                } else {
+                    animator.SetTrigger("run");
+                }
+            } 
+        }
         float up = rb.velocity.y;
         if (ju && isGrounded()) {
             up =jump;
@@ -511,6 +529,10 @@ public class PlayerInner : MonoBehaviour
     public void updateTime() {
         float differenceInTime = UnityEngine.Time.time-savedTime;
         savedTime = UnityEngine.Time.time;
+        runAnimationTime -= differenceInTime;
+        if (runAnimationTime < 0f) {
+            runAnimationTime = 0f;
+        }
         if (characterMovementState == 2) {
             currentSprintTime -= differenceInTime;
             if (differenceInTime < 0f) {
@@ -554,7 +576,6 @@ public class PlayerInner : MonoBehaviour
         }
     }
     public void FixedUpdate() {
-        
     }
     public void Update()
     {
