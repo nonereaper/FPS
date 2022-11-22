@@ -94,8 +94,8 @@ public class PlayerInner : MonoBehaviour
         savedTime = UnityEngine.Time.time;
         fireWeapontime = 0f;
         swapWeaponTime = 0f;
-        distanceOfProjSpawn = emptyProjectile.transform.localPosition.z;
-        distanceOfUseSelector = emptyUse.transform.localPosition.z;
+       // distanceOfProjSpawn = emptyProjectile.transform.localPosition.z*2;
+        //distanceOfUseSelector = emptyUse.transform.localPosition.z*2;
 
         
         weaponBar = new GameObject[5];
@@ -228,7 +228,7 @@ public class PlayerInner : MonoBehaviour
             }
             float spread = (float)(gun.getSpread()*spreadMult);
             for (int i = 0; i < gun.getNumber(); i++) {
-                Transform tf2 = gun.getMussle().transform;
+                Transform tf2 = emptyProjectile.transform;//gun.getMussle().transform;
                 float rotationTempX = tf2.rotation.eulerAngles.x + UnityEngine.Random.Range(-spread,spread),
                 rotationTempY = tf2.rotation.eulerAngles.y + UnityEngine.Random.Range(-spread,spread);
                 Quaternion q = Quaternion.Euler(rotationTempX, rotationTempY, tf2.rotation.eulerAngles.z);
@@ -350,7 +350,7 @@ public class PlayerInner : MonoBehaviour
         cameraAngle = angle2;
         rotateArms(angle2);
         mainCamera.transform.position = head.transform.position;
-        moveProjectileCreatorAndUse(angle2);
+        //moveProjectileCreatorAndUse(angle2);
         mainCamera.transform.localRotation = Quaternion.Euler(angle2,0f,0f);
     }
     public void rotateArms(float angle) {
@@ -368,9 +368,9 @@ public class PlayerInner : MonoBehaviour
     public void moveProjectileCreatorAndUse(float angle) {
         double dAngle = angle/180*Math.PI;
         emptyProjectile.transform.localRotation = Quaternion.Euler(angle,0f,0f);
-        emptyProjectile.transform.localPosition = new Vector3(0f,(float)(-Math.Sin(dAngle)*distanceOfProjSpawn)+0.7f,(float)(Math.Cos(dAngle)*distanceOfProjSpawn));
+        emptyProjectile.transform.localPosition = new Vector3(0f,(float)(-Math.Sin(dAngle)*distanceOfProjSpawn)+1.5f,(float)(Math.Cos(dAngle)*distanceOfProjSpawn));
         emptyUse.transform.localRotation = Quaternion.Euler(angle,0f,0f);
-        emptyUse.transform.localPosition = new Vector3(0f,(float)(-Math.Sin(dAngle)*distanceOfUseSelector)+0.7f,(float)(Math.Cos(dAngle)*distanceOfUseSelector));
+        emptyUse.transform.localPosition = new Vector3(0f,(float)(-Math.Sin(dAngle)*distanceOfUseSelector)+1.5f,(float)(Math.Cos(dAngle)*distanceOfUseSelector));
     }
     public void movePlayer(float x, float y, float z) {
         rb.AddForce(new Vector3(x,y,z) - rb.velocity, ForceMode.VelocityChange);
@@ -387,8 +387,8 @@ public class PlayerInner : MonoBehaviour
         Transform ctRLeg2 = ctRLeg.GetChild(0),
         ctLLeg2 = ctLLeg.GetChild(0);
         if (characterMovementState == 1) {
-            tRLeg.localRotation = Quaternion.Euler(tRLeg.localRotation.x,tRLeg.localRotation.y,-70);
-            tLLeg.localRotation = Quaternion.Euler(tRLeg.localRotation.x,tRLeg.localRotation.y,-70);
+            tRLeg.localRotation = Quaternion.Euler(0f,180f,-70);
+            tLLeg.localRotation = Quaternion.Euler(0f,180f,-70);
             ctRLeg.localRotation = Quaternion.Euler(ctRLeg.localRotation.x,ctRLeg.localRotation.y,130);
             ctLLeg.localRotation = Quaternion.Euler(ctLLeg.localRotation.x,ctLLeg.localRotation.y,130);
             ctRLeg2.localRotation = Quaternion.Euler(ctRLeg2.localRotation.x,ctRLeg2.localRotation.y,-58);
@@ -396,8 +396,8 @@ public class PlayerInner : MonoBehaviour
             movementHitbox.transform.localPosition = new Vector3(0,1.625f,0);
             movementHitbox.transform.localScale = new Vector3(1,0.95f,1);
         } else {
-            tRLeg.localRotation = Quaternion.Euler(tRLeg.localRotation.x,tRLeg.localRotation.y,1.352f);
-            tLLeg.localRotation = Quaternion.Euler(tRLeg.localRotation.x,tRLeg.localRotation.y,1.352f);
+            tRLeg.localRotation = Quaternion.Euler(0f,-180f,1.352f);
+            tLLeg.localRotation = Quaternion.Euler(0f,-180f,1.352f);
             ctRLeg.localRotation = Quaternion.Euler(ctRLeg.localRotation.x,ctRLeg.localRotation.y,3.656f);
             ctLLeg.localRotation = Quaternion.Euler(ctLLeg.localRotation.x,ctLLeg.localRotation.y,3.656f);
             ctRLeg2.localRotation = Quaternion.Euler(ctRLeg2.localRotation.x,ctRLeg2.localRotation.y,-5.008f);
@@ -439,9 +439,9 @@ public class PlayerInner : MonoBehaviour
     }
     public void setUseTool(bool usePressed) {
         if (heldProp != null) return;
-        int weaponIndex = controller.getClosestWeapon(emptyUse.transform.position,1f);
+        int weaponIndex = controller.getClosestWeapon(emptyUse.transform.position,2f);
         float weaponDistance = controller.getSavedDistance();
-        int propIndex = controller.getClosestProp(emptyUse.transform.position,1f);
+        int propIndex = controller.getClosestProp(emptyUse.transform.position,2f);
         float propDistance = controller.getSavedDistance();
         int typeToUse = -1;
         if (weaponIndex != -1 && propIndex != -1) {
