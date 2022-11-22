@@ -1703,7 +1703,7 @@ Transform:
   m_GameObject: {fileID: 2718412667533167714}
   m_LocalRotation: {x: 1.5472588e-11, y: -0.0000000013972015, z: 0.031898446, w: 0.99949116}
   m_LocalPosition: {x: -0.62975675, y: 0, z: 0}
-  m_LocalScale: {x: 0.99999994, y: 0.9999998, z: 0.99999994}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2718412667533070426}
@@ -1859,7 +1859,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2718412667533167734}
-  m_LocalRotation: {x: 0.040176388, y: -0.34059682, z: 0.014607106, w: 0.93923706}
+  m_LocalRotation: {x: 0.23665006, y: -0.32992226, z: 0.0858537, w: 0.90982264}
   m_LocalPosition: {x: -0.19370845, y: 0.000000006055832, z: 0}
   m_LocalScale: {x: 1, y: 1.0000001, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1867,7 +1867,7 @@ Transform:
   - {fileID: 2718412667533070424}
   m_Father: {fileID: 2718412667533070400}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 29.161, y: -39.862, z: 0.005}
 --- !u!4 &2718412667533070424
 Transform:
   m_ObjectHideFlags: 0
@@ -2725,7 +2725,7 @@ Animator:
   m_GameObject: {fileID: 2718412667533167638}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
-  m_Controller: {fileID: 9100000, guid: 32afaac9bb2525d43b95f06773873b75, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2769,13 +2769,13 @@ MonoBehaviour:
   timeBeforeStartRestoreSprint: 2
   mainCamera: {fileID: 2129669343}
   feetHitbox: {fileID: 996150251}
-  leftArm: {fileID: 0}
-  rightArm: {fileID: 0}
+  leftArm: {fileID: 2718412667533167734}
+  rightArm: {fileID: 2718412667533167644}
   head: {fileID: 1857035657}
   emptyWeaponLocation: {fileID: 1311505340}
   aimCamera: {fileID: 1274017814}
-  leftLeg: {fileID: 0}
-  rightLeg: {fileID: 0}
+  leftLeg: {fileID: 2718412667533167740}
+  rightLeg: {fileID: 2718412667533167642}
   movementHitbox: {fileID: 943691269}
   emptyUse: {fileID: 763608323}
   emptyProjectile: {fileID: 11948610}
