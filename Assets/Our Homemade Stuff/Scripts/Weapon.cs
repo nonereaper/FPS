@@ -39,8 +39,6 @@ public class Weapon : MonoBehaviour
 	[SerializeField] private float shellForce;
 
 	[SerializeField] private GameObject mussle;
-	[SerializeField] private GameObject handPosition;
-
 	
 	[SerializeField] private GameObject aimPosition;
 	[SerializeField] private GameObject shellPosition;
@@ -82,15 +80,6 @@ public class Weapon : MonoBehaviour
 	public void setShells(GameObject shells) {
 		this.shells = shells;
 	}
-
-	public GameObject getHandPosition() {
-		return this.handPosition;
-	}
-
-	public void setHandPosition(GameObject handPosition) {
-		this.handPosition = handPosition;
-	}
-
 	public GameObject getAimPosition() {
 		return this.aimPosition;
 	}

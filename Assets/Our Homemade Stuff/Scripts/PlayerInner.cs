@@ -28,7 +28,6 @@ public class PlayerInner : MonoBehaviour
     private float currentTimeBeforeRestore;
     [SerializeField] private double restoreSprintTimeMult;
     [SerializeField] private float timeBeforeStartRestoreSprint;
-    [SerializeField] private Animator animator; 
     
     // is character crouching
     private int characterMovementState;
@@ -49,7 +48,6 @@ public class PlayerInner : MonoBehaviour
     private float swapWeaponTime;
     private float fireWeapontime;
     private float savedTime;
-    private float runAnimationTime;
 
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject feetHitbox;
@@ -82,7 +80,6 @@ public class PlayerInner : MonoBehaviour
         characterAngle = 0f;
         characterMovementState = 0;
         controller = GameObject.Find("Controller").GetComponent<Controller>();
-        animator = GetComponent<Animator>();
 
         currentSprintTime = sprintMaxTime;
         currentTimeBeforeRestore = 0f;
@@ -245,7 +242,6 @@ public class PlayerInner : MonoBehaviour
                 o.GetComponent<Projectile>().setup(gun.getDamage(),transform.gameObject,10);
                 controller.addProjectile(o);
             }
-            animator.SetTrigger("shoot");
             rotateCamera(gun.getRecoil());
             GameObject o2 = Instantiate(gun.getFireExplosion(),gun.getMussle().transform.position,gun.getMussle().transform.rotation,controller.getDecayTf());
             if (controller.isIsMult()) {
@@ -309,8 +305,8 @@ public class PlayerInner : MonoBehaviour
     public void moveAllWeapon() {
         for (int i = 0; i < weaponBar.Length; i++) {
             if (weaponBar[i] != null) {
+                weaponBar[i].transform.position = emptyWeaponLocation.transform.position;
                 weaponBar[i].transform.localRotation = emptyWeaponLocation.transform.rotation;
-                weaponBar[i].transform.position = emptyWeaponLocation.transform.position; //- weaponBar[i].GetComponent<Weapon>().getHandPosition().transform.localPosition;
                 weaponBar[i].transform.Rotate(180,90,90);
                 aimCamera.transform.position = weaponBar[i].GetComponent<Weapon>().getAimPosition().transform.position;
                 aimCamera.transform.rotation = weaponBar[i].GetComponent<Weapon>().getAimPosition().transform.rotation;
@@ -352,18 +348,22 @@ public class PlayerInner : MonoBehaviour
         else if (angle2 < -90f)
         angle2 = -90f;
         cameraAngle = angle2;
-        //rotateArms(angle2);
+        rotateArms(angle2);
         mainCamera.transform.position = head.transform.position;
         moveProjectileCreatorAndUse(angle2);
         mainCamera.transform.localRotation = Quaternion.Euler(angle2,0f,0f);
     }
     public void rotateArms(float angle) {
         double dAngle = -angle/180*Math.PI;
+        /*
         double changeX = Math.Cos(dAngle)*0.25, changeY = Math.Sin(dAngle)*0.25;
         leftArm.transform.localPosition = new Vector3(leftArm.transform.localPosition.x,(float)(changeY+0.23f),(float)changeX);
         leftArm.transform.localRotation = Quaternion.Euler((float)(angle),0,0);
         rightArm.transform.localPosition = new Vector3(rightArm.transform.localPosition.x,(float)(changeY+0.23f),(float)changeX);
         rightArm.transform.localRotation = Quaternion.Euler((float)(angle),0,0);
+        */
+        rightArm.transform.localRotation = Quaternion.Euler(0,75f,-angle+90f);
+        leftArm.transform.localRotation = Quaternion.Euler(0,-75f,-angle+90f);
     }
     public void moveProjectileCreatorAndUse(float angle) {
         double dAngle = angle/180*Math.PI;
@@ -379,29 +379,34 @@ public class PlayerInner : MonoBehaviour
         rb.AddForce(new Vector3(x,y,z), ForceMode.VelocityChange);
     }
     public void crouchPlayer() {
-        /*
-        Transform upperLTf = leftLeg.transform.GetChild(0), lowerLTf = leftLeg.transform.GetChild(1),
-        upperRTf = rightLeg.transform.GetChild(0), lowerRTf = rightLeg.transform.GetChild(1);
+            //sllp, srlp, sllr, srlr, sllp2, srlp2, sllr2, srlr2;
+        Transform tRLeg = rightLeg.transform, tLLeg = leftLeg.transform;
+        Debug.Log(tRLeg.localRotation.x);
+        Transform ctRLeg = rightLeg.transform.GetChild(0),
+        ctLLeg = leftLeg.transform.GetChild(0);
+        Transform ctRLeg2 = ctRLeg.GetChild(0),
+        ctLLeg2 = ctLLeg.GetChild(0);
         if (characterMovementState == 1) {
-            upperLTf.localPosition = new Vector3(0,0.4f,0.15f);
-            upperLTf.localRotation = Quaternion.Euler(-25,0,0);
-            lowerLTf.localPosition = new Vector3(0,0.15f,-0.15f);
-            upperRTf.localPosition = new Vector3(0,0.4f,0.15f);
-            upperRTf.localRotation = Quaternion.Euler(-25,0,0);
-            lowerRTf.localPosition = new Vector3(0,0.15f,-0.15f);
-            movementHitbox.transform.localPosition = new Vector3(0,0.05f,0);
-            movementHitbox.transform.localScale = new Vector3(1.5f,1.15f,1.5f);
+            tRLeg.localRotation = Quaternion.Euler(tRLeg.localRotation.x,tRLeg.localRotation.y,-70);
+            tLLeg.localRotation = Quaternion.Euler(tRLeg.localRotation.x,tRLeg.localRotation.y,-70);
+            ctRLeg.localRotation = Quaternion.Euler(ctRLeg.localRotation.x,ctRLeg.localRotation.y,130);
+            ctLLeg.localRotation = Quaternion.Euler(ctLLeg.localRotation.x,ctLLeg.localRotation.y,130);
+            ctRLeg2.localRotation = Quaternion.Euler(ctRLeg2.localRotation.x,ctRLeg2.localRotation.y,-58);
+            ctLLeg2.localRotation = Quaternion.Euler(ctLLeg2.localRotation.x,ctLLeg2.localRotation.y,-58);
+            movementHitbox.transform.localPosition = new Vector3(0,1.625f,0);
+            movementHitbox.transform.localScale = new Vector3(1,0.95f,1);
         } else {
-            upperLTf.localPosition = new Vector3(0,0.25f,0);
-            upperLTf.localRotation = Quaternion.Euler(0,0,0);
-            lowerLTf.localPosition = new Vector3(0,-0.25f,-0);
-            upperRTf.localPosition = new Vector3(0,0.25f,0);
-            upperRTf.localRotation = Quaternion.Euler(0,0,0);
-            lowerRTf.localPosition = new Vector3(0,-0.25f,-0);
-            movementHitbox.transform.localPosition = new Vector3(0,-0.145f,0);
-            movementHitbox.transform.localScale = new Vector3(1.5f,1.335f,1.5f);
+            tRLeg.localRotation = Quaternion.Euler(tRLeg.localRotation.x,tRLeg.localRotation.y,1.352f);
+            tLLeg.localRotation = Quaternion.Euler(tRLeg.localRotation.x,tRLeg.localRotation.y,1.352f);
+            ctRLeg.localRotation = Quaternion.Euler(ctRLeg.localRotation.x,ctRLeg.localRotation.y,3.656f);
+            ctLLeg.localRotation = Quaternion.Euler(ctLLeg.localRotation.x,ctLLeg.localRotation.y,3.656f);
+            ctRLeg2.localRotation = Quaternion.Euler(ctRLeg2.localRotation.x,ctRLeg2.localRotation.y,-5.008f);
+            ctLLeg2.localRotation = Quaternion.Euler(ctLLeg2.localRotation.x,ctLLeg2.localRotation.y,-5.008f);
+            movementHitbox.transform.localPosition = new Vector3(0,1.28f,0);
+            movementHitbox.transform.localScale = new Vector3(1,1.28f,1);
+            
         }
-        */
+        
     }
     public bool isGrounded() {
         LayerMask ground = LayerMask.GetMask("Ground"), props = LayerMask.GetMask("Movable Objects");
@@ -501,18 +506,7 @@ public class PlayerInner : MonoBehaviour
             tempMovementSpeed *= sprintSpeedMult;
         double increaseZ = vertical*Math.Cos(tempAngle)*tempMovementSpeed + horizontal*Math.Cos(tempAngleP)*tempMovementSpeed,
         increaseX = vertical*Math.Sin(tempAngle)*tempMovementSpeed + horizontal*Math.Sin(tempAngleP)*tempMovementSpeed;
-        if (vertical == 0f && horizontal == 0f) {
-            animator.SetTrigger("idle");
-        } else {
-            if (runAnimationTime == 0f) {
-                runAnimationTime = 1.6f; 
-                if (characterMovementState == 2) {
-                    animator.SetTrigger("sprint");
-                } else {
-                    animator.SetTrigger("run");
-                }
-            } 
-        }
+        
         float up = rb.velocity.y;
         if (ju && isGrounded()) {
             up =jump;
@@ -529,10 +523,7 @@ public class PlayerInner : MonoBehaviour
     public void updateTime() {
         float differenceInTime = UnityEngine.Time.time-savedTime;
         savedTime = UnityEngine.Time.time;
-        runAnimationTime -= differenceInTime;
-        if (runAnimationTime < 0f) {
-            runAnimationTime = 0f;
-        }
+    
         if (characterMovementState == 2) {
             currentSprintTime -= differenceInTime;
             if (differenceInTime < 0f) {
