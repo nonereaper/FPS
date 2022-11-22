@@ -1,0 +1,11 @@
+Model Information:
+* title:	Stone Bridge
+* source:	https://sketchfab.com/3d-models/stone-bridge-a5d380cd08654b508b4b643056038605
+* author:	Gravity Jack (https://sketchfab.com/gravityjack)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Stone Bridge" (https://sketchfab.com/3d-models/stone-bridge-a5d380cd08654b508b4b643056038605) by Gravity Jack (https://sketchfab.com/gravityjack) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

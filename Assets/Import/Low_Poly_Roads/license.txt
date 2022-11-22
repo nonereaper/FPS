@@ -1,0 +1,11 @@
+Model Information:
+* title:	Low Poly Roads
+* source:	https://sketchfab.com/3d-models/low-poly-roads-de14b452d59241608570d3c927425a01
+* author:	Mikey.3d (https://sketchfab.com/mikey.r)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Low Poly Roads" (https://sketchfab.com/3d-models/low-poly-roads-de14b452d59241608570d3c927425a01) by Mikey.3d (https://sketchfab.com/mikey.r) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

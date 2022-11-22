@@ -1,0 +1,11 @@
+Model Information:
+* title:	Air Traffic Control Tower
+* source:	https://sketchfab.com/3d-models/air-traffic-control-tower-32bf85b0afaf4ed398d96695d2259821
+* author:	Sengchor (https://sketchfab.com/Sengchor)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Air Traffic Control Tower" (https://sketchfab.com/3d-models/air-traffic-control-tower-32bf85b0afaf4ed398d96695d2259821) by Sengchor (https://sketchfab.com/Sengchor) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

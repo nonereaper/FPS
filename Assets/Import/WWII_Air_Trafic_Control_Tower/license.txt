@@ -1,0 +1,11 @@
+Model Information:
+* title:	WWII Air Trafic Control Tower
+* source:	https://sketchfab.com/3d-models/wwii-air-trafic-control-tower-9e7f035ed7f4449593ad1bebe6ac71b1
+* author:	standerwickd (https://sketchfab.com/standerwickd)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "WWII Air Trafic Control Tower" (https://sketchfab.com/3d-models/wwii-air-trafic-control-tower-9e7f035ed7f4449593ad1bebe6ac71b1) by standerwickd (https://sketchfab.com/standerwickd) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
