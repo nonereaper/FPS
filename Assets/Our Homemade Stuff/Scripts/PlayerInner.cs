@@ -228,7 +228,7 @@ public class PlayerInner : MonoBehaviour
             }
             float spread = (float)(gun.getSpread()*spreadMult);
             for (int i = 0; i < gun.getNumber(); i++) {
-                Transform tf2 = emptyProjectile.transform;//gun.getMussle().transform;
+                Transform tf2 = gun.getMussle().transform; // emptyProjectile.transform;
                 float rotationTempX = tf2.rotation.eulerAngles.x + UnityEngine.Random.Range(-spread,spread),
                 rotationTempY = tf2.rotation.eulerAngles.y + UnityEngine.Random.Range(-spread,spread);
                 Quaternion q = Quaternion.Euler(rotationTempX, rotationTempY, tf2.rotation.eulerAngles.z);
@@ -308,6 +308,7 @@ public class PlayerInner : MonoBehaviour
                 weaponBar[i].transform.position = emptyWeaponLocation.transform.position;
                 weaponBar[i].transform.localRotation = emptyWeaponLocation.transform.rotation;
                 weaponBar[i].transform.Rotate(180,90,90);
+                weaponBar[i].transform.Rotate(5,5,5);
                 aimCamera.transform.position = weaponBar[i].GetComponent<Weapon>().getAimPosition().transform.position;
                 aimCamera.transform.rotation = weaponBar[i].GetComponent<Weapon>().getAimPosition().transform.rotation;
                 //weaponBar[i].transform.localRotation = Quaternion.Euler(new Vector3(weaponBar[i].transform.rotation.x,weaponBar[i].transform.rotation.y,weaponBar[i].transform.rotation.z));
