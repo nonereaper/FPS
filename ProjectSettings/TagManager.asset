@@ -21,8 +21,8 @@ TagManager:
   - PlayerNonMovement
   - PlayerMovement
   - IgnoreCollisions
-  - 
-  - 
+  - Enemy
+  - EnemyInner
   - 
   - 
   - 

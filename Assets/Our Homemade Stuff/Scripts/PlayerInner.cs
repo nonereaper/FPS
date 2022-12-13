@@ -382,7 +382,6 @@ public class PlayerInner : MonoBehaviour
     public void crouchPlayer() {
             //sllp, srlp, sllr, srlr, sllp2, srlp2, sllr2, srlr2;
         Transform tRLeg = rightLeg.transform, tLLeg = leftLeg.transform;
-        Debug.Log(tRLeg.localRotation.x);
         Transform ctRLeg = rightLeg.transform.GetChild(0),
         ctLLeg = leftLeg.transform.GetChild(0);
         Transform ctRLeg2 = ctRLeg.GetChild(0),
