@@ -16,10 +16,13 @@ public class Zombie : MonoBehaviour
     private int stateOfAnimation;
     private float characterAngle;
     private Rigidbody rb;
+    private GameObject playerToChase;
+
+    private Controller controller;
     // Start is called before the first frame update
     void Start()
     {
-        
+        controller = GameObject.Find("Controller").GetComponent<Controller>();
         timeBeforeNextAnimation = 0;
         stateOfAnimation = 0;
         savedTime = UnityEngine.Time.time;
@@ -54,7 +57,7 @@ public class Zombie : MonoBehaviour
         //Debug.Log(characterAngle);
     }
     public Vector3 findPlayerPosition() {
-        return GameObject.Find("Player").transform.position;
+        return playerToChase.transform.position;
     }
     // Update is called once per frame
     void Update()
@@ -64,8 +67,12 @@ public class Zombie : MonoBehaviour
         timeBeforeNextAnimation -= differenceInTime;
         if (timeBeforeNextAnimation < 0f) timeBeforeNextAnimation = 0f;
         if (stateOfAnimation == 1 && timeBeforeNextAnimation == 0f) {
-           // Destroy(gameObject);
+            Destroy(gameObject);
         }
+        playerToChase = controller.getClosestPlayer(transform.position);
+        GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
+        GameObject pathZombie = controller.getPathes(controller.findClosestPath(transform.position));
         rotate();
+        
     }
 }

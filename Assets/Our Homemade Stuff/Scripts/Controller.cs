@@ -20,6 +20,8 @@ public class Controller : MonoBehaviour
     private List<GameObject> weapons;
     private List<GameObject> projectiles;
     private List<GameObject> decay;
+    private List<GameObject> zombiePathes;
+    private List<GameObject> players;
 
     private float savedDistance;
     // Start is called before the first frame update
@@ -50,6 +52,8 @@ public class Controller : MonoBehaviour
             weapons = new List<GameObject>();
             projectiles = new List<GameObject>();
             decay = new List<GameObject>();
+            zombiePathes = new List<GameObject>();
+            players = new List<GameObject>();
             for (int i = 0; i < transform.childCount; i++) {
                 Transform tempTf = transform.GetChild(i);
                 for (int q = 0; q < tempTf.childCount; q++) {
@@ -61,9 +65,37 @@ public class Controller : MonoBehaviour
                         props.Add(tempTf.GetChild(q).gameObject);
                         //if (isMult)
                         //tempTf.GetChild(q).gameObject.GetComponent<NetworkObject>().Spawn();
+                    } else if (i == 4) {
+                        zombiePathes.Add(tempTf.GetChild(q).gameObject);
+                    } else if (i == 5) {
+                        players.Add(tempTf.GetChild(q).gameObject);
                     }
                 }
             }
+    }
+    public GameObject getClosestPlayer(Vector3 p) {
+        int index = 0;
+        float distance = float.MaxValue;
+        for (int i = 0; i < players.Count; i++) {
+            float tempDistance = Vector3.Distance(players[i].transform.position,p);
+            if (tempDistance < distance) {
+                index = i;  
+                distance = tempDistance;
+            }
+        }
+        return players[index];
+    }
+    public int findClosestPath(Vector3 p) {
+        int index = -1;
+        float distance = float.MaxValue;
+        for (int i = 0; i < zombiePathes.Count; i++) {
+            float tempDistance = Vector3.Distance(zombiePathes[i].transform.position,p);
+            if (tempDistance < distance) {
+                index = i;  
+                distance = tempDistance;
+            }
+        }
+        return index;
     }
     public int getClosestWeapon(Vector3 p, float rad) {
         float distance = float.MaxValue;
@@ -99,6 +131,9 @@ public class Controller : MonoBehaviour
     }
     public GameObject getProp(int index) {
         return props[index];
+    }
+    public GameObject getPathes(int index) {
+        return zombiePathes[index];
     }
     public void removeWeapon(GameObject o) {
         weapons.Remove(o);
