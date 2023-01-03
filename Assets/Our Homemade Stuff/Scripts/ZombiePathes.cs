@@ -7,6 +7,7 @@ public class ZombiePathes : MonoBehaviour
     [SerializeField] List<GameObject> connectedPathes;
     private static int allID;
     private int id;
+    private int[] pathToTake;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,5 +41,25 @@ public class ZombiePathes : MonoBehaviour
     }
     public List<GameObject> getConnectedPathes() {
         return connectedPathes;
+    }
+    public void setup() {
+        pathToTake = new int[connectedPathes.Count];
+        for (int i = 0; i < pathToTake.Length; i++) {
+            if (i != id) {
+
+            }
+        }
+
+    }
+    public string run(ZombiePathes zp, int targetID, string pathSoFar) {
+        if (targetID == zp.getID()) return pathSoFar;
+        List<string> foundPath = new List<string>();
+        List<GameObject> zps = zp.getConnectedPathes();
+        string[] allPathSoFar = pathSoFar.Split(",");
+        string temppsf = "";
+        for (int i = 0; i < allPathSoFar.Length; i++) {
+            temppsf += allPathSoFar[i]+",";
+        }
+        return null;
     }
 }
