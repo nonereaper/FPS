@@ -24,11 +24,13 @@ public class Controller : MonoBehaviour
     private List<GameObject> players;
 
     private float savedDistance;
+    private bool setupPath;
     // Start is called before the first frame update
     void Start()
     {
         //sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         //isMult = sceneLoader.isIsMult();
+        setupPath = false;
         if (isMult) {
             networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
             Destroy(GameObject.Find("Player (Single)"));
@@ -179,5 +181,11 @@ public class Controller : MonoBehaviour
             NetworkManager t = networkManager.ConnectedClients[list[i].ClientId].PlayerObject.NetworkManager;
             
         }*/
+        if (!setupPath && ZombiePathes.getAllID() == zombiePathes.Count) {
+            for (int i = 0; i < zombiePathes.Count; i++) {
+                zombiePathes[i].GetComponent<ZombiePathes>().setup();
+            }
+            setupPath = true;
+        }
     }
 }

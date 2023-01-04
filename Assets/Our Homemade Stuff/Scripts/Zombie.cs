@@ -19,6 +19,7 @@ public class Zombie : MonoBehaviour
     private GameObject playerToChase;
 
     private Controller controller;
+    private int stateOfZombieAI;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +30,7 @@ public class Zombie : MonoBehaviour
         animationController = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         characterAngle = rb.rotation.eulerAngles.y;
+        stateOfZombieAI = 0;
     }
 
     public void die() {
@@ -42,8 +44,7 @@ public class Zombie : MonoBehaviour
         health -= healthReduction;
         if (health <= 0) die();
     }
-    public void rotate() {
-        Vector3 p = findPlayerPosition();
+    public void rotate(Vector3 p) {
         transform.LookAt(p);
        // Vector3 newDirection = Vector3.RotateTowards(transform.up, p, 1f, 0.0f);
         //Debug.Log(newDirection.x + " " + newDirection.y + " " + newDirection.z);
@@ -72,7 +73,12 @@ public class Zombie : MonoBehaviour
         playerToChase = controller.getClosestPlayer(transform.position);
         GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
         GameObject pathZombie = controller.getPathes(controller.findClosestPath(transform.position));
-        rotate();
+        if (pathPlayer.GetComponent<ZombiePathes>().getID() == pathZombie.GetComponent<ZombiePathes>().getID()) {
+            rotate(findPlayerPosition());
+        } else {
+            rotate(pathZombie.transform.position);
+        }
+        
         
     }
 }
