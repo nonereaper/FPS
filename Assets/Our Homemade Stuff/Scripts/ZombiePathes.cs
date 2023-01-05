@@ -28,16 +28,13 @@ public class ZombiePathes : MonoBehaviour
     public static int getAllID() {
         return allID;
     }
-    public string search(GameObject adj, int idToFind) {
-        ZombiePathes zp = adj.GetComponent<ZombiePathes>();
-        if (zp.getID() == idToFind) {
-            // found path
-
-        } 
-        for (int i = 0; i < zp.getConnectedPathes().Count; i++) {
-            search(zp.getConnectedPathes()[i],idToFind);
+    public int search(int idToFind) {
+        return pathToTake[idToFind];
+    }
+    public GameObject searchAdj(int idToFind) {
+        for (int i = 0; i < connectedPathes.Count; i++) {
+            
         }
-        return null;
     }
     public int getID() {
         return id;
@@ -49,7 +46,7 @@ public class ZombiePathes : MonoBehaviour
         pathToTake = new int[connectedPathes.Count];
         for (int i = 0; i < pathToTake.Length; i++) {
             if (i != id) {
-                string temp = run(this,i,id+",0.0");
+                string temp = run(this,i,id+"",0.0);
                 if (temp == null) Debug.Log("error in thing");
                 else {
                     string[] temp2 = temp.Split(",");
@@ -59,44 +56,53 @@ public class ZombiePathes : MonoBehaviour
         }
 
     }
-    public string run(ZombiePathes zp, int targetID, string pathSoFar) {
-        if (targetID == zp.getID()) return pathSoFar;
-        List<string> foundPath = new List<string>();
+    public string run(ZombiePathes zp, int targetID, String pathSoFar, double currDist) {
+        if (targetID == zp.getID()) return pathSoFar+","+currDist;
+        List<String> foundPath = new List<String>();
         List<GameObject> zps = zp.getConnectedPathes();
-        string[] allPathSoFar = pathSoFar.Split(",");
-        string temppsf = "";
-        for (int i = 0; i < allPathSoFar.Length-1; i++) {
-            temppsf += allPathSoFar[i]+",";
+        /*
+        for (int i = 0; i < zps.Count; i++) {
+            Debug.Log(zps[i].GetComponent<ZombiePathes>().getID());
         }
+        Debug.Log(zp.getID() + " new " + pathSoFar);*/
+        String[] allPathSoFar = pathSoFar.Split(",");
+
         for (int i = 0; i < zps.Count; i++) {
             bool alreadyDid = false;
-            for (int q = 0; q < allPathSoFar.Length-1; q++) {
-                //Debug.Log(allPathSoFar[q]+":"+zps[i].GetComponent<ZombiePathes>().getID() + "  /" + allPathSoFar[q].Equals(""+zps[i].GetComponent<ZombiePathes>().getID()));
+            for (int q = 0; q < allPathSoFar.Length; q++) {
                 if (int.Parse(allPathSoFar[q]) == zps[i].GetComponent<ZombiePathes>().getID()) {
+                    //Debug.Log(pathSoFar + "same thing" + allPathSoFar[q] + ":" + zps[i].GetComponent<ZombiePathes>().getID());
                     alreadyDid = true;
+                    break;
                 }
             }
             if (!alreadyDid) {
-                string psf = temppsf+zps[i].GetComponent<ZombiePathes>().getID()+","+(Double.Parse(allPathSoFar[allPathSoFar.Length-1])+distance(zps[i]));
-                foundPath.Add(run(zps[i].GetComponent<ZombiePathes>(),targetID, pathSoFar));
+                String psf = pathSoFar+","+zps[i].GetComponent<ZombiePathes>().getID();
+                double distNew = currDist+distance(zps[i],zp.gameObject);
+                String temp2= run(zps[i].GetComponent<ZombiePathes>(),targetID, psf,distNew);
+
+                //Debug.Log(psf);
+                //Debug.Log(distNew);
+
+                if (temp2 != null){
+                foundPath.Add(temp2);
+                }
             }
         }
             int index = -1;
             double dist = Double.MaxValue;
             for (int i = 0; i < foundPath.Count; i++) {
-                if (foundPath[i] != null) {
-                    string[] temp = foundPath[i].Split(",");
+                    String[] temp = foundPath[i].Split(",");
                     if (Double.Parse(temp[temp.Length-1]) < dist) {
                         dist = Double.Parse(temp[temp.Length-1]);
                         index = i;
                     }
-                }
             }
             if (index == -1)
         return null;
         else return foundPath[index];
     }
-    public double distance(GameObject zp) {
-        return Vector3.Distance(transform.position, zp.gameObject.transform.position);
+    public double distance(GameObject zp, GameObject zp2) {
+        return Vector3.Distance(zp2.gameObject.transform.position, zp.gameObject.transform.position);
     }
 }

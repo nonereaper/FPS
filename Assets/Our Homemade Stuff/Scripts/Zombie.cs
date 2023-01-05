@@ -8,7 +8,7 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float movementSpeed;
     [SerializeField] private int health;
     [SerializeField] private float range;
-    [SerializeField] private float rotationAmount;
+    [SerializeField] private float rotationSpeed;
     private Animator animationController; 
 
     private float savedTime;
@@ -20,6 +20,7 @@ public class Zombie : MonoBehaviour
 
     private Controller controller;
     private int stateOfZombieAI;
+    private int targetID;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +32,7 @@ public class Zombie : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         characterAngle = rb.rotation.eulerAngles.y;
         stateOfZombieAI = 0;
+        targetID = -1;
     }
 
     public void die() {
@@ -45,17 +47,28 @@ public class Zombie : MonoBehaviour
         if (health <= 0) die();
     }
     public void rotate(Vector3 p) {
-        transform.LookAt(p);
-       // Vector3 newDirection = Vector3.RotateTowards(transform.up, p, 1f, 0.0f);
-        //Debug.Log(newDirection.x + " " + newDirection.y + " " + newDirection.z);
-        //transform.rotation = Quaternion.Euler(0f,transform.rotation.y+newDirection.y,0f);
-        //transform.rotation = Quaternion.LookRotation(new Vector3(0,0,0),newDirection);
+        // https://answers.unity.com/questions/306639/rotating-an-object-towards-target-on-a-single-axis.html
+        // distance between target and the actual rotating object
+        Vector3 D = p - transform.position;  
+        
+        
+        // calculate the Quaternion for the rotation
+        Quaternion rot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(D), rotationSpeed * Time.deltaTime);
+        
+        //Apply the rotation 
+        transform.rotation = rot; 
+        
+        // put 0 on the axys you do not want for the rotation object to rotate
+        transform.eulerAngles = new Vector3(0,transform.eulerAngles.y,0); 
+        characterAngle = transform.eulerAngles.y;
+    }
+    public void moveForward() {
+        double tempAngle = characterAngle/180*Math.PI;
 
-        //Debug.Log(angleChange);
-        //transform.rotation = Quaternion.Euler(0f,transform.rotation.y-(float)angleChange,0f);
-        //rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0,(float)angleChange,0)));
-        //characterAngle = rb.rotation.eulerAngles.y;
-        //Debug.Log(characterAngle);
+        double increaseZ = Math.Cos(tempAngle)*movementSpeed,
+        increaseX = Math.Sin(tempAngle)*movementSpeed;
+        
+        rb.AddForce(new Vector3((float)increaseX,0,(float)increaseZ) - rb.velocity, ForceMode.VelocityChange);
     }
     public Vector3 findPlayerPosition() {
         return playerToChase.transform.position;
@@ -73,10 +86,19 @@ public class Zombie : MonoBehaviour
         playerToChase = controller.getClosestPlayer(transform.position);
         GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
         GameObject pathZombie = controller.getPathes(controller.findClosestPath(transform.position));
+        if (targetID == -1) {
+            targetID = pathZombie.GetComponent<ZombiePathes>().getID();
+        } else if (Vector3.Distance(transform.position,pathZombie.transform.position) < 10f) {
+            targetID = pathZombie.GetComponent<ZombiePathes>().search(pathPlayer.GetComponent<ZombiePathes>().getID());
+        }
+        
         if (pathPlayer.GetComponent<ZombiePathes>().getID() == pathZombie.GetComponent<ZombiePathes>().getID()) {
             rotate(findPlayerPosition());
         } else {
-            rotate(pathZombie.transform.position);
+             else {
+                rotate(pathZombie.transform.position);
+                moveForward();
+            }
         }
         
         
