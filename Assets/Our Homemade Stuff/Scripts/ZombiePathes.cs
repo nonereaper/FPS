@@ -33,8 +33,10 @@ public class ZombiePathes : MonoBehaviour
     }
     public GameObject searchAdj(int idToFind) {
         for (int i = 0; i < connectedPathes.Count; i++) {
-            
+            if (connectedPathes[i].GetComponent<ZombiePathes>().getID() == idToFind)
+            return connectedPathes[i];
         }
+        return null;
     }
     public int getID() {
         return id;
@@ -43,7 +45,7 @@ public class ZombiePathes : MonoBehaviour
         return connectedPathes;
     }
     public void setup() {
-        pathToTake = new int[connectedPathes.Count];
+        pathToTake = new int[allID];
         for (int i = 0; i < pathToTake.Length; i++) {
             if (i != id) {
                 string temp = run(this,i,id+"",0.0);

@@ -9,6 +9,7 @@ public class Zombie : MonoBehaviour
     [SerializeField] private int health;
     [SerializeField] private float range;
     [SerializeField] private float rotationSpeed;
+    [SerializeField] private int damage;
     private Animator animationController; 
 
     private float savedTime;
@@ -19,8 +20,10 @@ public class Zombie : MonoBehaviour
     private GameObject playerToChase;
 
     private Controller controller;
-    private int stateOfZombieAI;
-    private int targetID;
+    private GameObject targetZombiePath;
+    private GameObject playerZombiePath;
+
+    private int zombieAI;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,8 +34,9 @@ public class Zombie : MonoBehaviour
         animationController = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         characterAngle = rb.rotation.eulerAngles.y;
-        stateOfZombieAI = 0;
-        targetID = -1;
+        targetZombiePath = null;
+        playerZombiePath = null;
+        zombieAI = 0;
     }
 
     public void die() {
@@ -73,6 +77,13 @@ public class Zombie : MonoBehaviour
     public Vector3 findPlayerPosition() {
         return playerToChase.transform.position;
     }
+    public void setup(float ms, int hea, float rang, float rotatSpeed, int dam) {
+        movementSpeed = ms;
+        health = hea;
+        rang = range;
+        rotationSpeed = rotatSpeed;
+        damage = dam;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -83,22 +94,47 @@ public class Zombie : MonoBehaviour
         if (stateOfAnimation == 1 && timeBeforeNextAnimation == 0f) {
             Destroy(gameObject);
         }
+
+
         playerToChase = controller.getClosestPlayer(transform.position);
         GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
         GameObject pathZombie = controller.getPathes(controller.findClosestPath(transform.position));
-        if (targetID == -1) {
-            targetID = pathZombie.GetComponent<ZombiePathes>().getID();
-        } else if (Vector3.Distance(transform.position,pathZombie.transform.position) < 10f) {
-            targetID = pathZombie.GetComponent<ZombiePathes>().search(pathPlayer.GetComponent<ZombiePathes>().getID());
+        if (zombieAI == 0) {
+            playerZombiePath = pathPlayer;
+            targetZombiePath = pathZombie;
+            zombieAI = 1;
+        } else if (zombieAI == 1) {
+            if (pathPlayer.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID()) {
+                
+            }
+        }
+        playerToChase = controller.getClosestPlayer(transform.position);
+        bool changedPlayerPath = false;
+        GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
+        if (playerZombiePath == null) {
+            playerZombiePath = pathPlayer;
+            changedPlayerPath = true;
+        } else if (playerZombiePath != null && pathPlayer.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID()) {
+            playerZombiePath = pathPlayer;
+            changedPlayerPath = true;
         }
         
-        if (pathPlayer.GetComponent<ZombiePathes>().getID() == pathZombie.GetComponent<ZombiePathes>().getID()) {
+        
+        if (targetZombiePath == null) {
+            targetZombiePath = controller.getPathes(controller.findClosestPath(transform.position));
+        } else if (Vector3.Distance(transform.position,targetZombiePath.transform.position) < 3f || changedPlayerPath) {
+            //Debug.Log("close Enough");
+            int targetID = targetZombiePath.GetComponent<ZombiePathes>().search(pathPlayer.GetComponent<ZombiePathes>().getID());
+            //Debug.Log(targetID + " " + pathPlayer.GetComponent<ZombiePathes>().getID());
+            targetZombiePath = targetZombiePath.GetComponent<ZombiePathes>().searchAdj(targetID);
+        }
+        Debug.Log(pathPlayer + "  " + targetZombiePath);
+        if (pathPlayer.GetComponent<ZombiePathes>().getID() == targetZombiePath.GetComponent<ZombiePathes>().getID()) {
             rotate(findPlayerPosition());
+            moveForward();
         } else {
-             else {
-                rotate(pathZombie.transform.position);
+                rotate(targetZombiePath.transform.position);
                 moveForward();
-            }
         }
         
         

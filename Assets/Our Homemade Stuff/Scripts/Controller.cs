@@ -22,9 +22,16 @@ public class Controller : MonoBehaviour
     private List<GameObject> decay;
     private List<GameObject> zombiePathes;
     private List<GameObject> players;
+    private List<GameObject> zombies;
+    private List<GameObject> zombieSpawner;
 
     private float savedDistance;
     private bool setupPath;
+
+    private int zombieToSpawnLeft;
+    private float timeForEachSpawnerToSpawn;
+
+    [SerializeField] private GameObject zombiePrefab;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,6 +63,8 @@ public class Controller : MonoBehaviour
             decay = new List<GameObject>();
             zombiePathes = new List<GameObject>();
             players = new List<GameObject>();
+            zombies = new List<GameObject>();
+            zombieSpawner = new List<GameObject>();
             for (int i = 0; i < transform.childCount; i++) {
                 Transform tempTf = transform.GetChild(i);
                 for (int q = 0; q < tempTf.childCount; q++) {
@@ -186,6 +195,12 @@ public class Controller : MonoBehaviour
                 zombiePathes[i].GetComponent<ZombiePathes>().setup();
             }
             setupPath = true;
+        }
+
+        if (zombies.Count == 0 && zombieToSpawnLeft == 0) { // all zombies are dead
+            zombieToSpawnLeft = 10; // number of zombies to spawn
+            timeForEachSpawnerToSpawn = 5; // time for each spawner to spawn zombie
+            //zombiePrefab.setup(float ms, int hea, float rang, float rotatSpeed, int dam); // set zombie info
         }
     }
 }
