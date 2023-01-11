@@ -23,7 +23,6 @@ public class Zombie : MonoBehaviour
     private GameObject targetZombiePath;
     private GameObject playerZombiePath;
 
-    private int zombieAI;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,7 +35,6 @@ public class Zombie : MonoBehaviour
         characterAngle = rb.rotation.eulerAngles.y;
         targetZombiePath = null;
         playerZombiePath = null;
-        zombieAI = 0;
     }
 
     public void die() {
@@ -51,6 +49,7 @@ public class Zombie : MonoBehaviour
         if (health <= 0) die();
     }
     public void rotate(Vector3 p) {
+        
         // https://answers.unity.com/questions/306639/rotating-an-object-towards-target-on-a-single-axis.html
         // distance between target and the actual rotating object
         Vector3 D = p - transform.position;  
@@ -72,7 +71,7 @@ public class Zombie : MonoBehaviour
         double increaseZ = Math.Cos(tempAngle)*movementSpeed,
         increaseX = Math.Sin(tempAngle)*movementSpeed;
         
-        rb.AddForce(new Vector3((float)increaseX,0,(float)increaseZ) - rb.velocity, ForceMode.VelocityChange);
+       rb.AddForce(new Vector3((float)increaseX,rb.velocity.y,(float)increaseZ) - rb.velocity, ForceMode.VelocityChange);
     }
     public Vector3 findPlayerPosition() {
         return playerToChase.transform.position;
@@ -83,6 +82,32 @@ public class Zombie : MonoBehaviour
         rang = range;
         rotationSpeed = rotatSpeed;
         damage = dam;
+    }
+    void FixedUpdate() {
+        playerToChase = controller.getClosestPlayer(transform.position);
+        GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
+        // set player path
+        if (playerZombiePath == null || (playerZombiePath != null && pathPlayer.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID())) {
+            playerZombiePath = pathPlayer;
+        }
+        if (targetZombiePath == null) {
+            targetZombiePath = controller.getPathes(controller.findClosestPath(transform.position));
+        } else if (Vector3.Distance(transform.position,targetZombiePath.transform.position) < 3f) {
+            //Debug.Log("close Enough");
+            int targetID = targetZombiePath.GetComponent<ZombiePathes>().search(pathPlayer.GetComponent<ZombiePathes>().getID());
+            //Debug.Log(targetID + " " + pathPlayer.GetComponent<ZombiePathes>().getID());
+            targetZombiePath = targetZombiePath.GetComponent<ZombiePathes>().searchAdj(targetID);
+        }
+        //Debug.Log(pathPlayer + "  " + targetZombiePath);
+        if (playerZombiePath != null && targetZombiePath != null) {
+            if (playerZombiePath.GetComponent<ZombiePathes>().getID() == targetZombiePath.GetComponent<ZombiePathes>().getID()) {
+                rotate(findPlayerPosition());
+                moveForward();
+            } else {
+                rotate(targetZombiePath.transform.position);
+                moveForward();
+            }
+        }
     }
     // Update is called once per frame
     void Update()
@@ -95,48 +120,8 @@ public class Zombie : MonoBehaviour
             Destroy(gameObject);
         }
 
-
-        playerToChase = controller.getClosestPlayer(transform.position);
-        GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
-        GameObject pathZombie = controller.getPathes(controller.findClosestPath(transform.position));
-        if (zombieAI == 0) {
-            playerZombiePath = pathPlayer;
-            targetZombiePath = pathZombie;
-            zombieAI = 1;
-        } else if (zombieAI == 1) {
-            if (pathPlayer.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID()) {
-                
-            }
+        if (Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
+            playerToChase.damage();
         }
-        playerToChase = controller.getClosestPlayer(transform.position);
-        bool changedPlayerPath = false;
-        GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
-        if (playerZombiePath == null) {
-            playerZombiePath = pathPlayer;
-            changedPlayerPath = true;
-        } else if (playerZombiePath != null && pathPlayer.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID()) {
-            playerZombiePath = pathPlayer;
-            changedPlayerPath = true;
-        }
-        
-        
-        if (targetZombiePath == null) {
-            targetZombiePath = controller.getPathes(controller.findClosestPath(transform.position));
-        } else if (Vector3.Distance(transform.position,targetZombiePath.transform.position) < 3f || changedPlayerPath) {
-            //Debug.Log("close Enough");
-            int targetID = targetZombiePath.GetComponent<ZombiePathes>().search(pathPlayer.GetComponent<ZombiePathes>().getID());
-            //Debug.Log(targetID + " " + pathPlayer.GetComponent<ZombiePathes>().getID());
-            targetZombiePath = targetZombiePath.GetComponent<ZombiePathes>().searchAdj(targetID);
-        }
-        Debug.Log(pathPlayer + "  " + targetZombiePath);
-        if (pathPlayer.GetComponent<ZombiePathes>().getID() == targetZombiePath.GetComponent<ZombiePathes>().getID()) {
-            rotate(findPlayerPosition());
-            moveForward();
-        } else {
-                rotate(targetZombiePath.transform.position);
-                moveForward();
-        }
-        
-        
     }
 }

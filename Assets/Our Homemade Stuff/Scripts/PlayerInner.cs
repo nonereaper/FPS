@@ -29,6 +29,18 @@ public class PlayerInner : MonoBehaviour
     [SerializeField] private double restoreSprintTimeMult;
     [SerializeField] private float timeBeforeStartRestoreSprint;
     
+    [SerializeField] private int health;
+
+    public int getHealth() {
+        return health;
+    }
+    public void damage(int d) {
+        if (d != 0) {
+            health -= d;
+            
+        }
+
+    }
     // is character crouching
     private int characterMovementState;
     // camera's angle up and down

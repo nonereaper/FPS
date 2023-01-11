@@ -43,7 +43,7 @@ public class Projectile : NetworkBehaviour
             selfDestory();
         } else if (collision.gameObject.layer == LayerMask.NameToLayer("Movable Objects")) {
             selfDestory();
-        } else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+        } else if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyInner")) {
             Zombie zombie = collision.gameObject.GetComponent<Zombie>();
             
             zombie.reduceHealth(damage);
