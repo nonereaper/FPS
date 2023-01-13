@@ -10,10 +10,12 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float range;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private int damage;
+    [SerializeField] private float attackSpeed;
     private Animator animationController; 
 
     private float savedTime;
     private float timeBeforeNextAnimation;
+    private float timeBeforeNextAttack;
     private int stateOfAnimation;
     private float characterAngle;
     private Rigidbody rb;
@@ -28,6 +30,7 @@ public class Zombie : MonoBehaviour
     {
         controller = GameObject.Find("Controller").GetComponent<Controller>();
         timeBeforeNextAnimation = 0;
+        timeBeforeNextAttack = 0;
         stateOfAnimation = 0;
         savedTime = UnityEngine.Time.time;
         animationController = GetComponent<Animator>();
@@ -76,12 +79,13 @@ public class Zombie : MonoBehaviour
     public Vector3 findPlayerPosition() {
         return playerToChase.transform.position;
     }
-    public void setup(float ms, int hea, float rang, float rotatSpeed, int dam) {
+    public void setup(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe) {
         movementSpeed = ms;
         health = hea;
         rang = range;
         rotationSpeed = rotatSpeed;
         damage = dam;
+        attackSpeed = attSpe;
     }
     void FixedUpdate() {
         playerToChase = controller.getClosestPlayer(transform.position);
@@ -117,11 +121,22 @@ public class Zombie : MonoBehaviour
         timeBeforeNextAnimation -= differenceInTime;
         if (timeBeforeNextAnimation < 0f) timeBeforeNextAnimation = 0f;
         if (stateOfAnimation == 1 && timeBeforeNextAnimation == 0f) {
+            controller.removeZombie(gameObject);
             Destroy(gameObject);
         }
+        timeBeforeNextAttack -= differenceInTime;
+        if (timeBeforeNextAttack < 0f) timeBeforeNextAttack = 0f;
 
-        if (Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
-            playerToChase.damage();
+        if (timeBeforeNextAttack == 0 && stateOfAnimation != 1) {
+            if (Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
+                Vector3 D = playerToChase.transform.position - transform.position;  
+                Quaternion rot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(D),0f);
+                if (rot.y == transform.rotation.y) {
+                    playerToChase.GetComponent<PlayerInner>().reduceHealth(damage);
+                    timeBeforeNextAttack = attackSpeed;
+                    animationController.SetTrigger("attack");
+                }
+            }
         }
     }
 }

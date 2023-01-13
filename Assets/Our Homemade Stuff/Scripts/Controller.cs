@@ -23,7 +23,7 @@ public class Controller : MonoBehaviour
     private List<GameObject> zombiePathes;
     private List<GameObject> players;
     private List<GameObject> zombies;
-    private List<GameObject> zombieSpawner;
+    private List<GameObject> zombieSpawners;
 
     private float savedDistance;
     private bool setupPath;
@@ -64,7 +64,7 @@ public class Controller : MonoBehaviour
             zombiePathes = new List<GameObject>();
             players = new List<GameObject>();
             zombies = new List<GameObject>();
-            zombieSpawner = new List<GameObject>();
+            zombieSpawners = new List<GameObject>();
             for (int i = 0; i < transform.childCount; i++) {
                 Transform tempTf = transform.GetChild(i);
                 for (int q = 0; q < tempTf.childCount; q++) {
@@ -80,6 +80,10 @@ public class Controller : MonoBehaviour
                         zombiePathes.Add(tempTf.GetChild(q).gameObject);
                     } else if (i == 5) {
                         players.Add(tempTf.GetChild(q).gameObject);
+                    }else if (i == 6) {
+                        zombies.Add(tempTf.GetChild(q).gameObject);
+                    }else if (i == 7) {
+                        zombieSpawners.Add(tempTf.GetChild(q).gameObject);
                     }
                 }
             }
@@ -164,6 +168,12 @@ public class Controller : MonoBehaviour
     public void removeDecay(GameObject o) {
         decay.Remove(o);
     }
+    public void addZombie(GameObject o) {
+        zombies.Add(o);
+    }
+    public void removeZombie(GameObject o) {
+        zombies.Remove(o);
+    }
     public Transform getWeaponTf() {
         return transform.GetChild(1);
     }
@@ -172,6 +182,9 @@ public class Controller : MonoBehaviour
     }
     public Transform getDecayTf() {
         return transform.GetChild(3);
+    }
+    public Transform getZombieTf() {
+        return transform.GetChild(6);
     }
     [ServerRpc]
     public void spawnPlayerServerRpc(ulong clientId) {
@@ -196,11 +209,15 @@ public class Controller : MonoBehaviour
             }
             setupPath = true;
         }
-
         if (zombies.Count == 0 && zombieToSpawnLeft == 0) { // all zombies are dead
             zombieToSpawnLeft = 10; // number of zombies to spawn
             timeForEachSpawnerToSpawn = 5; // time for each spawner to spawn zombie
             //zombiePrefab.setup(float ms, int hea, float rang, float rotatSpeed, int dam); // set zombie info
+            while (zombieToSpawnLeft != 0) {
+                for (int i = 0; i < zombieSpawners.Count; i++) {
+                    if (zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn)) zombieToSpawnLeft--;
+                }
+            }
         }
     }
 }

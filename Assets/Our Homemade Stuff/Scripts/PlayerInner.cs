@@ -34,10 +34,10 @@ public class PlayerInner : MonoBehaviour
     public int getHealth() {
         return health;
     }
-    public void damage(int d) {
+    public void reduceHealth(int d) {
         if (d != 0) {
             health -= d;
-            
+            if (health < 0) health = 0;
         }
 
     }
@@ -115,6 +115,7 @@ public class PlayerInner : MonoBehaviour
     }
     public void updateItemInfo() {
         string temp = "" + isGrounded() + "\n";
+        temp += "Health: " + health + "\n";
         temp += "State of Character: " + characterMovementState + "\n";
         temp += "Sprint time left: " + currentSprintTime + "\n";
         for (int i = 0; i < weaponBar.Length; i++) {
