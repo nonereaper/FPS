@@ -213,11 +213,13 @@ public class Controller : MonoBehaviour
             zombieToSpawnLeft = 10; // number of zombies to spawn
             timeForEachSpawnerToSpawn = 5; // time for each spawner to spawn zombie
             //zombiePrefab.setup(float ms, int hea, float rang, float rotatSpeed, int dam); // set zombie info
+            /*
             while (zombieToSpawnLeft != 0) {
                 for (int i = 0; i < zombieSpawners.Count; i++) {
                     if (zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn)) zombieToSpawnLeft--;
                 }
             }
+            */
         }
     }
 }

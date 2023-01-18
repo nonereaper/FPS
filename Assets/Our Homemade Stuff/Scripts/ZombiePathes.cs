@@ -14,7 +14,11 @@ public class ZombiePathes : MonoBehaviour
     {
         id = allID;
         allID++;
-        
+        for (int i = 0; i < connectedPathes.Count; i++) {
+            if (connectedPathes[i].GetComponent<ZombiePathes>().searchAdj(id) == null) {
+                connectedPathes[i].GetComponent<ZombiePathes>().addPath(gameObject);
+            }
+        }
     }
     
     // Update is called once per frame
@@ -24,6 +28,9 @@ public class ZombiePathes : MonoBehaviour
             Debug.DrawLine(transform.position,connectedPathes[i].transform.position,Color.magenta);
             //Debug.DrawRay(point.point, point.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
         }
+    }
+    public void addPath(GameObject go) {
+        connectedPathes.Add(go);
     }
     public static int getAllID() {
         return allID;
