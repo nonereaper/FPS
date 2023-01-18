@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
@@ -30,14 +31,17 @@ public class Controller : MonoBehaviour
 
     private int zombieToSpawnLeft;
     private float timeForEachSpawnerToSpawn;
+    private int round;
 
     [SerializeField] private GameObject zombiePrefab;
+    [SerializeField] private GameObject zombiePrefab2;
     // Start is called before the first frame update
     void Start()
     {
         //sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         //isMult = sceneLoader.isIsMult();
         setupPath = false;
+        
         if (isMult) {
             networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
             Destroy(GameObject.Find("Player (Single)"));
@@ -57,6 +61,7 @@ public class Controller : MonoBehaviour
 
 
         }
+            round = 0;
             props = new List<GameObject>();
             weapons = new List<GameObject>();
             projectiles = new List<GameObject>();
@@ -210,16 +215,25 @@ public class Controller : MonoBehaviour
             setupPath = true;
         }
         if (zombies.Count == 0 && zombieToSpawnLeft == 0) { // all zombies are dead
+            round++;
             zombieToSpawnLeft = 10; // number of zombies to spawn
-            timeForEachSpawnerToSpawn = 5; // time for each spawner to spawn zombie
-            //zombiePrefab.setup(float ms, int hea, float rang, float rotatSpeed, int dam); // set zombie info
-            /*
-            while (zombieToSpawnLeft != 0) {
-                for (int i = 0; i < zombieSpawners.Count; i++) {
-                    if (zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn)) zombieToSpawnLeft--;
+            timeForEachSpawnerToSpawn = 1000f; // time for each spawner to spawn zombie
+            //zombiePrefab.setup(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe); // set zombie info
+
+        }
+        if (zombieToSpawnLeft != 0) {
+            for (int i = 0; i < zombieSpawners.Count; i++) {
+                System.Random rmd = new System.Random();
+                bool zombieSpawned = false;
+                if (rmd.Next(0,1) == 1) {
+                    zombieSpawned = zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn);
+                } else {
+                    zombieSpawned = zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab2,timeForEachSpawnerToSpawn);
+                }
+                if (zombieSpawned) {
+                    zombieToSpawnLeft--;
                 }
             }
-            */
         }
     }
 }

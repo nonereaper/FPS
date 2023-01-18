@@ -24,6 +24,7 @@ public class Zombie : MonoBehaviour
     private Controller controller;
     private GameObject targetZombiePath;
     private GameObject playerZombiePath;
+    private int stateOfAI;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +39,7 @@ public class Zombie : MonoBehaviour
         characterAngle = rb.rotation.eulerAngles.y;
         targetZombiePath = null;
         playerZombiePath = null;
+        stateOfAI = 0;
     }
 
     public void die() {
@@ -89,6 +91,43 @@ public class Zombie : MonoBehaviour
     }
     void FixedUpdate() {
         playerToChase = controller.getClosestPlayer(transform.position);
+        GameObject playerPath = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
+        GameObject zombiePath = controller.getPathes(controller.findClosestPath(transform.position));
+
+        if (playerZombiePath == null || (playerZombiePath != null && playerPath.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID())) {
+            playerZombiePath = playerPath;
+            stateOfAI = 0;
+            //targetZombiePath = zombiePath;
+            //if (targetZombiePath.GetComponent<ZombiePathes>().getID() != zombiePath.GetComponent<ZombiePathes>().getID()) {
+
+            //}
+        }
+        
+        if (targetZombiePath == null) {
+            targetZombiePath = zombiePath;
+        }
+
+        
+        if (Vector3.Distance(transform.position,targetZombiePath.transform.position) < 3f) {
+            if (stateOfAI == 0 && playerZombiePath.GetComponent<ZombiePathes>().getID() != targetZombiePath.GetComponent<ZombiePathes>().getID()) {
+                int targetID = targetZombiePath.GetComponent<ZombiePathes>().search(playerPath.GetComponent<ZombiePathes>().getID());
+                targetZombiePath = targetZombiePath.GetComponent<ZombiePathes>().searchAdj(targetID);
+                if (targetZombiePath == null) {
+                    Debug.Log(targetID + " " + targetZombiePath);
+                }
+            } else {
+                stateOfAI = 1;
+            }
+        }
+
+        if (stateOfAI == 1) {
+            rotate(findPlayerPosition());
+            moveForward();
+        } else {
+            rotate(targetZombiePath.transform.position);
+            moveForward();
+        }
+    /*
         GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
         // set player path
         if (playerZombiePath == null || (playerZombiePath != null && pathPlayer.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID())) {
@@ -112,6 +151,7 @@ public class Zombie : MonoBehaviour
                 moveForward();
             }
         }
+        */
     }
     // Update is called once per frame
     void Update()
@@ -128,7 +168,7 @@ public class Zombie : MonoBehaviour
         if (timeBeforeNextAttack < 0f) timeBeforeNextAttack = 0f;
 
         if (timeBeforeNextAttack == 0 && stateOfAnimation != 1) {
-            if (Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
+            if (playerToChase != null && Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
                 Vector3 D = playerToChase.transform.position - transform.position;  
                 Quaternion rot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(D),0f);
                 if (rot.y == transform.rotation.y) {
