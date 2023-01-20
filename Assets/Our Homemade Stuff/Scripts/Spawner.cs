@@ -28,7 +28,10 @@ public class Spawner : MonoBehaviour
     void Update()
     {
         float differenceInTime = UnityEngine.Time.time - savedTime;
+        savedTime = UnityEngine.Time.time;
+        Debug.Log(differenceInTime);
         timeBeforeNextSpawn -= differenceInTime;
+        
         if (timeBeforeNextSpawn < 0f) timeBeforeNextSpawn = 0f;
     }
 }

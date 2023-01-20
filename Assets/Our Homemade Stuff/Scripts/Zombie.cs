@@ -97,7 +97,7 @@ public class Zombie : MonoBehaviour
         if (playerZombiePath == null || (playerZombiePath != null && playerPath.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID())) {
             playerZombiePath = playerPath;
             stateOfAI = 0;
-            //targetZombiePath = zombiePath;
+            targetZombiePath = zombiePath;
             //if (targetZombiePath.GetComponent<ZombiePathes>().getID() != zombiePath.GetComponent<ZombiePathes>().getID()) {
 
             //}
