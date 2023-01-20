@@ -2438,9 +2438,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 2
   health: 5
-  range: 5
-  rotationSpeed: 1
-  damage: 5
+  range: 2
+  rotationSpeed: 0.5
+  damage: 1
   attackSpeed: 2
 --- !u!1 &7474223424015213197
 GameObject:

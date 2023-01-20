@@ -47,6 +47,11 @@ public class Zombie : MonoBehaviour
         timeBeforeNextAnimation = 2f;
         stateOfAnimation = 1;
        animationController.SetTrigger("die");
+       gameObject.layer = LayerMask.NameToLayer("IgnoreCollisions");
+       Transform[] oTemp = GetComponentsInChildren<Transform>();
+            for (int i = 0; i < oTemp.Length; i++) {
+                oTemp[i].gameObject.layer = LayerMask.NameToLayer("IgnoreCollisions");
+            }
     }
     public void reduceHealth(int healthReduction) {
        
@@ -97,7 +102,7 @@ public class Zombie : MonoBehaviour
         if (playerZombiePath == null || (playerZombiePath != null && playerPath.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID())) {
             playerZombiePath = playerPath;
             stateOfAI = 0;
-            targetZombiePath = zombiePath;
+            //targetZombiePath = zombiePath;
             //if (targetZombiePath.GetComponent<ZombiePathes>().getID() != zombiePath.GetComponent<ZombiePathes>().getID()) {
 
             //}
@@ -108,7 +113,7 @@ public class Zombie : MonoBehaviour
         }
 
         
-        if (Vector3.Distance(transform.position,targetZombiePath.transform.position) < 3f) {
+        if (Vector3.Distance(transform.position,targetZombiePath.transform.position) < 4f) {
             if (stateOfAI == 0 && playerZombiePath.GetComponent<ZombiePathes>().getID() != targetZombiePath.GetComponent<ZombiePathes>().getID()) {
                 int targetID = targetZombiePath.GetComponent<ZombiePathes>().search(playerPath.GetComponent<ZombiePathes>().getID());
                 targetZombiePath = targetZombiePath.GetComponent<ZombiePathes>().searchAdj(targetID);
@@ -170,8 +175,9 @@ public class Zombie : MonoBehaviour
         if (timeBeforeNextAttack == 0 && stateOfAnimation != 1) {
             if (playerToChase != null && Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
                 Vector3 D = playerToChase.transform.position - transform.position;  
-                Quaternion rot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(D),0f);
-                if (rot.y == transform.rotation.y) {
+                Quaternion rot = Quaternion.LookRotation(D);
+                Debug.Log(rot.y + "  " + characterAngle*Math.PI*2/360);
+                if (Math.Abs(rot.y-characterAngle*Math.PI*2/360) < 0.1) {
                     playerToChase.GetComponent<PlayerInner>().reduceHealth(damage);
                     timeBeforeNextAttack = attackSpeed;
                     animationController.SetTrigger("attack");

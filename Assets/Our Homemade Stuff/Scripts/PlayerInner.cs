@@ -319,7 +319,7 @@ public class PlayerInner : MonoBehaviour
         for (int i = 0; i < weaponBar.Length; i++) {
             if (weaponBar[i] != null) {
                 weaponBar[i].transform.position = emptyWeaponLocation.transform.position;
-                weaponBar[i].transform.localRotation = emptyWeaponLocation.transform.rotation;
+                weaponBar[i].transform.localRotation = Quaternion.Euler(new Vector3(cameraAngle,characterAngle,0));
                 //weaponBar[i].transform.localRotation = emptyWeaponLocation.transform.rotation;
                 //weaponBar[i].transform.Rotate(180,90,90);
                 //weaponBar[i].transform.Rotate(5,5,5);
@@ -355,6 +355,7 @@ public class PlayerInner : MonoBehaviour
     public void rotatePlayer(float angle) {
         rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0,angle,0)));
         characterAngle = rb.rotation.eulerAngles.y;
+        moveAllWeapon();
     }
     public void rotateCamera(float angle) {
         float angle2 = cameraAngle - angle;
@@ -367,6 +368,7 @@ public class PlayerInner : MonoBehaviour
         mainCamera.transform.position = head.transform.position;
         //moveProjectileCreatorAndUse(angle2);
         mainCamera.transform.localRotation = Quaternion.Euler(angle2,0f,0f);
+        moveAllWeapon();
     }
     public void rotateArms(float angle) {
         double dAngle = -angle/180*Math.PI;
