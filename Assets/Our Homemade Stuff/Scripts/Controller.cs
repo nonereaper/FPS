@@ -224,7 +224,7 @@ public class Controller : MonoBehaviour
             {
                 timeForEachSpawnerToSpawn = 1.5f;// time for each spawner to spawn zombie
             }
-                    }
+        }
         if (zombieToSpawnLeft != 0) {
             for (int i = 0; i < zombieSpawners.Count; i++) {                
                 bool zombieSpawned = false;
@@ -233,59 +233,59 @@ public class Controller : MonoBehaviour
                 // weakZombie (1, 100, 2, 0.5, 30, 1.5); (PlayerSpeed is 2, Player health is 150)
                 if(round < 5)//weak zombies
                 {
-                    zombiePrefab.setup(1, 100, 2, 0.5, 30, 1.5);
+                    zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f);
                 }
                 if(round < 10) //2/3 weak, 1/3 normal
                 {
-                    if(rmd == 3) //normal
+                    if(rand == 3) //normal
                     {
-                        zombiePrefab.setup(1.37, 150, 2, 0.5, 50, 1.25); 
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f); 
                     }
                     else //weak
                     {
-                        zombiePrefab.setup(1, 100, 2, 0.5, 30, 1.5);
+                        zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f);
                     }
                 }
                 if(round < 15)//1/3 weak, 2/3 normal
                 {
-                    if(rmd == 3) //weak
+                    if(rand == 3) //weak
                     {
-                        zombiePrefab.setup(1, 100, 2, 0.5, 30, 1.5);
+                        zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f);
                     }
                     else //normal
                     {
-                        zombiePrefab.setup(1.37, 150, 2, 0.5, 50, 1.25);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
                     }
                 }
                 if(round < 20)//all normal
                 {
-                    zombiePrefab.setup(1.37, 150, 2, 0.5, 50, 1.25);
+                    zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
                 }
                 if(round < 25) //2/3 normal, 1/3 hard
                 {   
-                    if(rmd == 3) //hard
+                    if(rand == 3) //hard
                     {
-                        zombiePrefab.setup(1.75, 250, 2, 0.5, 70, 1);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
                     }
                     else //normal
                     {
-                        zombiePrefab.setup(1.37, 150, 2, 0.5, 50, 1.25);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
                     }
                 }
                 if(round < 30) //1/3 normal, 2/3 hard
                 {
-                    if(rmd == 3) //normal
+                    if(rand == 3) //normal
                     {
-                        zombiePrefab.setup(1.37, 150, 2, 0.5, 50, 1.25);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
                     }
                     else //hard
                     {
-                        zombiePrefab.setup(1.75, 250, 2, 0.5, 70, 1);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
                     }
                 }
                 else //all hard, 
                 {
-                    zombiePrefab.setup(1.75, 250, 2, 0.5, 70, 1);
+                    zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
                 }
                 zombieSpawned = zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn);
 
