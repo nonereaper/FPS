@@ -41,6 +41,8 @@ public class Controller : MonoBehaviour
         //sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         //isMult = sceneLoader.isIsMult();
         setupPath = false;
+        zombieToSpawnLeft = 5; // number of zombies to spawn
+        timeForEachSpawnerToSpawn = 2f; // time for each spawner to spawn zombie
         
         if (isMult) {
             networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
@@ -214,22 +216,79 @@ public class Controller : MonoBehaviour
             }
             setupPath = true;
         }
+        System.Random rmd = new System.Random();
         if (zombies.Count == 0 && zombieToSpawnLeft == 0) { // all zombies are dead
             round++;
-            zombieToSpawnLeft = 10; // number of zombies to spawn
-            timeForEachSpawnerToSpawn = 2f; // time for each spawner to spawn zombie
-            //zombiePrefab.setup(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe); // set zombie info
-
+            zombieToSpawnLeft += 2; // number of zombies to spawn
+            if(round > 25)
+            {
+                timeForEachSpawnerToSpawn = 1.5f;// time for each spawner to spawn zombie
+            }
         }
         if (zombieToSpawnLeft != 0) {
-            for (int i = 0; i < zombieSpawners.Count; i++) {
-                System.Random rmd = new System.Random();
+            for (int i = 0; i < zombieSpawners.Count; i++) {                
                 bool zombieSpawned = false;
-                if (rmd.Next(0,1) == 1) {
-                    zombieSpawned = zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn);
-                } else {
-                    zombieSpawned = zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab2,timeForEachSpawnerToSpawn);
+                int rand = rmd.Next(1,3);
+                //zombiePrefab.setup(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe); // set zombie info
+                // weakZombie (1, 100, 2, 0.5, 30, 1.5); (PlayerSpeed is 2, Player health is 150)
+                if(round < 5)//weak zombies
+                {
+                    zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f);
                 }
+                if(round < 10) //2/3 weak, 1/3 normal
+                {
+                    if(rand == 3) //normal
+                    {
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f); 
+                    }
+                    else //weak
+                    {
+                        zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f);
+                    }
+                }
+                if(round < 15)//1/3 weak, 2/3 normal
+                {
+                    if(rand == 3) //weak
+                    {
+                        zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f);
+                    }
+                    else //normal
+                    {
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
+                    }
+                }
+                if(round < 20)//all normal
+                {
+                    zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
+                }
+                if(round < 25) //2/3 normal, 1/3 hard
+                {   
+                    if(rand == 3) //hard
+                    {
+                        zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
+                    }
+                    else //normal
+                    {
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
+                    }
+                }
+                if(round < 30) //1/3 normal, 2/3 hard
+                {
+                    if(rand == 3) //normal
+                    {
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
+                    }
+                    else //hard
+                    {
+                        zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
+                    }
+                }
+                else //all hard, 
+                {
+                    zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
+                }
+                zombieSpawned = zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn);
+
                 if (zombieSpawned) {
                     zombieToSpawnLeft--;
                 }
