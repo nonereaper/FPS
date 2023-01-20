@@ -217,7 +217,7 @@ public class Controller : MonoBehaviour
         if (zombies.Count == 0 && zombieToSpawnLeft == 0) { // all zombies are dead
             round++;
             zombieToSpawnLeft = 10; // number of zombies to spawn
-            timeForEachSpawnerToSpawn = 1000f; // time for each spawner to spawn zombie
+            timeForEachSpawnerToSpawn = 2f; // time for each spawner to spawn zombie
             //zombiePrefab.setup(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe); // set zombie info
 
         }
