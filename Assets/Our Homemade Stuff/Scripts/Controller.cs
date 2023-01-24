@@ -29,6 +29,7 @@ public class Controller : MonoBehaviour
     private float savedDistance;
     private bool setupPath;
 
+    private int zombiesToSpawnPerRound;
     private int zombieToSpawnLeft;
     private float timeForEachSpawnerToSpawn;
     private int round;
@@ -41,8 +42,9 @@ public class Controller : MonoBehaviour
         //sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         //isMult = sceneLoader.isIsMult();
         setupPath = false;
+        zombiesToSpawnPerRound = 5;
         zombieToSpawnLeft = 5; // number of zombies to spawn
-        timeForEachSpawnerToSpawn = 2f; // time for each spawner to spawn zombie
+        timeForEachSpawnerToSpawn = 8f; // time for each spawner to spawn zombie
         
         if (isMult) {
             networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
@@ -219,7 +221,8 @@ public class Controller : MonoBehaviour
         System.Random rmd = new System.Random();
         if (zombies.Count == 0 && zombieToSpawnLeft == 0) { // all zombies are dead
             round++;
-            zombieToSpawnLeft += 2; // number of zombies to spawn
+            zombiesToSpawnPerRound += 2; // number of zombies to spawn
+            zombieToSpawnLeft = zombiesToSpawnPerRound;
             if(round > 25)
             {
                 timeForEachSpawnerToSpawn = 1.5f;// time for each spawner to spawn zombie

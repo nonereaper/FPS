@@ -26,6 +26,10 @@ public class Zombie : MonoBehaviour
     private GameObject playerZombiePath;
     private int stateOfAI;
 
+    private float savedTime2;
+    private Vector3 savedPlace;
+    private float savedTime3;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +38,8 @@ public class Zombie : MonoBehaviour
         timeBeforeNextAttack = 0;
         stateOfAnimation = 0;
         savedTime = UnityEngine.Time.time;
+        savedTime2 = UnityEngine.Time.time;
+        savedTime3 = 0;
         animationController = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         characterAngle = rb.rotation.eulerAngles.y;
@@ -158,11 +164,17 @@ public class Zombie : MonoBehaviour
         }
         */
     }
+    void OnCollisionEnter(Collision other) {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+            Physics.IgnoreCollision(other.gameObject.GetComponent<Collider>(), GetComponent<Collider>(), savedTime3 != 0f);
+        }
+    }
     // Update is called once per frame
     void Update()
     {
         float differenceInTime = UnityEngine.Time.time-savedTime;
         savedTime = UnityEngine.Time.time;
+
         timeBeforeNextAnimation -= differenceInTime;
         if (timeBeforeNextAnimation < 0f) timeBeforeNextAnimation = 0f;
         if (stateOfAnimation == 1 && timeBeforeNextAnimation == 0f) {
@@ -171,6 +183,23 @@ public class Zombie : MonoBehaviour
         }
         timeBeforeNextAttack -= differenceInTime;
         if (timeBeforeNextAttack < 0f) timeBeforeNextAttack = 0f;
+
+        if (savedTime3 != 0f) {
+            savedTime3 -= differenceInTime;
+            if (savedTime3 <= 0f) {
+                savedTime3 = 0f;
+            }
+        }
+
+        differenceInTime = UnityEngine.Time.time-savedTime2;
+        if (differenceInTime > 3f) {
+            savedTime2 = UnityEngine.Time.time;
+            if (Vector3.Distance(transform.position,savedPlace) < 0.5f) {
+                savedTime3 = 3f;
+            }
+            savedPlace = transform.position;
+        }
+        
 
         if (timeBeforeNextAttack == 0 && stateOfAnimation != 1) {
             if (playerToChase != null && Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
