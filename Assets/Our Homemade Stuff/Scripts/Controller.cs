@@ -42,9 +42,10 @@ public class Controller : MonoBehaviour
         //sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         //isMult = sceneLoader.isIsMult();
         setupPath = false;
+        round = 1;
         zombiesToSpawnPerRound = 5;
-        zombieToSpawnLeft = 5; // number of zombies to spawn
-        timeForEachSpawnerToSpawn = 8f; // time for each spawner to spawn zombie
+        zombieToSpawnLeft = 55; // number of zombies to spawn
+        timeForEachSpawnerToSpawn = 1f; // time for each spawner to spawn zombie
         
         if (isMult) {
             networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
@@ -65,7 +66,7 @@ public class Controller : MonoBehaviour
 
 
         }
-            round = 0;
+            
             props = new List<GameObject>();
             weapons = new List<GameObject>();
             projectiles = new List<GameObject>();
@@ -225,7 +226,7 @@ public class Controller : MonoBehaviour
             zombieToSpawnLeft = zombiesToSpawnPerRound;
             if(round > 25)
             {
-                timeForEachSpawnerToSpawn = 1.5f;// time for each spawner to spawn zombie
+                timeForEachSpawnerToSpawn = 4f;// time for each spawner to spawn zombie
             }
         }
         if (zombieToSpawnLeft != 0) {
@@ -290,10 +291,12 @@ public class Controller : MonoBehaviour
                 {
                     zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
                 }
-                zombieSpawned = zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn);
+                    if (zombieToSpawnLeft != 0) {
+                    zombieSpawned = zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn);
 
-                if (zombieSpawned) {
-                    zombieToSpawnLeft--;
+                    if (zombieSpawned) {
+                        zombieToSpawnLeft--;
+                    }
                 }
             }
         }

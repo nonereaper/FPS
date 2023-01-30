@@ -192,10 +192,16 @@ public class Zombie : MonoBehaviour
         }
 
         differenceInTime = UnityEngine.Time.time-savedTime2;
-        if (differenceInTime > 3f) {
+        if (differenceInTime > 5f) {
+            
             savedTime2 = UnityEngine.Time.time;
-            if (Vector3.Distance(transform.position,savedPlace) < 0.5f) {
-                savedTime3 = 3f;
+            if (Vector3.Distance(transform.position,savedPlace) < 0.1f) {
+                if (savedTime3 == 0f) {
+                Debug.Log("stuck");
+                savedTime3 = 5f;
+                } else {
+                    Debug.Log("Super Stuck");
+                }
             }
             savedPlace = transform.position;
         }
@@ -205,7 +211,7 @@ public class Zombie : MonoBehaviour
             if (playerToChase != null && Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
                 Vector3 D = playerToChase.transform.position - transform.position;  
                 Quaternion rot = Quaternion.LookRotation(D);
-                Debug.Log(rot.y + "  " + characterAngle*Math.PI*2/360);
+                //Debug.Log(rot.y + "  " + characterAngle*Math.PI*2/360);
                 if (Math.Abs(rot.y-characterAngle*Math.PI*2/360) < 0.1) {
                     playerToChase.GetComponent<PlayerInner>().reduceHealth(damage);
                     timeBeforeNextAttack = attackSpeed;
