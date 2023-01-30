@@ -11,6 +11,7 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     [SerializeField] private int damage;
     [SerializeField] private float attackSpeed;
+    [SerializeField] private GameObject colliderObject;
     private Animator animationController; 
 
     private float savedTime;
@@ -123,9 +124,7 @@ public class Zombie : MonoBehaviour
             if (stateOfAI == 0 && playerZombiePath.GetComponent<ZombiePathes>().getID() != targetZombiePath.GetComponent<ZombiePathes>().getID()) {
                 int targetID = targetZombiePath.GetComponent<ZombiePathes>().search(playerPath.GetComponent<ZombiePathes>().getID());
                 targetZombiePath = targetZombiePath.GetComponent<ZombiePathes>().searchAdj(targetID);
-                if (targetZombiePath == null) {
-                    Debug.Log(targetID + " " + targetZombiePath);
-                }
+                
             } else {
                 stateOfAI = 1;
             }
@@ -164,10 +163,11 @@ public class Zombie : MonoBehaviour
         }
         */
     }
-    void OnCollisionEnter(Collision other) {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
-            Physics.IgnoreCollision(other.gameObject.GetComponent<Collider>(), GetComponent<Collider>(), savedTime3 != 0f);
-        }
+    public void respawn() {
+        transform.position = controller.getRandomZombieSpawn().position;
+    }
+    public void ignoringZombies() {
+        colliderObject.layer = LayerMask.NameToLayer("EnemyIgnoreCollisions");
     }
     // Update is called once per frame
     void Update()
@@ -188,6 +188,7 @@ public class Zombie : MonoBehaviour
             savedTime3 -= differenceInTime;
             if (savedTime3 <= 0f) {
                 savedTime3 = 0f;
+                colliderObject.layer = LayerMask.NameToLayer("EnemyCollisions");
             }
         }
 
@@ -195,12 +196,13 @@ public class Zombie : MonoBehaviour
         if (differenceInTime > 5f) {
             
             savedTime2 = UnityEngine.Time.time;
-            if (Vector3.Distance(transform.position,savedPlace) < 0.1f) {
+            if (stateOfAI == 1 && Vector3.Distance(transform.position,savedPlace) < 0.1f) {
                 if (savedTime3 == 0f) {
-                Debug.Log("stuck");
-                savedTime3 = 5f;
+                    savedTime3 = 6f;
+                    colliderObject.layer = LayerMask.NameToLayer("EnemyIgnoreCollisions");
                 } else {
-                    Debug.Log("Super Stuck");
+                    respawn();
+                    savedTime3 = 0;
                 }
             }
             savedPlace = transform.position;

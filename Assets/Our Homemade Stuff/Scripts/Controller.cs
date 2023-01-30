@@ -44,7 +44,7 @@ public class Controller : MonoBehaviour
         setupPath = false;
         round = 1;
         zombiesToSpawnPerRound = 5;
-        zombieToSpawnLeft = 55; // number of zombies to spawn
+        zombieToSpawnLeft = 5; // number of zombies to spawn
         timeForEachSpawnerToSpawn = 1f; // time for each spawner to spawn zombie
         
         if (isMult) {
@@ -184,6 +184,9 @@ public class Controller : MonoBehaviour
     public void removeZombie(GameObject o) {
         zombies.Remove(o);
     }
+    public List<GameObject> getAllZombies() {
+        return zombies;
+    }
     public Transform getWeaponTf() {
         return transform.GetChild(1);
     }
@@ -195,6 +198,11 @@ public class Controller : MonoBehaviour
     }
     public Transform getZombieTf() {
         return transform.GetChild(6);
+    }
+    public Transform getRandomZombieSpawn() {
+         System.Random rmd = new System.Random();
+        int rand = rmd.Next(0,zombieSpawners.Count-1);
+        return zombieSpawners[rand].transform;
     }
     [ServerRpc]
     public void spawnPlayerServerRpc(ulong clientId) {
