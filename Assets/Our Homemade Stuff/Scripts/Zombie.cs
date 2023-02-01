@@ -196,7 +196,7 @@ public class Zombie : MonoBehaviour
         if (differenceInTime > 5f) {
             
             savedTime2 = UnityEngine.Time.time;
-            if (stateOfAI == 1 && Vector3.Distance(transform.position,savedPlace) < 0.1f) {
+            if (stateOfAI != 1 && Vector3.Distance(transform.position,savedPlace) < 0.5f) {
                 if (savedTime3 == 0f) {
                     savedTime3 = 6f;
                     colliderObject.layer = LayerMask.NameToLayer("EnemyIgnoreCollisions");
@@ -213,8 +213,10 @@ public class Zombie : MonoBehaviour
             if (playerToChase != null && Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
                 Vector3 D = playerToChase.transform.position - transform.position;  
                 Quaternion rot = Quaternion.LookRotation(D);
-                //Debug.Log(rot.y + "  " + characterAngle*Math.PI*2/360);
-                if (Math.Abs(rot.y-characterAngle*Math.PI*2/360) < 0.1) {
+                
+                if (Math.Abs(rot.y-characterAngle/180*Math.PI) < Math.PI/8) {
+                    Debug.Log(rot.y + "  " + characterAngle/180*Math.PI + "  " + Math.Abs(rot.y-characterAngle/180*Math.PI));
+                    Debug.DrawLine(transform.position,new Vector3(transform.position.x,transform.position.y+5,transform.position.z),Color.magenta);
                     playerToChase.GetComponent<PlayerInner>().reduceHealth(damage);
                     timeBeforeNextAttack = attackSpeed;
                     animationController.SetTrigger("attack");
