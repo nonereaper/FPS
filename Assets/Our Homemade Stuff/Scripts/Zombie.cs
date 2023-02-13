@@ -11,6 +11,7 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     [SerializeField] private int damage;
     [SerializeField] private float attackSpeed;
+    [SerializeField] private int points;
     [SerializeField] private GameObject colliderObject;
     private Animator animationController; 
 
@@ -65,6 +66,9 @@ public class Zombie : MonoBehaviour
         health -= healthReduction;
         if (health <= 0) die();
     }
+    public int getHealth() {
+        return health;
+    }
     public void rotate(Vector3 p) {
         
         // https://answers.unity.com/questions/306639/rotating-an-object-towards-target-on-a-single-axis.html
@@ -93,13 +97,17 @@ public class Zombie : MonoBehaviour
     public Vector3 findPlayerPosition() {
         return playerToChase.transform.position;
     }
-    public void setup(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe) {
+    public void setup(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe, int pts) {
         movementSpeed = ms;
         health = hea;
         rang = range;
         rotationSpeed = rotatSpeed;
         damage = dam;
         attackSpeed = attSpe;
+        points = pts;
+    }
+    public int getPoints() {
+        return points;
     }
     void FixedUpdate() {
         playerToChase = controller.getClosestPlayer(transform.position);
@@ -119,7 +127,10 @@ public class Zombie : MonoBehaviour
             targetZombiePath = zombiePath;
         }
 
-        
+        if (Vector3.Distance(transform.position,playerToChase.transform.position) < Vector3.Distance(transform.position,targetZombiePath.transform.position)) {
+            stateOfAI = 1;
+        }
+
         if (Vector3.Distance(transform.position,targetZombiePath.transform.position) < 4f) {
             if (stateOfAI == 0 && playerZombiePath.GetComponent<ZombiePathes>().getID() != targetZombiePath.GetComponent<ZombiePathes>().getID()) {
                 int targetID = targetZombiePath.GetComponent<ZombiePathes>().search(playerPath.GetComponent<ZombiePathes>().getID());
@@ -137,31 +148,6 @@ public class Zombie : MonoBehaviour
             rotate(targetZombiePath.transform.position);
             moveForward();
         }
-    /*
-        GameObject pathPlayer = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
-        // set player path
-        if (playerZombiePath == null || (playerZombiePath != null && pathPlayer.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID())) {
-            playerZombiePath = pathPlayer;
-        }
-        if (targetZombiePath == null) {
-            targetZombiePath = controller.getPathes(controller.findClosestPath(transform.position));
-        } else if (Vector3.Distance(transform.position,targetZombiePath.transform.position) < 3f) {
-            //Debug.Log("close Enough");
-            int targetID = targetZombiePath.GetComponent<ZombiePathes>().search(pathPlayer.GetComponent<ZombiePathes>().getID());
-            //Debug.Log(targetID + " " + pathPlayer.GetComponent<ZombiePathes>().getID());
-            targetZombiePath = targetZombiePath.GetComponent<ZombiePathes>().searchAdj(targetID);
-        }
-        //Debug.Log(pathPlayer + "  " + targetZombiePath);
-        if (playerZombiePath != null && targetZombiePath != null) {
-            if (playerZombiePath.GetComponent<ZombiePathes>().getID() == targetZombiePath.GetComponent<ZombiePathes>().getID()) {
-                rotate(findPlayerPosition());
-                moveForward();
-            } else {
-                rotate(targetZombiePath.transform.position);
-                moveForward();
-            }
-        }
-        */
     }
     public void respawn() {
         transform.position = controller.getRandomZombieSpawn().position;
@@ -212,15 +198,16 @@ public class Zombie : MonoBehaviour
         if (timeBeforeNextAttack == 0 && stateOfAnimation != 1) {
             if (playerToChase != null && Vector3.Distance(transform.position,playerToChase.transform.position) <= range) {
                 Vector3 D = playerToChase.transform.position - transform.position;  
-                Quaternion rot = Quaternion.LookRotation(D);
+                Quaternion rot = Quaternion.LookRotation(D,Vector3.up);
                 
-                if (Math.Abs(rot.y-characterAngle/180*Math.PI) < Math.PI/8) {
-                    Debug.Log(rot.y + "  " + characterAngle/180*Math.PI + "  " + Math.Abs(rot.y-characterAngle/180*Math.PI));
-                    Debug.DrawLine(transform.position,new Vector3(transform.position.x,transform.position.y+5,transform.position.z),Color.magenta);
+                //transform.rotation = Quaternion.Euler(0, ,0);
+            
+                if (Math.Abs(rot.eulerAngles.y-transform.rotation.eulerAngles.y)< Math.PI/16) {
                     playerToChase.GetComponent<PlayerInner>().reduceHealth(damage);
                     timeBeforeNextAttack = attackSpeed;
                     animationController.SetTrigger("attack");
                 }
+                
             }
         }
     }

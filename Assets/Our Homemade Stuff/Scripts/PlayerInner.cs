@@ -31,6 +31,8 @@ public class PlayerInner : MonoBehaviour
     
     [SerializeField] private int health;
 
+    private int points;
+
     public int getHealth() {
         return health;
     }
@@ -92,7 +94,7 @@ public class PlayerInner : MonoBehaviour
         characterAngle = 0f;
         characterMovementState = 0;
         controller = GameObject.Find("Controller").GetComponent<Controller>();
-
+        points = 0;
         currentSprintTime = sprintMaxTime;
         currentTimeBeforeRestore = 0f;
 
@@ -113,8 +115,12 @@ public class PlayerInner : MonoBehaviour
         weaponBar = new GameObject[5];
         currentWeaponIndex = 0;
     }
+    public void addPoints(int p) {
+        points +=p;
+    }
     public void updateItemInfo() {
         string temp = "" + isGrounded() + "\n";
+        temp += "Points:" + points + "\n";
         temp += "Health: " + health + "\n";
         temp += "State of Character: " + characterMovementState + "\n";
         temp += "Sprint time left: " + currentSprintTime + "\n";
@@ -459,17 +465,18 @@ public class PlayerInner : MonoBehaviour
         float weaponDistance = controller.getSavedDistance();
         int propIndex = controller.getClosestProp(emptyUse.transform.position,2f);
         float propDistance = controller.getSavedDistance();
+        int storeIndex = controller.getClosestStore(emptyUse.transform.position,2f);
+        float storeDistance = controller.getSavedDistance();
         int typeToUse = -1;
-        if (weaponIndex != -1 && propIndex != -1) {
-            if (weaponDistance > propDistance) {
-                typeToUse = 0;
-            } else {
-                typeToUse = 1;
-            }
-        } else if (weaponIndex != -1) {
-            typeToUse = 0;
-        } else if (propIndex != -1) {
+        if (weaponIndex != -1)
+        typeToUse = 0;
+        if (propIndex != -1) {
+            if (typeToUse == -1 ||(typeToUse == 0 && propDistance > weaponDistance)) 
             typeToUse = 1;
+        }
+        if (storeIndex != -1) {
+            if (typeToUse == -1 || (typeToUse == 0 && storeDistance > weaponDistance) || (typeToUse == 1 && storeDistance > propDistance)) 
+            typeToUse = 2;
         }
         if (typeToUse == 0) {
             GameObject weapon = controller.getWeapon(weaponIndex);
@@ -477,6 +484,9 @@ public class PlayerInner : MonoBehaviour
         } else if (typeToUse == 1) {
             GameObject prop = controller.getProp(propIndex);
             useText.text = "Pick up: " + prop.name;
+        } else if (typeToUse == 2) {
+            GameObject store = controller.getStore(storeIndex);
+            useText.text = "Buy: " + store.GetComponent<Store>().getItemName() + ", costs: "+ store.GetComponent<Store>().getPrice();
         } else {
             useText.text = "";
         }
@@ -485,7 +495,16 @@ public class PlayerInner : MonoBehaviour
                 addWeaponToPlayer(weaponIndex);
             } else if (typeToUse == 1) {
                 holdProp(propIndex);
+            } else if (typeToUse == 2) {
+                buyItem(storeIndex);
             }
+        }
+    }
+    public void buyItem(int si) {
+        Store store = controller.getStore(si).GetComponent<Store>();
+        if (store.canBuy(points)) {
+            store.buyItem();
+            points-= store.getPrice();
         }
     }
     public void changeStateOfCharacter(bool sprint, bool enterC, bool exitC) {

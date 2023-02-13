@@ -25,6 +25,7 @@ public class Controller : MonoBehaviour
     private List<GameObject> players;
     private List<GameObject> zombies;
     private List<GameObject> zombieSpawners;
+    private List<GameObject> stores;
 
     private float savedDistance;
     private bool setupPath;
@@ -75,6 +76,7 @@ public class Controller : MonoBehaviour
             players = new List<GameObject>();
             zombies = new List<GameObject>();
             zombieSpawners = new List<GameObject>();
+            stores = new List<GameObject>();
             for (int i = 0; i < transform.childCount; i++) {
                 Transform tempTf = transform.GetChild(i);
                 for (int q = 0; q < tempTf.childCount; q++) {
@@ -94,6 +96,8 @@ public class Controller : MonoBehaviour
                         zombies.Add(tempTf.GetChild(q).gameObject);
                     }else if (i == 7) {
                         zombieSpawners.Add(tempTf.GetChild(q).gameObject);
+                    } else if (i == 8) {
+                        stores.Add(tempTf.GetChild(q).gameObject);
                     }
                 }
             }
@@ -148,6 +152,19 @@ public class Controller : MonoBehaviour
         savedDistance = distance;
         return index;
     }
+    public int getClosestStore(Vector3 p, float rad) {
+        float distance = float.MaxValue;
+        int index = -1;
+        for (int i = 0; i < props.Count; i++) {
+            float tempDistance = Vector3.Distance(stores[i].GetComponent<Transform>().position,p);
+            if (tempDistance <= rad && tempDistance < distance) {
+                index = i;  
+                distance = tempDistance;
+            }
+        }
+        savedDistance = distance;
+        return index;
+    }
     public float getSavedDistance() {
 		return this.savedDistance;
 	}
@@ -156,6 +173,9 @@ public class Controller : MonoBehaviour
     }
     public GameObject getProp(int index) {
         return props[index];
+    }
+    public GameObject getStore(int index) {
+        return stores[index];    
     }
     public GameObject getPathes(int index) {
         return zombiePathes[index];
@@ -245,59 +265,59 @@ public class Controller : MonoBehaviour
                 // weakZombie (1, 100, 2, 0.5, 30, 1.5); (PlayerSpeed is 2, Player health is 150)
                 if(round < 5)//weak zombies
                 {
-                    zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f);
+                    zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f,100);
                 }
                 if(round < 10) //2/3 weak, 1/3 normal
                 {
                     if(rand == 3) //normal
                     {
-                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f); 
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f,100); 
                     }
                     else //weak
                     {
-                        zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f);
+                        zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f,100);
                     }
                 }
                 if(round < 15)//1/3 weak, 2/3 normal
                 {
                     if(rand == 3) //weak
                     {
-                        zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f);
+                        zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f,100);
                     }
                     else //normal
                     {
-                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f,100);
                     }
                 }
                 if(round < 20)//all normal
                 {
-                    zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
+                    zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f,100);
                 }
                 if(round < 25) //2/3 normal, 1/3 hard
                 {   
                     if(rand == 3) //hard
                     {
-                        zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1,100);
                     }
                     else //normal
                     {
-                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f,100);
                     }
                 }
                 if(round < 30) //1/3 normal, 2/3 hard
                 {
                     if(rand == 3) //normal
                     {
-                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f,100);
                     }
                     else //hard
                     {
-                        zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
+                        zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1,100);
                     }
                 }
                 else //all hard, 
                 {
-                    zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1);
+                    zombiePrefab.GetComponent<Zombie>().setup(1.75f, 250, 2, 0.5f, 70, 1,100);
                 }
                     if (zombieToSpawnLeft != 0) {
                     zombieSpawned = zombieSpawners[i].GetComponent<Spawner>().spawnZombie(zombiePrefab,timeForEachSpawnerToSpawn);

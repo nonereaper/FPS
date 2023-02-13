@@ -32,7 +32,11 @@ public class Projectile : NetworkBehaviour
     void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyInner") || collision.gameObject.layer == LayerMask.NameToLayer("EnemyIgnoreCollisions") || collision.gameObject.layer == LayerMask.NameToLayer("EnemyCollisions")) {
             Zombie zombie = collision.gameObject.GetComponent<Zombie>();
+            
             zombie.reduceHealth(damage);
+            if (zombie.getHealth() <= 0) {
+                parent.GetComponent<PlayerInner>().addPoints(zombie.getPoints());
+            }
             selfDestory();
         } else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) {
             ContactPoint point = collision.contacts[0];
