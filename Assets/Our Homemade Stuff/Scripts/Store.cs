@@ -5,6 +5,7 @@ using UnityEngine;
 public class Store : MonoBehaviour
 {
     [SerializeField] private GameObject itemToSell;
+    [SerializeField] private string perk;
     [SerializeField] private int price;
     [SerializeField] private GameObject spotToSpawn;
 
@@ -23,13 +24,20 @@ public class Store : MonoBehaviour
     public bool canBuy(int p) {
         return p>=price;
     }
-    public void buyItem() {
-        GameObject o = Instantiate(itemToSell, spotToSpawn.transform.position, spotToSpawn.transform.rotation,controller.getWeaponTf());
-        controller.addWeapon(o);
-        
+    public void buyItem(PlayerInner playerInner) {
+        if (itemToSell != null && itemToSell.GetComponent<Weapon>() != null) {
+            GameObject o = Instantiate(itemToSell, spotToSpawn.transform.position, spotToSpawn.transform.rotation,controller.getWeaponTf());
+            controller.addWeapon(o);
+            playerInner.addWeaponToPlayer(controller.getLastWeapon());
+        } else {
+            playerInner.addPerk(perk);
+        }
     }
     public string getItemName() {
+        if (itemToSell != null)
         return itemToSell.name;
+        else
+        return perk;
     }
     public int getPrice() {
         return price;

@@ -29,8 +29,12 @@ public class PlayerInner : MonoBehaviour
     [SerializeField] private double restoreSprintTimeMult;
     [SerializeField] private float timeBeforeStartRestoreSprint;
     
-    [SerializeField] private int health;
+    [SerializeField] private int maxHealth;
+    private int health;
 
+    private bool[] allPerks;    
+    private string[] allPerkNames = new string[] {"Jug","Quick Reload", "Packmule","Quick Heal","Stamina Up","Deadshot"};
+    
     private int points;
 
     public int getHealth() {
@@ -97,7 +101,8 @@ public class PlayerInner : MonoBehaviour
         points = 0;
         currentSprintTime = sprintMaxTime;
         currentTimeBeforeRestore = 0f;
-
+        maxHealth = health;
+        allPerks = new bool[allPerkNames.Length];
         useText.text = "";
         lockCursor = true;
         Cursor.lockState = CursorLockMode.Locked;
@@ -175,6 +180,14 @@ public class PlayerInner : MonoBehaviour
             oTemp[i].gameObject.layer = LayerMask.NameToLayer("Movable Objects");
         }
         heldProp = null;
+    }
+    public void addPerk(string pe) {
+        for (int i = 0; i < allPerkNames.Length; i++) {
+            if (allPerkNames[i].Equals(pe)) {
+                allPerks[i]= true;
+                break;
+            }
+        }
     }
     public void reload() {
         if (currentWeaponIndex != 0) {
@@ -503,8 +516,8 @@ public class PlayerInner : MonoBehaviour
     public void buyItem(int si) {
         Store store = controller.getStore(si).GetComponent<Store>();
         if (store.canBuy(points)) {
-            store.buyItem();
-            points-= store.getPrice();
+            store.buyItem(this);
+            points -= store.getPrice();
         }
     }
     public void changeStateOfCharacter(bool sprint, bool enterC, bool exitC) {

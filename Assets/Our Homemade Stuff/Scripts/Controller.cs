@@ -139,6 +139,9 @@ public class Controller : MonoBehaviour
         savedDistance = distance;
         return index;
     }
+    public int getLastWeapon() {
+        return weapons.Count-1;
+    }
     public int getClosestProp(Vector3 p, float rad) {
         float distance = float.MaxValue;
         int index = -1;
