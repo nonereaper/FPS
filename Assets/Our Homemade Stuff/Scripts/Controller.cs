@@ -98,6 +98,7 @@ public class Controller : MonoBehaviour
                         zombieSpawners.Add(tempTf.GetChild(q).gameObject);
                     } else if (i == 8) {
                         stores.Add(tempTf.GetChild(q).gameObject);
+
                     }
                 }
             }
@@ -158,8 +159,12 @@ public class Controller : MonoBehaviour
     public int getClosestStore(Vector3 p, float rad) {
         float distance = float.MaxValue;
         int index = -1;
-        for (int i = 0; i < props.Count; i++) {
-            float tempDistance = Vector3.Distance(stores[i].GetComponent<Transform>().position,p);
+        for (int i = 0; i < stores.Count; i++) {
+            GameObject go = stores[i].GetComponent<Store>().getUsePoint();
+            if (go == null) {
+                go = stores[i];
+            } 
+            float tempDistance = Vector3.Distance(go.transform.position,p);
             if (tempDistance <= rad && tempDistance < distance) {
                 index = i;  
                 distance = tempDistance;

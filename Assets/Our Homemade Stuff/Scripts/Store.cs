@@ -8,6 +8,7 @@ public class Store : MonoBehaviour
     [SerializeField] private string perk;
     [SerializeField] private int price;
     [SerializeField] private GameObject spotToSpawn;
+    [SerializeField] private GameObject usePoint;
 
     private Controller controller;
     // Start is called before the first frame update
@@ -20,6 +21,9 @@ public class Store : MonoBehaviour
     void Update()
     {
         
+    }
+    public GameObject getUsePoint() {
+        return usePoint;
     }
     public bool canBuy(int p) {
         return p>=price;
@@ -34,9 +38,16 @@ public class Store : MonoBehaviour
         }
     }
     public string getItemName() {
-        if (itemToSell != null)
+        if (itemToSell == null) {
+        return perk;
+        }
         return itemToSell.name;
-        else
+        
+    }
+    public bool hasPerk() {
+        return itemToSell == null;
+    }
+    public string getPerk() {
         return perk;
     }
     public int getPrice() {

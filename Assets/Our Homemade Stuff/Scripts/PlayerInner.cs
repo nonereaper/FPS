@@ -30,10 +30,14 @@ public class PlayerInner : MonoBehaviour
     [SerializeField] private float timeBeforeStartRestoreSprint;
     
     [SerializeField] private int maxHealth;
+    [SerializeField] private int healingPerSecond;
+    [SerializeField] private float timeBeforeStartHeal;
+
+    private float currentTimeBeforeHeal;
     private int health;
 
     private bool[] allPerks;    
-    private string[] allPerkNames = new string[] {"Jug","Quick Reload", "Packmule","Quick Heal","Stamina Up","Deadshot"};
+    private string[] allPerkNames = new string[] {"Jug","Quick Reload", "Mule Kick","Quick Heal","Stamina Up","Deadshot","Double Tap"};
     
     private int points;
 
@@ -44,6 +48,7 @@ public class PlayerInner : MonoBehaviour
         if (d != 0) {
             health -= d;
             if (health < 0) health = 0;
+            currentTimeBeforeHeal = timeBeforeStartHeal;
         }
 
     }
@@ -101,7 +106,8 @@ public class PlayerInner : MonoBehaviour
         points = 0;
         currentSprintTime = sprintMaxTime;
         currentTimeBeforeRestore = 0f;
-        maxHealth = health;
+        currentTimeBeforeHeal = 0f;
+        health = maxHealth;
         allPerks = new bool[allPerkNames.Length];
         useText.text = "";
         lockCursor = true;
@@ -188,6 +194,25 @@ public class PlayerInner : MonoBehaviour
                 break;
             }
         }
+        if (pe.Equals(allPerkNames[0])) {// jug
+            maxHealth = 400;
+            health = maxHealth;
+        } else if (pe.Equals(allPerkNames[4])) {
+            sprintMaxTime *=2f;
+            currentSprintTime = sprintMaxTime;
+            movementSpeed *=1.2f;
+            sprintSpeedMult *=1.2f;
+        } else if (pe.Equals(allPerkNames[3])) {
+            timeBeforeStartHeal *= 0.8f;
+        }
+    }
+    public bool canBuyPerk(string pe) {
+        for (int i = 0; i < allPerkNames.Length; i++) {
+            if (allPerkNames[i].Equals(pe)) {
+                return !allPerks[i];
+            }
+        }
+        return false;
     }
     public void reload() {
         if (currentWeaponIndex != 0) {
@@ -210,7 +235,10 @@ public class PlayerInner : MonoBehaviour
             }
             currentWeapon.setCurrentMagazine(currentWeapon.getCurrentMagazine()+amountToAdd);
             currentWeapon.setCurrentTotalAmmo(currentWeapon.getCurrentTotalAmmo()-amountToAdd);
-            currentWeapon.setReloadTimeLeft(currentWeapon.getReloadTime());
+            float reloadTime = currentWeapon.getReloadTime();
+            if (allPerks[1])
+                reloadTime/=2;
+            currentWeapon.setReloadTimeLeft(reloadTime);
         }
     }
     public void changeGunFireType() {
@@ -258,6 +286,9 @@ public class PlayerInner : MonoBehaviour
             } else if (characterMovementState == 2) {
                 spreadMult = gun.getSprintSpread();
             }
+            if (allPerks[5]) {
+                spreadMult/=2;
+            }
             float spread = (float)(gun.getSpread()*spreadMult);
             for (int i = 0; i < gun.getNumber(); i++) {
                 Transform tf2 = emptyProjectile.transform; //gun.getMussle().transform; // emptyProjectile.transform;
@@ -271,10 +302,18 @@ public class PlayerInner : MonoBehaviour
                     o.GetComponent<Rigidbody>().isKinematic = false;
                 }
                 o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,gun.getVelocity()));
-                o.GetComponent<Projectile>().setup(gun.getDamage(),transform.gameObject,10);
+                int damage = gun.getDamage();
+                if (allPerks[6]) {
+                    damage *= 2;
+                }
+                o.GetComponent<Projectile>().setup(damage,transform.gameObject,10);
                 controller.addProjectile(o);
             }
-            rotateCamera(gun.getRecoil());
+            float recoilAmount = gun.getRecoil();
+            if (allPerks[5]) {
+                recoilAmount/=2;
+            }
+            rotateCamera(recoilAmount);
             GameObject o2 = Instantiate(gun.getFireExplosion(),gun.getMussle().transform.position,gun.getMussle().transform.rotation,controller.getDecayTf());
             if (controller.isIsMult()) {
                 o2.GetComponent<NetworkObject>().Spawn();
@@ -515,6 +554,8 @@ public class PlayerInner : MonoBehaviour
     }
     public void buyItem(int si) {
         Store store = controller.getStore(si).GetComponent<Store>();
+        if (store.hasPerk() && !canBuyPerk(store.getPerk()))
+        return;
         if (store.canBuy(points)) {
             store.buyItem(this);
             points -= store.getPrice();
@@ -586,6 +627,19 @@ public class PlayerInner : MonoBehaviour
                 if (currentSprintTime > sprintMaxTime) {
                     currentSprintTime = sprintMaxTime;
                 }
+            }
+        }
+        currentTimeBeforeHeal -= differenceInTime;
+        if (currentTimeBeforeHeal <= 0f) {
+            currentTimeBeforeHeal = 0f;
+        }
+        if (health < maxHealth && currentTimeBeforeHeal == 0f){
+            int healAmount = healingPerSecond;
+            if (allPerks[3])
+                healAmount *=2;
+            health += healAmount;
+            if (health > maxHealth) {
+                health = maxHealth;
             }
         }
         if (weaponBar[currentWeaponIndex] != null) {
