@@ -202,7 +202,7 @@ public class Zombie : MonoBehaviour
                 
                 //transform.rotation = Quaternion.Euler(0, ,0);
             
-                if (Math.Abs(rot.eulerAngles.y-transform.rotation.eulerAngles.y)< Math.PI/16) {
+                if (Math.Abs(rot.eulerAngles.y-transform.rotation.eulerAngles.y)< Math.PI/8) {
                     playerToChase.GetComponent<PlayerInner>().reduceHealth(damage);
                     timeBeforeNextAttack = attackSpeed;
                     animationController.SetTrigger("attack");

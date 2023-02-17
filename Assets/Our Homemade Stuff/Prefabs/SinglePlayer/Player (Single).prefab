@@ -778,12 +778,14 @@ MonoBehaviour:
   movementSpeed: 2
   sprintSpeedMult: 2
   crouchSpeedMult: 0.5
-  jump: 10
+  jump: 4
   mouseSen: 100
   sprintMaxTime: 10
   restoreSprintTimeMult: 1
   timeBeforeStartRestoreSprint: 2
-  health: 100
+  maxHealth: 200
+  healingPerSecond: 1
+  timeBeforeStartHeal: 5
   mainCamera: {fileID: 8771281235258661508}
   feetHitbox: {fileID: 8771281236274740656}
   leftArm: {fileID: 6629408760683625005}
