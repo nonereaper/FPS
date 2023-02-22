@@ -13,6 +13,8 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float attackSpeed;
     [SerializeField] private int points;
     [SerializeField] private GameObject colliderObject;
+    [SerializeField] private GameObject headObject;
+    [SerializeField] private GameObject bodyObject;
     private Animator animationController; 
 
     private float savedTime;
@@ -49,7 +51,13 @@ public class Zombie : MonoBehaviour
         playerZombiePath = null;
         stateOfAI = 0;
     }
-
+    public int collides(Vector3 p) {
+        Collider m_Collider = headObject.GetComponent<Collider>();
+        if (m_Collider.bounds.Contains(p)) {
+            return 1;
+        }
+     return 0;
+    }
     public void die() {
        // animationController.
         timeBeforeNextAnimation = 2f;

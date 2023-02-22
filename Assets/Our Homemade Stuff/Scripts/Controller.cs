@@ -36,7 +36,6 @@ public class Controller : MonoBehaviour
     private int round;
 
     [SerializeField] private GameObject zombiePrefab;
-    [SerializeField] private GameObject zombiePrefab2;
     // Start is called before the first frame update
     void Start()
     {

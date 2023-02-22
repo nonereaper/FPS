@@ -123,8 +123,15 @@ public class PlayerInner : MonoBehaviour
         //distanceOfUseSelector = emptyUse.transform.localPosition.z*2;
 
         
-        weaponBar = new GameObject[5];
+        weaponBar = new GameObject[3];
         currentWeaponIndex = 0;
+    }
+    public void increaseWeaponBar() {
+        GameObject[] temp = new GameObject[4];
+        for (int i = 0; i < weaponBar.Length; i++) {
+            temp[i] = weaponBar[i];
+        }
+        weaponBar = temp;
     }
     public void addPoints(int p) {
         points +=p;
@@ -204,6 +211,8 @@ public class PlayerInner : MonoBehaviour
             sprintSpeedMult *=1.2f;
         } else if (pe.Equals(allPerkNames[3])) {
             timeBeforeStartHeal *= 0.8f;
+        } else if (pe.Equals(allPerkNames[2])) {
+            increaseWeaponBar();  
         }
     }
     public bool canBuyPerk(string pe) {
@@ -306,7 +315,7 @@ public class PlayerInner : MonoBehaviour
                 if (allPerks[6]) {
                     damage *= 2;
                 }
-                o.GetComponent<Projectile>().setup(damage,transform.gameObject,10);
+                o.GetComponent<Projectile>().setup(damage,transform.gameObject,10,allPerks[5]);
                 controller.addProjectile(o);
             }
             float recoilAmount = gun.getRecoil();
@@ -338,8 +347,10 @@ public class PlayerInner : MonoBehaviour
         GameObject currentWeapon = weaponBar[currentWeaponIndex];
         if (currentWeapon != null) {
             currentWeapon.SetActive(true);
-            /* add swap weapon time )TODO(*/
-            swapWeaponTime = 1;
+            swapWeaponTime = currentWeapon.GetComponent<Weapon>().getSwapTime();
+            if (allPerks[2]) {
+                swapWeaponTime/=2;
+            }
             if (currentWeaponIndex != 0) {
                 float distance = currentWeapon.GetComponent<Weapon>().getMussle().transform.position.z-transform.position.z;
                 //distanceOfProjSpawn = distance + 0.2f;

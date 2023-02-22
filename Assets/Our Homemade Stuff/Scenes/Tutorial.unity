@@ -132,7 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1121747}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,7 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 43069578}
   - component: {fileID: 43069579}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Store1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -483,7 +483,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 264449054}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -574,6 +574,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1483838085}
     m_Modifications:
+    - target: {fileID: 2889048558644491540, guid: e96553f6055b6c8419c60d0b90c65123, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3543553592673967486, guid: e96553f6055b6c8419c60d0b90c65123, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3607378403595616431, guid: e96553f6055b6c8419c60d0b90c65123, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -621,6 +629,10 @@ PrefabInstance:
     - target: {fileID: 4525334898171778720, guid: e96553f6055b6c8419c60d0b90c65123, type: 3}
       propertyPath: m_Name
       value: Quick Revive Machine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4525334898171778720, guid: e96553f6055b6c8419c60d0b90c65123, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e96553f6055b6c8419c60d0b90c65123, type: 3}
@@ -794,7 +806,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 798101537}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1114,7 +1126,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 857283767}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1143,9 +1155,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1483838085}
     m_Modifications:
+    - target: {fileID: 1262448003015248312, guid: 8de1da1961a9af94a9cf244dd1f85b26, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 4134500526409980171, guid: 8de1da1961a9af94a9cf244dd1f85b26, type: 3}
       propertyPath: m_Name
       value: Double Tap
+      objectReference: {fileID: 0}
+    - target: {fileID: 4134500526409980171, guid: 8de1da1961a9af94a9cf244dd1f85b26, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5993582223988182837, guid: 8de1da1961a9af94a9cf244dd1f85b26, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6276090671603758342, guid: 8de1da1961a9af94a9cf244dd1f85b26, type: 3}
       propertyPath: m_RootOrder
@@ -1289,7 +1313,7 @@ GameObject:
   - component: {fileID: 915443470}
   - component: {fileID: 915443469}
   - component: {fileID: 915443468}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1381,9 +1405,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1483838085}
     m_Modifications:
+    - target: {fileID: 1382032269106803645, guid: 7ef4f84033bec224a9ee8edf172ae08b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2540322452934478195, guid: 7ef4f84033bec224a9ee8edf172ae08b, type: 3}
       propertyPath: m_Name
       value: Deadshot Daquiri
+      objectReference: {fileID: 0}
+    - target: {fileID: 2540322452934478195, guid: 7ef4f84033bec224a9ee8edf172ae08b, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4084489174489669915, guid: 7ef4f84033bec224a9ee8edf172ae08b, type: 3}
       propertyPath: m_RootOrder
@@ -1467,7 +1499,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1002189016}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1499,6 +1531,14 @@ PrefabInstance:
     - target: {fileID: 1688725470358671094, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
       propertyPath: m_Name
       value: Mule Kick
+      objectReference: {fileID: 0}
+    - target: {fileID: 1688725470358671094, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1691979147092250553, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2244707345338074676, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
       propertyPath: m_RootOrder
@@ -1543,6 +1583,22 @@ PrefabInstance:
     - target: {fileID: 2244707345338074676, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445073517827649323, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2586354982581808747, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3956818367026332694, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4549083996671933301, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f3148ae510c376b4d8ab300ad7d618b7, type: 3}
@@ -1836,7 +1892,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1344001486}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1931,7 +1987,7 @@ GameObject:
   - component: {fileID: 1504292324}
   - component: {fileID: 1504292323}
   - component: {fileID: 1504292322}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2085,7 +2141,7 @@ GameObject:
   - component: {fileID: 1524628522}
   - component: {fileID: 1524628521}
   - component: {fileID: 1524628520}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2259,6 +2315,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stamin Up
       objectReference: {fileID: 0}
+    - target: {fileID: 96894725980705242, guid: 1abd8cc757a01fd4b85fd7de459136df, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2073302356602718835, guid: 1abd8cc757a01fd4b85fd7de459136df, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7755612078487699494, guid: 1abd8cc757a01fd4b85fd7de459136df, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -2408,7 +2472,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1941839971}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2439,7 +2503,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1952574740}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2471,7 +2535,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1985904267}
   - component: {fileID: 1985904268}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Store1 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2525,7 +2589,7 @@ GameObject:
   - component: {fileID: 2039365696}
   - component: {fileID: 2039365695}
   - component: {fileID: 2039365694}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2653,7 +2717,7 @@ GameObject:
   - component: {fileID: 238025557918444083}
   - component: {fileID: 791835921748972548}
   - component: {fileID: 3289938578558227883}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object003
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -2729,7 +2793,7 @@ GameObject:
   - component: {fileID: 5310586233483605131}
   - component: {fileID: 7043075818239868382}
   - component: {fileID: 1367875143389613581}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object010
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -2849,7 +2913,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1516108832805229617}
   - component: {fileID: 1480134237}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Juggernog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2905,6 +2969,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2191832192052131828, guid: 8068a20c8f736e748b3f9b828180898c, type: 3}
+      propertyPath: zombiePrefab
+      value: 
+      objectReference: {fileID: 3101120712829593855, guid: ae59d0f36a424ea4d96fcea2af460bfa, type: 3}
     - target: {fileID: 2191832192052131829, guid: 8068a20c8f736e748b3f9b828180898c, type: 3}
       propertyPath: m_Name
       value: Controller
@@ -2961,6 +3029,10 @@ PrefabInstance:
       propertyPath: damage
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 2191832193394423769, guid: 8068a20c8f736e748b3f9b828180898c, type: 3}
+      propertyPath: swapTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2252589944776418214, guid: 8068a20c8f736e748b3f9b828180898c, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2437883363
@@ -2981,9 +3053,17 @@ PrefabInstance:
       propertyPath: damage
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 5452624535659731926, guid: 8068a20c8f736e748b3f9b828180898c, type: 3}
+      propertyPath: swapTime
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5452624535752167732, guid: 8068a20c8f736e748b3f9b828180898c, type: 3}
       propertyPath: damage
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5452624535752167732, guid: 8068a20c8f736e748b3f9b828180898c, type: 3}
+      propertyPath: swapTime
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8068a20c8f736e748b3f9b828180898c, type: 3}
@@ -3104,7 +3184,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2842797957176776619}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Juggernog Machine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3137,7 +3217,7 @@ GameObject:
   - component: {fileID: 185485494836920871}
   - component: {fileID: 2148328356876349954}
   - component: {fileID: 2884668018246013059}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Box002
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -3208,7 +3288,7 @@ GameObject:
   - component: {fileID: 8907130414374614390}
   - component: {fileID: 6236572383961574370}
   - component: {fileID: 1386664600582387551}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object011
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -3242,7 +3322,7 @@ GameObject:
   - component: {fileID: 7710238148355877722}
   - component: {fileID: 6236359530173838720}
   - component: {fileID: 4444591604607784729}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object005
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -3325,7 +3405,7 @@ GameObject:
   - component: {fileID: 1290628446676881220}
   - component: {fileID: 6376899710394219377}
   - component: {fileID: 6850831404286153452}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object006
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -3408,7 +3488,7 @@ GameObject:
   - component: {fileID: 3978283665088957105}
   - component: {fileID: 6513527354304905147}
   - component: {fileID: 6814512932696113156}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object001
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -3688,7 +3768,7 @@ GameObject:
   - component: {fileID: 8074467887947119382}
   - component: {fileID: 1123140319287662768}
   - component: {fileID: 9154248445530942748}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object007
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -3822,7 +3902,7 @@ GameObject:
   - component: {fileID: 1475135122063872197}
   - component: {fileID: 5258003925645905389}
   - component: {fileID: 2780929209011820003}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object008
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -3841,7 +3921,7 @@ GameObject:
   - component: {fileID: 5667510467862414772}
   - component: {fileID: 7493195270942977750}
   - component: {fileID: 5560640048218085613}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object004
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -3860,7 +3940,7 @@ GameObject:
   - component: {fileID: 2816292732352058953}
   - component: {fileID: 5949357544536169548}
   - component: {fileID: 4644244431785517221}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object009
   m_TagString: Structure
   m_Icon: {fileID: 0}
@@ -3931,7 +4011,7 @@ GameObject:
   - component: {fileID: 5986945782640282453}
   - component: {fileID: 5869805820154840788}
   - component: {fileID: 8784104201886219650}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object002
   m_TagString: Structure
   m_Icon: {fileID: 0}

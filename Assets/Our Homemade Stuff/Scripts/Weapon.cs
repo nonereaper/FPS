@@ -22,6 +22,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float attackSpeed;
     // seconds for reload
     [SerializeField] private float reloadTime;
+	[SerializeField] private float swapTime;
     // force added to projectile
     [SerializeField] private float velocity;
     [SerializeField] private bool semiAuto, auto;
@@ -47,7 +48,12 @@ public class Weapon : MonoBehaviour
 	public GameObject getShellPosition() {
 		return this.shellPosition;
 	}
-
+	public float getSwapTime() {
+		return this.swapTime;
+	}
+	public void setSwapTime(float st) {
+		swapTime = st;
+	}
 
 	// 0.3,0,0.5,
 	// 0, 40, 0

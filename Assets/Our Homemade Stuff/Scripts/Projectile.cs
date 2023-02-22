@@ -6,12 +6,13 @@ using UnityEngine;
 public class Projectile : NetworkBehaviour
 {
     [SerializeField] GameObject hitPoint;
+    private bool deadShot;
     private Controller controller;
     private int damage;
     private GameObject parent;
     private float timeToDespawn, timeSpawned;
 
-    public void setup(int d, GameObject p, float ttD) {
+    public void setup(int d, GameObject p, float ttD, bool deadShot) {
         damage = d;
         parent = p;
         timeToDespawn = ttD;
@@ -21,6 +22,7 @@ public class Projectile : NetworkBehaviour
         for (int i = 0; i < cs.Length; i++) {
             Physics.IgnoreCollision(cs[i],GetComponent<Collider>());
         }
+        this.deadShot = deadShot;
         
     }
     // Start is called before the first frame update
@@ -30,10 +32,25 @@ public class Projectile : NetworkBehaviour
     }
     // https://docs.unity3d.com/ScriptReference/Collider.OnCollisionEnter.html
     void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyInner") || collision.gameObject.layer == LayerMask.NameToLayer("EnemyIgnoreCollisions") || collision.gameObject.layer == LayerMask.NameToLayer("EnemyCollisions")) {
+        
+        if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyInner")) {
             Zombie zombie = collision.gameObject.GetComponent<Zombie>();
             
-            zombie.reduceHealth(damage);
+            ContactPoint point = collision.contacts[0];
+
+            int type = zombie.collides(point.point);
+            Debug.DrawRay(point.point, point.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
+            int damage2 = damage;
+            if (type == 1) {
+                if (deadShot) {
+                    damage2 *=3;
+                } else {
+                    damage2 *=2;
+                }
+                Debug.Log("HeadShot");
+            }
+            
+            zombie.reduceHealth(damage2);
             if (zombie.getHealth() <= 0) {
                 parent.GetComponent<PlayerInner>().addPoints(zombie.getPoints());
             }
