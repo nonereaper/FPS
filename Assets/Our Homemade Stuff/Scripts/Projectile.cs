@@ -39,7 +39,6 @@ public class Projectile : NetworkBehaviour
             ContactPoint point = collision.contacts[0];
 
             int type = zombie.collides(point.point);
-            Debug.DrawRay(point.point, point.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
             int damage2 = damage;
             if (type == 1) {
                 if (deadShot) {
@@ -47,7 +46,6 @@ public class Projectile : NetworkBehaviour
                 } else {
                     damage2 *=2;
                 }
-                Debug.Log("HeadShot");
             }
             
             zombie.reduceHealth(damage2);

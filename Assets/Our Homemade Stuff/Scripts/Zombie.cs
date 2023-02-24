@@ -51,10 +51,14 @@ public class Zombie : MonoBehaviour
         playerZombiePath = null;
         stateOfAI = 0;
     }
+    //https://docs.unity3d.com/ScriptReference/Bounds.Contains.html
     public int collides(Vector3 p) {
         Collider m_Collider = headObject.GetComponent<Collider>();
+        Collider m_Collider2 = bodyObject.GetComponent<Collider>();
         if (m_Collider.bounds.Contains(p)) {
             return 1;
+        } else if (m_Collider2.bounds.Contains(p)) {
+            return 2;
         }
      return 0;
     }

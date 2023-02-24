@@ -93,6 +93,8 @@ public class PlayerInner : MonoBehaviour
         }
     [SerializeField] private TMP_Text itemInfoText;
 
+    [SerializeField] private TMP_Text weaponInfo;
+
     private bool lockCursor;
     // Start is called before the first frame update
     
@@ -163,6 +165,19 @@ public class PlayerInner : MonoBehaviour
             }
         }
         itemInfoText.text = temp;
+        temp = "";
+        if (swapWeaponTime != 0f) {
+            temp += "Swapping: " + swapWeaponTime + " seconds.\n";
+        } 
+        if (weaponBar[currentWeaponIndex] != null) {
+            Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
+            if (currentWeapon != null) {
+                if (currentWeapon.getReloadTimeLeft() != 0f) {
+                    temp += "Reloading: " + currentWeapon.getReloadTimeLeft() + " seconds.\n";
+                }
+            }
+        }
+        weaponInfo.text = temp;
     }
     public void updateUseInfo(string s) {
         useText.text = s;
