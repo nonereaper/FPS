@@ -46,7 +46,7 @@ public class Controller : MonoBehaviour
         zombiesToSpawnPerRound = 5;
         zombieToSpawnLeft = 5; // number of zombies to spawn
         timeForEachSpawnerToSpawn = 1f; // time for each spawner to spawn zombie
-        
+        sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         if (isMult) {
             networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
             Destroy(GameObject.Find("Player (Single)"));
@@ -248,6 +248,16 @@ public class Controller : MonoBehaviour
             NetworkManager t = networkManager.ConnectedClients[list[i].ClientId].PlayerObject.NetworkManager;
             
         }*/
+        if (players != null) {
+        bool playersAlive = false;
+        for (int i = 0; i < players.Count; i++) {
+            if (players[i].GetComponent<PlayerInner>().getHealth() != 0)
+            playersAlive = true;
+        }
+        if (!playersAlive) {
+            sceneLoader.s_loadScene(new string[] {"Lobby Screen"},0);
+        }
+        }
         if (!setupPath && ZombiePathes.getAllID() == zombiePathes.Count) {
             for (int i = 0; i < zombiePathes.Count; i++) {
                 zombiePathes[i].GetComponent<ZombiePathes>().setup();
