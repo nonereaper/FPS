@@ -72,6 +72,7 @@ public class Projectile : NetworkBehaviour
         if (controller.isIsMult()) {
             GetComponent<NetworkObject>().Despawn();
         }
+        controller.removeProjectile(gameObject);
         Destroy(gameObject);
     }
     // Update is called once per frame

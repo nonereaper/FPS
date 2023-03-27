@@ -33,6 +33,11 @@ public class PlayerInner : MonoBehaviour
     [SerializeField] private int healingPerSecond;
     [SerializeField] private float timeBeforeStartHeal;
 
+    [SerializeField] private GameObject[] gred;
+    
+    [SerializeField] private int[] gredMaxNumber;
+     private int[] gredNumber;
+
     private float currentTimeBeforeHeal;
     private int health;
 
@@ -95,10 +100,11 @@ public class PlayerInner : MonoBehaviour
 
     [SerializeField] private TMP_Text weaponInfo;
 
+    [SerializeField] private GameObject deathMenu;
     private bool lockCursor;
     // Start is called before the first frame update
     
-    
+    private SceneLoader sceneLoader;
     void Start()
     {
         cameraAngle = 0f;
@@ -114,9 +120,12 @@ public class PlayerInner : MonoBehaviour
         useText.text = "";
         lockCursor = true;
         Cursor.lockState = CursorLockMode.Locked;
-
+        sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         rb = GetComponent<Rigidbody>();
         heldProp = null;
+        for (int i = 0; i < gredNumber.Length; i++) {
+            gredNumber[i] = gredMaxNumber[i];
+        }
 
         savedTime = UnityEngine.Time.time;
         fireWeapontime = 0f;
@@ -127,6 +136,19 @@ public class PlayerInner : MonoBehaviour
         
         weaponBar = new GameObject[3];
         currentWeaponIndex = 0;
+    }
+    public void replayMap() {
+        sceneLoader.s_reloadScene();
+    }
+    public void goToMenu() {
+        sceneLoader.s_loadScene(new string[] {"Lobby Screen"},0);
+    }
+    public void showDeadMenu() {
+        deathMenu.SetActive(true);
+    }
+    public void showWinMenu() {
+        deathMenu.SetActive(true);
+        deathMenu.transform.GetChild(1).GetComponent<TMP_Text>().text = "You Win!";
     }
     public void increaseWeaponBar() {
         GameObject[] temp = new GameObject[4];
@@ -279,6 +301,16 @@ public class PlayerInner : MonoBehaviour
             if (gun.isSemiAuto()) {
                 gun.setFireType(0);
             }
+        }
+    }
+    public void throwGred(int index) {
+        if (gredNumber[index] >=1 ) {
+        Transform tf2 = emptyProjectile.transform;
+        GameObject o = Instantiate(gred[index],tf2.position,tf2.rotation,controller.getProjectileTf());
+        o.GetComponent<Rigidbody>().isKinematic = false;
+        o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,1000));
+        controller.addProjectile(o);
+        gredNumber[index]--;
         }
     }
     public void useWeapon(bool notHoldDownButton) {

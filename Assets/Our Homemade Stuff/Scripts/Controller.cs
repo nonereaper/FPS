@@ -40,7 +40,8 @@ public class Controller : MonoBehaviour
     void Start()
     {
         //sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
-        //isMult = sceneLoader.isIsMult();
+        //isMult = sceneLoader.isIsMult();'
+        ZombiePathes.resetID();
         setupPath = false;
         round = 1;
         zombiesToSpawnPerRound = 5;
@@ -255,10 +256,16 @@ public class Controller : MonoBehaviour
             playersAlive = true;
         }
         if (!playersAlive) {
-            sceneLoader.s_loadScene(new string[] {"Lobby Screen"},0);
+            Cursor.lockState = CursorLockMode.None;
+            players[0].GetComponent<PlayerInner>().showDeadMenu();
         }
+        }
+        if (round == 2) {
+            Cursor.lockState = CursorLockMode.None;
+            players[0].GetComponent<PlayerInner>().showWinMenu();
         }
         if (!setupPath && ZombiePathes.getAllID() == zombiePathes.Count) {
+            
             for (int i = 0; i < zombiePathes.Count; i++) {
                 zombiePathes[i].GetComponent<ZombiePathes>().setup();
             }
@@ -278,7 +285,7 @@ public class Controller : MonoBehaviour
             for (int i = 0; i < zombieSpawners.Count; i++) {                
                 bool zombieSpawned = false;
                 int rand = rmd.Next(1,3);
-                //zombiePrefab.setup(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe); // set zombie info
+                //(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe, int pts) {
                 // weakZombie (1, 100, 2, 0.5, 30, 1.5); (PlayerSpeed is 2, Player health is 150)
                 if(round < 5)//weak zombies
                 {

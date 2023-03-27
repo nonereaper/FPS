@@ -786,6 +786,10 @@ MonoBehaviour:
   maxHealth: 200
   healingPerSecond: 1
   timeBeforeStartHeal: 5
+  gred:
+  - {fileID: 799800366794798130, guid: fb28530000c126842ab8a84ac505c58c, type: 3}
+  - {fileID: 799800366794798130, guid: d07295ea1e3f97341befce3a6a189320, type: 3}
+  gredMaxNumber: 
   mainCamera: {fileID: 8771281235258661508}
   feetHitbox: {fileID: 8771281236274740656}
   leftArm: {fileID: 6629408760683625005}
@@ -801,6 +805,7 @@ MonoBehaviour:
   useText: {fileID: 8771281235563702849}
   itemInfoText: {fileID: 8771281236270212327}
   weaponInfo: {fileID: 5626425589759780900}
+  deathMenu: {fileID: 0}
 --- !u!114 &6629408760693098992
 MonoBehaviour:
   m_ObjectHideFlags: 0

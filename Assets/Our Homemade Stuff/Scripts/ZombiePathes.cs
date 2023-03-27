@@ -20,7 +20,9 @@ public class ZombiePathes : MonoBehaviour
             }
         }
     }
-    
+    public static void resetID (){
+        allID = 0;
+    }
     // Update is called once per frame
     void Update()
     {
