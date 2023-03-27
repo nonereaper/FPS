@@ -42,6 +42,12 @@ public class s_Player : MonoBehaviour
         if (Input.GetButtonUp("Fire2")) {
             player.switchWeaponSights(false);
         }
+        if (Input.GetButtonDown("Gred")) {
+            player.throwGred(0);
+        }
+        if (Input.GetButtonDown("Gred2")) {
+            player.throwGred(1);
+        }
         for (int i = 0; i < player.getWeaponBarSize(); i++) {
             if (Input.GetKeyDown(""+(i+1))) {
                 player.swapWeaponTo(i);

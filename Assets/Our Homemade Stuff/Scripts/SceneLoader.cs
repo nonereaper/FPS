@@ -24,6 +24,9 @@ public class SceneLoader : MonoBehaviour
         isMult = false;
         SceneManager.LoadScene(names[i]);
     }
+    public void s_reloadScene() {
+         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
     public bool isIsMult() {
         return isMult;
     }
