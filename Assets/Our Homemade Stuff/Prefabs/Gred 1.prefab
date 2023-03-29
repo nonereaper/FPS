@@ -212,8 +212,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeToExplode: 5
   explosionRadius: 7
-  damage: 500
+  damage: 10
   explosion: {fileID: 5495665595247342380, guid: 0b76f977271b7914788f5b5931f67f76, type: 3}
+  stun: 1
+  stunTime: 6
 --- !u!54 &6937443831788868243
 Rigidbody:
   m_ObjectHideFlags: 0

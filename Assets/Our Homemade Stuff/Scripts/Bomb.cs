@@ -10,6 +10,8 @@ public class Bomb : MonoBehaviour
     [SerializeField] private float explosionRadius;
     [SerializeField] private int damage;
     [SerializeField] private GameObject explosion;
+    [SerializeField] private bool stun;
+    [SerializeField] private float stunTime;
     private Controller controller;
     // Start is called before the first frame update
     void Start()
@@ -37,6 +39,9 @@ public class Bomb : MonoBehaviour
             for (int i = 0; i < zombies.Count; i++) {
                 if (Vector3.Distance(zombies[i].transform.position,transform.position) <= explosionRadius) {
                     zombies[i].GetComponent<Zombie>().reduceHealth(damage);
+                    if (stun) {
+                        zombies[i].GetComponent<Zombie>().stun(stunTime);
+                    }
                 }
             }
             explosion.transform.localScale = new Vector3(explosionRadius,explosionRadius,explosionRadius);

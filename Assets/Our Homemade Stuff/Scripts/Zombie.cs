@@ -34,6 +34,8 @@ public class Zombie : MonoBehaviour
     private Vector3 savedPlace;
     private float savedTime3;
 
+    private float stunTime;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +52,10 @@ public class Zombie : MonoBehaviour
         targetZombiePath = null;
         playerZombiePath = null;
         stateOfAI = 0;
+        stunTime = 0;
+    }
+    public void stun(float time) {
+        stunTime = time;
     }
     //https://docs.unity3d.com/ScriptReference/Bounds.Contains.html
     public int collides(Vector3 p) {
@@ -125,7 +131,7 @@ public class Zombie : MonoBehaviour
         playerToChase = controller.getClosestPlayer(transform.position);
         GameObject playerPath = controller.getPathes(controller.findClosestPath(playerToChase.transform.position));
         GameObject zombiePath = controller.getPathes(controller.findClosestPath(transform.position));
-
+        if (stunTime != 0f) return;
         if (playerZombiePath == null || (playerZombiePath != null && playerPath.GetComponent<ZombiePathes>().getID() != playerZombiePath.GetComponent<ZombiePathes>().getID())) {
             playerZombiePath = playerPath;
             stateOfAI = 0;
@@ -189,7 +195,8 @@ public class Zombie : MonoBehaviour
                 colliderObject.layer = LayerMask.NameToLayer("EnemyCollisions");
             }
         }
-
+        stunTime -= differenceInTime;
+        if (stunTime <= 0f) stunTime = 0f;
         differenceInTime = UnityEngine.Time.time-savedTime2;
         if (differenceInTime > 5f) {
             

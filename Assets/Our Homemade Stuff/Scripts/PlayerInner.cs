@@ -74,6 +74,7 @@ public class PlayerInner : MonoBehaviour
         }
     private int currentWeaponIndex;
     private float swapWeaponTime;
+    private float maxSwapWeapontime;
     private float fireWeapontime;
     private float savedTime;
 
@@ -102,6 +103,11 @@ public class PlayerInner : MonoBehaviour
 
     [SerializeField] private GameObject deathMenu;
     private bool lockCursor;
+
+    [SerializeField] private UIBars HPBar;
+    [SerializeField] private UIBars STBar;
+    [SerializeField] private TMP_Text WeaponBar;
+    [SerializeField] private UIBars WeaponInfo2;
     // Start is called before the first frame update
     
     private SceneLoader sceneLoader;
@@ -123,6 +129,7 @@ public class PlayerInner : MonoBehaviour
         sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         rb = GetComponent<Rigidbody>();
         heldProp = null;
+        gredNumber = new int[gredMaxNumber.Length];
         for (int i = 0; i < gredNumber.Length; i++) {
             gredNumber[i] = gredMaxNumber[i];
         }
@@ -161,6 +168,10 @@ public class PlayerInner : MonoBehaviour
         points +=p;
     }
     public void updateItemInfo() {
+        HPBar.setPercent(((double)health)/maxHealth);
+        STBar.setPercent(((double)currentSprintTime)/sprintMaxTime);
+        string temp = "";
+        /*
         string temp = "" + isGrounded() + "\n";
         temp += "Points:" + points + "\n";
         temp += "Health: " + health + "\n";
@@ -173,10 +184,11 @@ public class PlayerInner : MonoBehaviour
             } else {
             temp+= weaponBar[i].name + "\n";
             }
-        }
+        }*/
         if (weaponBar[currentWeaponIndex] != null) {
             Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
             if (currentWeapon != null) {
+                temp += weaponBar[currentWeaponIndex].name + "\n";
                 String fireType = "Automatic";
                 if (currentWeapon.getFireType() == 0) {
                     fireType = "Semi-automatic";
@@ -186,20 +198,29 @@ public class PlayerInner : MonoBehaviour
                 temp += "Stored ammo Left: (" + currentWeapon.getCurrentTotalAmmo() + "/" + currentWeapon.getTotalAmmo() + ")";
             }
         }
-        itemInfoText.text = temp;
+        WeaponBar.text = temp;
+        //itemInfoText.text = temp;
         temp = "";
         if (swapWeaponTime != 0f) {
-            temp += "Swapping: " + swapWeaponTime + " seconds.\n";
-        } 
+            WeaponInfo2.gameObject.SetActive(true);
+            WeaponInfo2.changeText("Swapping: " + swapWeaponTime + " seconds.");
+            WeaponInfo2.setPercent(((double)swapWeaponTime)/maxSwapWeapontime);
+        } else {
+            WeaponInfo2.gameObject.SetActive(false);
+        }
         if (weaponBar[currentWeaponIndex] != null) {
             Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
             if (currentWeapon != null) {
                 if (currentWeapon.getReloadTimeLeft() != 0f) {
-                    temp += "Reloading: " + currentWeapon.getReloadTimeLeft() + " seconds.\n";
+                    WeaponInfo2.gameObject.SetActive(true);
+                    WeaponInfo2.changeText("Reloading: " + currentWeapon.getReloadTimeLeft() + " " + (((double)currentWeapon.getReloadTimeLeft())/currentWeapon.getReloadTime()) + " seconds.");
+                    WeaponInfo2.setPercent(((double)currentWeapon.getReloadTimeLeft())/currentWeapon.getReloadTime());
+                } else if (swapWeaponTime == 0f){
+                    WeaponInfo2.gameObject.SetActive(false);
                 }
             }
-        }
-        weaponInfo.text = temp;
+        } 
+        
     }
     public void updateUseInfo(string s) {
         useText.text = s;
@@ -395,9 +416,11 @@ public class PlayerInner : MonoBehaviour
         if (currentWeapon != null) {
             currentWeapon.SetActive(true);
             swapWeaponTime = currentWeapon.GetComponent<Weapon>().getSwapTime();
+            
             if (allPerks[2]) {
                 swapWeaponTime/=2;
             }
+            maxSwapWeapontime = swapWeaponTime;
             if (currentWeaponIndex != 0) {
                 float distance = currentWeapon.GetComponent<Weapon>().getMussle().transform.position.z-transform.position.z;
                 //distanceOfProjSpawn = distance + 0.2f;
