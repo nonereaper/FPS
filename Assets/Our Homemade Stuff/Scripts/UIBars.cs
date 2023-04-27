@@ -28,7 +28,6 @@ public class UIBars : MonoBehaviour
     void Update()
     {
         float l = (float)(percent*length);
-        Debug.Log(percent);
         front.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, l);
         front.GetComponent<RectTransform>().anchoredPosition = new Vector2((l-length)/2, front.GetComponent<RectTransform>().anchoredPosition.y);
     }

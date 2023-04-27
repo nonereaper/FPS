@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Our Homemade Stuff/Scenes/Tutorial.unity
     guid: 0dd2b04f18ef1fd4a9c55fafc8ec8782
+  - enabled: 1
+    path: Assets/Our Homemade Stuff/Scenes/Desert Nazi Map.unity
+    guid: 8ea7a084f8b88164b9f3f02e5094a4cd
   m_configObjects: {}

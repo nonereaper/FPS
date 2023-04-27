@@ -97,9 +97,8 @@ public class PlayerInner : MonoBehaviour
         public string getUseText() {
             return useText.text;
         }
-    [SerializeField] private TMP_Text itemInfoText;
-
-    [SerializeField] private TMP_Text weaponInfo;
+    [SerializeField] private TMP_Text gredInfo;
+    [SerializeField] private TMP_Text pointsInfo;
 
     [SerializeField] private GameObject deathMenu;
     private bool lockCursor;
@@ -205,21 +204,18 @@ public class PlayerInner : MonoBehaviour
             WeaponInfo2.gameObject.SetActive(true);
             WeaponInfo2.changeText("Swapping: " + swapWeaponTime + " seconds.");
             WeaponInfo2.setPercent(((double)swapWeaponTime)/maxSwapWeapontime);
+        } else if (weaponBar[currentWeaponIndex] != null && weaponBar[currentWeaponIndex].GetComponent<Weapon>() != null && weaponBar[currentWeaponIndex].GetComponent<Weapon>().getReloadTimeLeft() != 0f) {
+            Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
+            WeaponInfo2.gameObject.SetActive(true);
+            WeaponInfo2.changeText("Reloading: " + currentWeapon.getReloadTimeLeft() + " " + (((double)currentWeapon.getReloadTimeLeft())/currentWeapon.getReloadTime()) + " seconds.");
+            WeaponInfo2.setPercent(((double)currentWeapon.getReloadTimeLeft())/currentWeapon.getReloadTime());
         } else {
             WeaponInfo2.gameObject.SetActive(false);
         }
-        if (weaponBar[currentWeaponIndex] != null) {
-            Weapon currentWeapon = weaponBar[currentWeaponIndex].GetComponent<Weapon>();
-            if (currentWeapon != null) {
-                if (currentWeapon.getReloadTimeLeft() != 0f) {
-                    WeaponInfo2.gameObject.SetActive(true);
-                    WeaponInfo2.changeText("Reloading: " + currentWeapon.getReloadTimeLeft() + " " + (((double)currentWeapon.getReloadTimeLeft())/currentWeapon.getReloadTime()) + " seconds.");
-                    WeaponInfo2.setPercent(((double)currentWeapon.getReloadTimeLeft())/currentWeapon.getReloadTime());
-                } else if (swapWeaponTime == 0f){
-                    WeaponInfo2.gameObject.SetActive(false);
-                }
-            }
-        } 
+        
+        temp = "Grenade: " + gredNumber[0] + "\nFlash Grenade: " + gredNumber[1];
+        gredInfo.text = temp;
+        pointsInfo.text = "Points: "+ points;
         
     }
     public void updateUseInfo(string s) {

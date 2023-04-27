@@ -260,7 +260,7 @@ public class Controller : MonoBehaviour
             players[0].GetComponent<PlayerInner>().showDeadMenu();
         }
         }
-        if (round == 2) {
+        if (round == 3) {
             Cursor.lockState = CursorLockMode.None;
             players[0].GetComponent<PlayerInner>().showWinMenu();
         }
