@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
+[ExecuteInEditMode]
 public class ZombiePathes : MonoBehaviour
 {   
     [SerializeField] List<GameObject> connectedPathes;
