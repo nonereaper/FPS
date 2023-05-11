@@ -287,11 +287,11 @@ public class Controller : MonoBehaviour
                 int rand = rmd.Next(1,3);
                 //(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe, int pts) {
                 // weakZombie (1, 100, 2, 0.5, 30, 1.5); (PlayerSpeed is 2, Player health is 150)
-                if(round < 5)//weak zombies
+                if(round < 5)//weak zombiess
                 {
-                    zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f,100);
+                    zombiePrefab.GetComponent<Zombie>().setup(10, 100, 2, 0.5f, 30, 1.5f,100);
                 }
-                if(round < 10) //2/3 weak, 1/3 normal
+                else if(round < 10) //2/3 weak, 1/3 normal
                 {
                     if(rand == 3) //normal
                     {
@@ -302,7 +302,7 @@ public class Controller : MonoBehaviour
                         zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f,100);
                     }
                 }
-                if(round < 15)//1/3 weak, 2/3 normal
+                else if(round < 15)//1/3 weak, 2/3 normal
                 {
                     if(rand == 3) //weak
                     {
@@ -313,11 +313,11 @@ public class Controller : MonoBehaviour
                         zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f,100);
                     }
                 }
-                if(round < 20)//all normal
+                else if(round < 20)//all normal
                 {
                     zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f,100);
                 }
-                if(round < 25) //2/3 normal, 1/3 hard
+                else if(round < 25) //2/3 normal, 1/3 hard
                 {   
                     if(rand == 3) //hard
                     {
@@ -328,7 +328,7 @@ public class Controller : MonoBehaviour
                         zombiePrefab.GetComponent<Zombie>().setup(1.37f, 150, 2, 0.5f, 50, 1.25f,100);
                     }
                 }
-                if(round < 30) //1/3 normal, 2/3 hard
+                else if(round < 30) //1/3 normal, 2/3 hard
                 {
                     if(rand == 3) //normal
                     {
