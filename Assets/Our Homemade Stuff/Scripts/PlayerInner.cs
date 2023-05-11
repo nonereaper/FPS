@@ -116,7 +116,7 @@ public class PlayerInner : MonoBehaviour
         characterAngle = 0f;
         characterMovementState = 0;
         controller = GameObject.Find("Controller").GetComponent<Controller>();
-        points = 0;
+        points = 1000;
         currentSprintTime = sprintMaxTime;
         currentTimeBeforeRestore = 0f;
         currentTimeBeforeHeal = 0f;
@@ -142,6 +142,20 @@ public class PlayerInner : MonoBehaviour
         
         weaponBar = new GameObject[3];
         currentWeaponIndex = 0;
+    }
+    public void maxAmmo() {
+        for (int i = 0; i < weaponBar.Length; i++) {
+            GameObject wb = weaponBar[i];
+            if (wb != null) {
+                Weapon w = wb.GetComponent<Weapon>();
+                if (w != null) {
+                    w.setCurrentTotalAmmo(w.getTotalAmmo());
+                }
+            }
+        }
+        for (int i = 0; i < gredNumber.Length; i++) {
+            gredNumber[i] = gredMaxNumber[i];
+        }
     }
     public void replayMap() {
         sceneLoader.s_reloadScene();
@@ -195,6 +209,12 @@ public class PlayerInner : MonoBehaviour
                 temp += "Fire type: " + fireType + "\n";
                 temp += "Magazine: (" + currentWeapon.getCurrentMagazine() + "/" + currentWeapon.getMagazine() + ")\n";
                 temp += "Stored ammo Left: (" + currentWeapon.getCurrentTotalAmmo() + "/" + currentWeapon.getTotalAmmo() + ")";
+            } else {
+                MeleeWeapon currentWeapon2 = weaponBar[currentWeaponIndex].GetComponent<MeleeWeapon>();
+                if (currentWeapon2 != null) {
+                temp += weaponBar[currentWeaponIndex].name + "\n";
+                temp += "Time To swing: " + fireWeapontime;
+            }
             }
         }
         WeaponBar.text = temp;
@@ -400,7 +420,30 @@ public class PlayerInner : MonoBehaviour
                     o3.GetComponent<Rigidbody>().isKinematic = false;
                 }
             }    
-        }
+        } else {
+            MeleeWeapon mw = weapon.GetComponent<MeleeWeapon>();
+            if (heldProp != null) {
+                return;
+            }
+            if (fireWeapontime != 0f || swapWeaponTime != 0f) {
+                return;
+            }
+            Transform tf2 = emptyProjectile.transform;
+            fireWeapontime = mw.getAttackSpeed();
+            GameObject o = Instantiate(mw.getProj(),tf2.position,tf2.rotation,controller.getProjectileTf());
+                if (controller.isIsMult()) {
+                    o.GetComponent<NetworkObject>().Spawn();
+                } else {
+                    o.GetComponent<Rigidbody>().isKinematic = false;
+                }
+                o.GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0,0,5000));
+                int damage = mw.getDamage();
+                if (allPerks[6]) {
+                    damage *= 2;
+                }
+                o.GetComponent<Projectile>().setup(damage,transform.gameObject,0.08f,allPerks[5]);
+                controller.addProjectile(o);
+    }
     }
     public void swapWeaponTo(int index) {
         GameObject pastWeapon = weaponBar[currentWeaponIndex];
@@ -411,8 +454,12 @@ public class PlayerInner : MonoBehaviour
         GameObject currentWeapon = weaponBar[currentWeaponIndex];
         if (currentWeapon != null) {
             currentWeapon.SetActive(true);
+            if (currentWeapon.GetComponent<Weapon>() != null) {
             swapWeaponTime = currentWeapon.GetComponent<Weapon>().getSwapTime();
-            
+            } else {
+            swapWeaponTime = currentWeapon.GetComponent<MeleeWeapon>().getSwapTime();
+
+            }
             if (allPerks[2]) {
                 swapWeaponTime/=2;
             }
@@ -458,8 +505,10 @@ public class PlayerInner : MonoBehaviour
                 //weaponBar[i].transform.localRotation = emptyWeaponLocation.transform.rotation;
                 //weaponBar[i].transform.Rotate(180,90,90);
                 //weaponBar[i].transform.Rotate(5,5,5);
+                if (weaponBar[i].GetComponent<Weapon>() != null) {
                 aimCamera.transform.position = weaponBar[i].GetComponent<Weapon>().getAimPosition().transform.position;
                 aimCamera.transform.rotation = weaponBar[i].GetComponent<Weapon>().getAimPosition().transform.rotation;
+                }
                 //weaponBar[i].transform.localRotation = Quaternion.Euler(new Vector3(weaponBar[i].transform.rotation.x,weaponBar[i].transform.rotation.y,weaponBar[i].transform.rotation.z));
             }
         }
@@ -734,6 +783,7 @@ public class PlayerInner : MonoBehaviour
                     differenceInTime = 0f;
                 }
             }
+            if (currentWeapon != null) {
             if (currentWeapon.getReloadTimeLeft() != 0f && differenceInTime != 0f) {
                 currentWeapon.setReloadTimeLeft(currentWeapon.getReloadTimeLeft()-differenceInTime);
                 if (currentWeapon.getReloadTimeLeft() < 0f){
@@ -742,6 +792,7 @@ public class PlayerInner : MonoBehaviour
                 } else {
                     differenceInTime = 0f;
                 }
+            }
             }
         }
     }
