@@ -7,90 +7,25 @@ public class MeleeWeapon : MonoBehaviour
     [SerializeField] int damage;
 
     [SerializeField] float attackSpeed;
-    [SerializeField] bool turn90;
-	[SerializeField] float swingTime;
-	[SerializeField] float startAngleOfSwing;
-	[SerializeField] float endAngleOfSwing;
+	[SerializeField] private float swapTime;
+    [SerializeField] private GameObject proj;
 
-    [SerializeField] GameObject handPosition;
-
-	private float timeLeftInSwing;
-	private float angleSwingLeft;
-	private Vector3 origPos;
-	private Quaternion origRot;
-
-
-	public Vector3 getOrigPos() {
-		return this.origPos;
+	public float getSwapTime() {
+		return this.swapTime;
+	}
+	public void setSwapTime(float st) {
+		swapTime = st;
 	}
 
-	public void setOrigPos(Vector3 origPos) {
-		this.origPos = origPos;
+	
+	public GameObject getProj() {
+		return this.proj;
 	}
 
-	public Quaternion getOrigRot() {
-		return this.origRot;
+	public void setProj(GameObject proj) {
+		this.proj = proj;
 	}
-
-	public void setOrigRot(Quaternion origRot) {
-		this.origRot = origRot;
-	}
-
-	public float getTimeLeftInSwing() {
-		return this.timeLeftInSwing;
-	}
-
-	public void setTimeLeftInSwing(float timeLeftInSwing) {
-		this.timeLeftInSwing = timeLeftInSwing;
-	}
-
-	public float getAngleSwingLeft() {
-		return this.angleSwingLeft;
-	}
-
-	public void setAngleSwingLeft(float angleSwingLeft) {
-		this.angleSwingLeft = angleSwingLeft;
-	}
-
-	public bool isTurn90() {
-		return this.turn90;
-	}
-
-	public void setTurn90(bool turn90) {
-		this.turn90 = turn90;
-	}
-
-	public float getSwingTime() {
-		return this.swingTime;
-	}
-
-	public void setSwingTime(float swingTime) {
-		this.swingTime = swingTime;
-	}
-
-	public float getStartAngleOfSwing() {
-		return this.startAngleOfSwing;
-	}
-
-	public void setStartAngleOfSwing(float startAngleOfSwing) {
-		this.startAngleOfSwing = startAngleOfSwing;
-	}
-
-	public float getEndAngleOfSwing() {
-		return this.endAngleOfSwing;
-	}
-
-	public void setEndAngleOfSwing(float endAngleOfSwing) {
-		this.endAngleOfSwing = endAngleOfSwing;
-	}
-
-	public GameObject getHandPosition() {
-		return this.handPosition;
-	}
-
-	public void setHandPosition(GameObject handPosition) {
-		this.handPosition = handPosition;
-	}
+	
 
 	public int getDamage() {
 		return this.damage;
