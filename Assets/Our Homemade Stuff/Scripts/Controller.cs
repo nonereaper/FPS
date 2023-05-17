@@ -102,14 +102,13 @@ public class Controller : MonoBehaviour
                     }
                 }
             }
-           /* Debug.Log(ZombiePathes.getAllID() + "  " + zombiePathes.Count);
             if (ZombiePathes.getAllID() != zombiePathes.Count) {
                 Debug.Log("faile");
-              //  ZombiePathes.resetID();
+                ZombiePathes.resetID();
 
-            }*/
-            ZombiePathes.resetID();
-         
+            }    
+                            ZombiePathes.resetID();
+     
     }
     public GameObject getClosestPlayer(Vector3 p) {
         int index = 0;

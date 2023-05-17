@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class ZombiePathes : MonoBehaviour
 {   
     [SerializeField] List<GameObject> connectedPathes;
@@ -12,9 +12,11 @@ public class ZombiePathes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-           // Debug.Log("start of "+ gameObject.name + "   "+ allID);
+         
         id = allID;
+
         allID++;
+        
         for (int i = 0; i < connectedPathes.Count; i++) {
             if (connectedPathes[i].GetComponent<ZombiePathes>().searchAdj(id) == null) {
                 connectedPathes[i].GetComponent<ZombiePathes>().addPath(gameObject);
@@ -59,6 +61,7 @@ public class ZombiePathes : MonoBehaviour
         for (int i = 0; i < pathToTake.Length; i++) {
             if (i != id) {
                 string temp = run(this,i,id+"",0.0);
+                
                 if (temp == null) Debug.Log("error in thing");
                 else {
                     string[] temp2 = temp.Split(",");
