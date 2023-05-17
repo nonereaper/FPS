@@ -41,7 +41,7 @@ public class Controller : MonoBehaviour
     {
         //sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();
         //isMult = sceneLoader.isIsMult();'
-        ZombiePathes.resetID();
+        
         setupPath = false;
         round = 1;
         zombiesToSpawnPerRound = 5;
@@ -102,6 +102,14 @@ public class Controller : MonoBehaviour
                     }
                 }
             }
+           /* Debug.Log(ZombiePathes.getAllID() + "  " + zombiePathes.Count);
+            if (ZombiePathes.getAllID() != zombiePathes.Count) {
+                Debug.Log("faile");
+              //  ZombiePathes.resetID();
+
+            }*/
+            ZombiePathes.resetID();
+         
     }
     public GameObject getClosestPlayer(Vector3 p) {
         int index = 0;
@@ -249,6 +257,14 @@ public class Controller : MonoBehaviour
             NetworkManager t = networkManager.ConnectedClients[list[i].ClientId].PlayerObject.NetworkManager;
             
         }*/
+        
+        if (!setupPath && ZombiePathes.getAllID() == zombiePathes.Count) {
+            Debug.Log("setuping up pathes");
+            for (int i = 0; i < zombiePathes.Count; i++) {
+                zombiePathes[i].GetComponent<ZombiePathes>().setup();
+            }
+            setupPath = true;
+        }
         if (players != null) {
         bool playersAlive = false;
         for (int i = 0; i < players.Count; i++) {
@@ -264,13 +280,7 @@ public class Controller : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             players[0].GetComponent<PlayerInner>().showWinMenu();
         }
-        if (!setupPath && ZombiePathes.getAllID() == zombiePathes.Count) {
-            
-            for (int i = 0; i < zombiePathes.Count; i++) {
-                zombiePathes[i].GetComponent<ZombiePathes>().setup();
-            }
-            setupPath = true;
-        }
+        
         System.Random rmd = new System.Random();
         if (zombies.Count == 0 && zombieToSpawnLeft == 0) { // all zombies are dead
             round++;

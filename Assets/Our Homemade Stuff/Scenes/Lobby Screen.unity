@@ -5003,8 +5003,7 @@ MonoBehaviour:
   s_menu: {fileID: 621157097}
   s_sceneSelect: {fileID: 1276540738}
   s_sceneNames:
-  - SampleScene
-  - Asset Testing
+  - Desert Nazi Map
   - Tutorial
   m_menu: {fileID: 1219645075}
   m_addressInput: {fileID: 1169575425}
@@ -5015,7 +5014,7 @@ MonoBehaviour:
   m_sceneSelect: {fileID: 581714392}
   m_sceneLoad: {fileID: 1451376719}
   m_sceneNames:
-  - SampleScene
+  - Desert Nazi Map
   - Tutorial
 --- !u!1 &1618188334
 GameObject:

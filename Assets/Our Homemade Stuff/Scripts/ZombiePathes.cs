@@ -12,6 +12,7 @@ public class ZombiePathes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+           // Debug.Log("start of "+ gameObject.name + "   "+ allID);
         id = allID;
         allID++;
         for (int i = 0; i < connectedPathes.Count; i++) {
