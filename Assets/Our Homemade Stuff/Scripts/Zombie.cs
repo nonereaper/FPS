@@ -109,6 +109,11 @@ public class Zombie : MonoBehaviour
 
         double increaseZ = Math.Cos(tempAngle)*movementSpeed,
         increaseX = Math.Sin(tempAngle)*movementSpeed;
+        if (Vector3.Distance(transform.position,playerToChase.transform.position) < 10f) { 
+
+increaseZ = Math.Cos(tempAngle)*movementSpeed/10;
+        increaseX = Math.Sin(tempAngle)*movementSpeed/10;
+        }
         
        rb.AddForce(new Vector3((float)increaseX,rb.velocity.y,(float)increaseZ) - rb.velocity, ForceMode.VelocityChange);
     }
@@ -116,7 +121,7 @@ public class Zombie : MonoBehaviour
         return playerToChase.transform.position;
     }
     public void setup(float ms, int hea, float rang, float rotatSpeed, int dam, float attSpe, int pts) {
-        movementSpeed = ms;
+        movementSpeed = ms*10;
         health = hea;
         rang = range;
         rotationSpeed = rotatSpeed;
@@ -151,9 +156,10 @@ public class Zombie : MonoBehaviour
 
         if (Vector3.Distance(transform.position,targetZombiePath.transform.position) < 4f) {
             if (stateOfAI == 0 && playerZombiePath.GetComponent<ZombiePathes>().getID() != targetZombiePath.GetComponent<ZombiePathes>().getID()) {
+                //Debug.Log(playerPath.GetComponent<ZombiePathes>().getID());
                 int targetID = targetZombiePath.GetComponent<ZombiePathes>().search(playerPath.GetComponent<ZombiePathes>().getID());
                 targetZombiePath = targetZombiePath.GetComponent<ZombiePathes>().searchAdj(targetID);
-                
+                //Debug.Log(targetID);
             } else {
                 stateOfAI = 1;
             }
