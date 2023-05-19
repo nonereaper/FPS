@@ -107,7 +107,6 @@ public class Controller : MonoBehaviour
                 ZombiePathes.resetID();
 
             }    
-                            ZombiePathes.resetID();
      
     }
     public GameObject getClosestPlayer(Vector3 p) {
@@ -258,7 +257,6 @@ public class Controller : MonoBehaviour
         }*/
         
         if (!setupPath && ZombiePathes.getAllID() == zombiePathes.Count) {
-            Debug.Log("setuping up pathes");
             for (int i = 0; i < zombiePathes.Count; i++) {
                 zombiePathes[i].GetComponent<ZombiePathes>().setup();
             }
@@ -298,7 +296,7 @@ public class Controller : MonoBehaviour
                 // weakZombie (1, 100, 2, 0.5, 30, 1.5); (PlayerSpeed is 2, Player health is 150)
                 if(round < 5)//weak zombiess
                 {
-                    zombiePrefab.GetComponent<Zombie>().setup(10, 100, 2, 0.5f, 30, 1.5f,100);
+                    zombiePrefab.GetComponent<Zombie>().setup(1, 100, 2, 0.5f, 30, 1.5f,100);
                 }
                 else if(round < 10) //2/3 weak, 1/3 normal
                 {

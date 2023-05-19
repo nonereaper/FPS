@@ -62,7 +62,7 @@ public class ZombiePathes : MonoBehaviour
             if (i != id) {
                 string temp = run(this,i,id+"",0.0);
                 
-                if (temp == null) Debug.Log("error in thing");
+                if (temp == null) Debug.Log("error in thing" + i + ", current: " + id);
                 else {
                     string[] temp2 = temp.Split(",");
                     pathToTake[i] = int.Parse(temp2[1]);
